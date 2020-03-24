@@ -1,7 +1,0 @@
-{
-  "name": "SIMILE-app",
-  "integrations": {
-    "cordova": {}
-  },
-  "type": "angular"
-}
