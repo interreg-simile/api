@@ -24,12 +24,13 @@ Please refer to the official documentation (*coming soon...*).
 
 ## Development setup
 
+1. Install [Node.js](https://nodejs.org/it/download/)
 1. Clone this repository: ```git clone https://github.com/interreg-simile/api.git ``` 
-2. Install NPM packages: ```npm install```
-3. Create a ```.env``` file in the main directory following the example of the ```.env.example``` file.
-4. Build: ```npm run build:prod```
-4. (*Optional*) Populate the database with some dummy data: ```npm run seed:prod```
-5. Run: ```npm run start:server```
+1. Install NPM packages: ```npm install```
+1. Create a ```.env``` file in the main directory following the example of the ```.env.example``` file.
+1. Build: ```npm run build:prod```
+1. (*Optional*) Populate the database with some dummy data: ```npm run seed:prod```
+1. Run: ```npm run start:server```
 
 #### Built with
 
