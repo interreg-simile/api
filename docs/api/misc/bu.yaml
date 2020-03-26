@@ -28,7 +28,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: ./models/alert.v1.yaml
+                  $ref: ./models/alert.yaml
               examples:
                 Example:
                   value:
@@ -94,7 +94,7 @@ paths:
 components:
   schemas:
     Observation:
-      $ref: ./models/observation.v1.yaml
+      $ref: ./models/observation.yaml
   parameters:
     acceptLanguageHeader:
       name: Accept-Language

@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/epessina/SIMILE-App.git"
+    "url": "git+https://github.com/interreg-simile/api.git"
   },
   "author": "Edoardo Pessina",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/epessina/SIMILE-App/issues"
+    "url": "https://github.com/interreg-simile/api/issues"
   },
-  "homepage": "https://github.com/epessina/SIMILE-App#readme",
+  "homepage": "https://github.com/interreg-simile/api#readme",
   "dependencies": {
     "redoc": "2.0.0-rc.24"
   },

@@ -1,38 +1,6 @@
 openapi: 3.0.0
 
 #----------------------
-# Metadata
-#----------------------
-info:
-  title: "SIMILE Api"
-  x-logo:
-    url: "https://raw.githubusercontent.com/epessina/simile-app/master/docs/media/logo.png"
-  description: "# Uno
-
-    asdf
-
-    # Overview
-
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
-    aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-
-    ## Ciao
-
-    asdfasdf
-
-    # Test
-
-    asdfsadf
-  "
-  contact:
-    name: "Edoardo Pessina"
-    email: "interreg-simile@polimi.it"
-  license:
-    name: "GNU GPLv3"
-    url: "https://choosealicense.com/licenses/gpl-3.0/"
-  version: "1.0.0"
-
-#----------------------
 # Server objects
 #----------------------
 servers:
@@ -40,6 +8,181 @@ servers:
     description: "Production server"
 
 #----------------------
+# Metadata
+#----------------------
+info:
+  title: "SIMILE Api"
+  version: "1.0.0"
+  x-logo:
+    url: "https://raw.githubusercontent.com/interreg-simile/api/master/docs/media/logo.png"
+  description: |
+    Documentation in **OpenAPI format** of
+    [interreg SIMILE project](https://progetti.interreg-italiasvizzera.eu/it/b/78/sistemainformativoperilmonitoraggiointegratodeilaghiinsubriciedeiloroe) API.
+
+    # Introduction
+    This REST API has been developed in the context of interreg SIMILE project. Its main goals are to manage the
+    citizen-generated data regarding the quality of the insubric lakes waters as well as the communications and the events
+    released by the project partners.
+
+    This documentation aims at providing all the information needed by developers to interact with the SIMILE system.
+
+
+    # REST API
+    The SIMILE REST API allow you to integrate and perform queries to the database containing the citizen-generated
+    data and the project partners' news.
+
+    The API is based on REST principles and it supports the following *HTTP verbs*.
+    - **GET** to retrieve information.
+    - **POST** to create a new entity.
+    - **PUT** to entirely update an existing entity (if the entity does not exist a new one is created).
+    - **PATCH** to update part of an existing entity (if the entity does not exist the request fails).
+    - **DELETE** to delete an entity.
+
+
+    ## Response structure
+    Every response has the following structure:
+    ```json
+    {
+      "meta": {
+        "code": 200
+      },
+      "data": ...
+    }
+    ```
+
+    ### Meta
+    The meta key is used to communicate extra information about the response to the developer. If everything goes well
+    it will only contain a code key with value 2xx. However, if something goes wrong, the response will be something
+    like:
+    ```json
+    {
+      "meta": {
+        "code": 404,
+        "errorMessage": "Resource not found.",
+        "errorType": "NotFoundException"
+      }
+    }
+    ```
+
+    #### Possible response status codes
+    | Status code | Description            | Notes                                                                                         |
+    |:-----------:|:-----------------------|-----------------------------------------------------------------------------------------------|
+    | 200         | OK                     | The request was successful.                                                                   |
+    | 201         | Created                | A new resource has been created.                                                              |
+    | 204         | No Content             | The request does not need to return an entity-body.                                           |
+    | 400         | Bad Request            | The request could not be understood by the server due to malformed syntax.                    |
+    | 401         | Unauthorized           | The request requires user authentication.                                                     |
+    | 404         | Not Found              | The server has not found anything matching the Request-URI.                                   |
+    | 415         | Unsupported Media Type | The request entity has a media type which the server or resource does not support.            |
+    | 422         | Unprocessable Entity   | The request was well-formed but was unable to be followed due to semantic errors.             |
+    | 500         | Internal Server Error  | The server encountered an unexpected condition which prevented it from fulfilling the request.|
+
+
+    ### Data
+    The data key contains the actual response. It may be and Array or an Object, but either way here you will find the
+    data requested. Unless otherwise specified in the docs, the data will be in **JSON format**.
+
+
+    ## Response language
+    Some resources are available in mutiple languages. You can specify your preferred language or languages using the
+    ```Accept-Language``` HTTP header in the request. Using content negotiation, the server will select one of the
+    proposals and the used language will appear in the ```Content-Language``` response header.
+
+    If the server cannot serve any matching language it will use **English** as default language.
+
+    #### Examples
+    ```json
+    Accept-Language: en
+
+    Accept-Language: it,en
+    ```
+
+    #### Supported languages
+    |  Language code  |  Language |
+    |:---------------:|:---------:|
+    | en              | English   |
+    | it              | Italian   |
+
+  contact:
+    name: "Edoardo Pessina"
+    email: "interreg-simile@polimi.it"
+  license:
+    name: "GNU GPLv3"
+    url: "https://choosealicense.com/licenses/gpl-3.0/"
+
+#----------------------
+# Tags
+#----------------------
+tags:
+  - name: observation
+    x-displayName: Observations
+    description: "User generated data."
+  - name: alert
+    x-displayName: Alerts
+    description: "Alerts created by the project partners."
+  - name: observation_model
+    x-displayName: Observation model
+    description: |
+      <SchemaDefinition schemaRef="#/components/schemas/Observation" />
+  - name: alert_model
+    x-displayName: Alert model
+    description: |
+      <SchemaDefinition schemaRef="#/components/schemas/Alert" />
+
+#----------------------
+# Tags groups
+#----------------------
+x-tagGroups:
+  - name: Endpoints
+    tags:
+      - observation
+      - alert
+  - name: Models
+    tags:
+      - observation_model
+      - alert_model
+
+#----------------------
 # Endpoints
 #----------------------
-paths: {}
+paths:
+
+  /observations:
+
+    get:
+      tags:
+        - observation
+      summary: Get All
+      description: Returns all the observations.
+      operationId: get-observations
+      parameters:
+        - name: includeDeleted
+          in: query
+          description: |
+            States if the response has to include the observations with the ```markedForDeletion``` flag set to true.
+
+            Only **admin** users can set this parameter to true.
+          required: false
+          schema:
+            type: boolean
+            default: false
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Observation'
+
+#----------------------
+# Reusable components
+#----------------------
+components:
+
+  schemas:
+    Observation:
+      $ref: ./models/observation.yaml
+    Alert:
+      $ref: ./models/alert.yaml

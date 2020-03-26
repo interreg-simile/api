@@ -24,25 +24,20 @@ import { convertToGeoJsonFeature } from "./observations.service";
  */
 export const getAll = (req, res, next) => {
 
-    // Validate the request
     if (!checkValidation(req, next)) return;
 
-    // Retrieve the query parameters
     const includeDeleted   = req.query.includeDeleted || "false",
           minimalRes       = req.query.minimalRes || "false",
           excludeOutOfRois = req.query.excludeOutOfRois || "false",
           crs              = req.query.crs,
           mode             = req.query.mode;
 
-    // Set the parameters for the mongo query
     const filter = {}, projection = {}, options = {};
 
-    // Exclude the events marked for deletion
     if (includeDeleted === "false") filter.markedForDeletion = false;
 
     if (excludeOutOfRois === "true") filter["position.roi"] = { $exists: true };
 
-    // If the user wants a minimal response, keep only the required fields
     if (minimalRes === "true") {
         projection._id                     = 1;
         projection.uid                     = 1;
@@ -50,7 +45,6 @@ export const getAll = (req, res, next) => {
         projection["position.roi"]         = 1;
     }
 
-    // Find the observations
     observationService.getAll(filter, projection, options)
         .then(observations => {
 

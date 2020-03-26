@@ -7,7 +7,7 @@ app:
   lngs:
     - it
     - en
-  defaultLng: it
+  defaultLng: en
 
 crs:
   1: "+proj=longlat +datum=WGS84 +no_defs" # EPSG:4326 - WGS 84
