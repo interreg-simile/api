@@ -35,7 +35,6 @@ info:
     - **GET** to retrieve information.
     - **POST** to create a new entity.
     - **PUT** to entirely update an existing entity (if the entity does not exist a new one is created).
-    - **PATCH** to update part of an existing entity (if the entity does not exist the request fails).
     - **DELETE** to delete an entity.
 
 
@@ -83,6 +82,9 @@ info:
     data requested. Unless otherwise specified in the docs, the data will be in **JSON format**.
 
 
+    ## Code-Description properties
+    Todo...
+
     ## Response language
     Some resources are available in mutiple languages. You can specify your preferred language or languages using the
     ```Accept-Language``` HTTP header in the request. Using content negotiation, the server will select one of the
@@ -123,6 +125,9 @@ tags:
   - name: event
     x-displayName: Events
     description: "Events created by the project partners."
+  - name: roi
+    x-displayName: Regions of interest
+    description: "Regions of interest supported by the application."
   - name: misc
     x-displayName: Miscellaneous
     description: "Miscellaneous resources and methods."
@@ -138,6 +143,34 @@ tags:
     description: |
       <SchemaDefinition schemaRef="#/components/schemas/Event" />
     x-displayName: Event model
+  - name: roi_model
+    description: |
+      The system has been desiged to operate on a series of regions of interest, namely the area of the insubric lakes.
+
+      ### Enums
+
+      #### Country
+      | Code | Description |
+      |:----:|:------------|
+      | 1    | Italy       |
+      | 2    | Switzerland |
+
+      #### Area
+      | Code | Description      |
+      |:----:|:-----------------|
+      | 1    | Lombardy Region  |
+      | 2    | Piedmont Region  |
+      | 3    | Canton of Ticino |
+
+      #### Lake
+      | Code | Description   |
+      |:----:|:--------------|
+      | 1    | Lake Maggiore |
+      | 2    | Lake Como     |
+      | 3    | Lake Lugano   |
+
+      <SchemaDefinition schemaRef="#/components/schemas/Roi" />
+    x-displayName: Region of interest model
 
 #----------------------
 # Tags groups
@@ -148,12 +181,14 @@ x-tagGroups:
       - observation
       - alert
       - event
+      - roi
       - misc
   - name: Models
     tags:
       - observation_model
       - alert_model
       - event_model
+      - roi_model
 
 #----------------------
 # Endpoints
@@ -167,7 +202,7 @@ paths:
         - alert
       summary: Get All
       description: |
-        Returs all the alerts.
+        Returns all the alerts.
 
         **N.B.**  The field ```uid``` will be returned only if an admin user performs the request.
       operationId: get-alerts
@@ -324,7 +359,7 @@ paths:
         - event
       summary: Get All
       description: |
-        Returs all the events.
+        Returns all the events.
 
         **N.B.**  The field ```uid``` will be returned only if an admin user performs the request.
       operationId: get-events
@@ -502,6 +537,50 @@ paths:
                 items:
                   $ref: '#/components/schemas/Observation'
 
+  /rois:
+
+    get:
+      tags:
+        - roi
+      summary: Get All
+      description: "Returns all the regions of interest."
+      operationId: get-rois
+      parameters:
+        - name: lat
+          in: query
+          description: |
+            If you want you can specify a couple of coordinates to return the roi(s) that contiains the point with that
+            coordinates. The ```lat``` parameter is the latitude of the point. If you set a value of this parameter
+            you also have to set a value to the ```lon``` parameter.
+          required: false
+          schema:
+            type: number
+        - name: lon
+          in: query
+          description: |
+            If you want you can specify a couple of coordinates to return the roi(s) that contiains the point with that
+            coordinates. The ```lon``` parameter is the longitude of the point. If you set a value of this parameter
+            you also have to set a value to the ```lat``` parameter.
+          required: false
+          schema:
+            type: number
+        - name: includeCoords
+          in: query
+          description: States if the response must contain the ```geometry``` field.
+          required: false
+          schema:
+            type: boolean
+            default: false
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Roi'
+
   /misc/weather:
 
     get:
@@ -509,7 +588,7 @@ paths:
         - misc
       summary: Get Weather Data
       description: |
-        Return the current weather data of a specific location.
+        Returns the current weather data of a specific location.
 
         The data are taken from [OpenWeather](https://openweathermap.org/)
       operationId: get-weather
@@ -560,3 +639,5 @@ components:
       $ref: ./models/alert/alert.yaml
     Event:
       $ref: ./models/event/event.yaml
+    Roi:
+      $ref: ./models/roi.yaml

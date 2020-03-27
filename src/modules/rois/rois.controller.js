@@ -20,26 +20,21 @@ import * as roisService from "./rois.service";
  */
 export const getRois = (req, res, next) => {
 
-    // Validate the request
     if (!checkValidation(req, next)) return;
 
-    // Retrieve the query parameters
     const lat           = req.query.lat,
           lon           = req.query.lon,
           includeCoords = req.query.includeCoords || "false";
 
-    // Set the parameters for the mongo query
     const filter = {}, projection = {};
 
-    // If a point coordinates are specified, return only the rois that contains that point
     if (lat && lon)
         filter["geometry"] = { $geoIntersects: { $geometry: { type: "Point", coordinates: [lon, lat] } } };
 
-    // If the coordinates should not be included, project out the geometry field
     if (includeCoords === "false") projection.geometry = 0;
 
     roisService.getAll(filter, projection, {}, req.t)
-        .then(rois => res.status(200).json({ meta: { code: 200 }, data: { rois } }))
+        .then(rois => res.status(200).json({ meta: { code: 200 }, data: rois }))
         .catch(err => next(err))
 
 };

@@ -1,0 +1,88 @@
+type: object
+
+properties:
+
+  _id:
+    type: string
+    description: Unique identifier of the resource.
+
+  country:
+    type: object
+    required:
+      - code
+      - description
+    description: The country in which the roi falls.
+    properties:
+      code:
+        type: integer
+      description:
+        type: string
+
+  area:
+    required:
+      - code
+      - description
+    type: object
+    description: The area in which the roi falls.
+    properties:
+      code:
+        type: integer
+      description:
+        type: string
+
+  lake:
+    type: object
+    required:
+      - code
+      - description
+    description: The lake in which the roi falls.
+    properties:
+      code:
+        type: integer
+      description:
+        type: string
+
+  geometry:
+    type: object
+    required:
+      - type
+      - coordinates
+    description: |
+      The [GeoJSON](https://geojson.org/) geometry.
+    properties:
+      type:
+        type: string
+        default: Polygon
+        description: Type of the geometry. Its value is always Polygon.
+        enum:
+          - Polygon
+      coordinates:
+        type: array
+        items:
+          type: array
+          items:
+            type: array
+            minItems: 2
+            maxItems: 2
+            items:
+              type: number
+        description: The list of coordinates in format ```[ [ [lon, lat], [lon, lat], ... ] ]```.
+
+  createdAt:
+    type: string
+    format: date-time
+    description: The date of creation of the resource.
+
+  upadtedAt:
+    type: string
+    format: date-time
+    description: The date of the last update of the resource.
+
+required:
+  - _id
+  - country
+  - area
+  - lake
+  - geometry
+  - createdAt
+  - upadtedAt
