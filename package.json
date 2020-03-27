@@ -12,7 +12,9 @@
     "start": "nodemon src/app.js --exec babel-node",
     "start:prod": "npm run build:prod && npm run start:server",
     "build:prod": "babel src -s -D -d build",
-    "start:server": "node build/app.js"
+    "start:server": "node build/app.js",
+    "serve:docs": "live-server --watch=./docs/api/ --open=./docs/api/temp/",
+    "build:docs": "redoc-cli bundle ./docs/api/spec/openapi.yaml --output ./docs/api/index.html"
   },
   "repository": {
     "type": "git",
@@ -47,6 +49,7 @@
     "nodemailer-sendgrid-transport": "^0.2.0",
     "path-to-regexp": "^6.1.0",
     "proj4": "^2.6.0",
+    "redoc": "2.0.0-rc.24",
     "rotating-file-stream": "^2.0.2",
     "uuid": "^3.3.2",
     "yamljs": "^0.3.0"
@@ -60,10 +63,12 @@
     "@babel/register": "^7.7.4",
     "chai": "^4.2.0",
     "coveralls": "^3.0.9",
+    "live-server": "1.2.1",
     "lorem-ipsum": "^2.0.3",
     "mocha": "^6.2.2",
     "nodemon": "^1.19.4",
     "nyc": "^14.1.1",
+    "redoc-cli": "0.9.7",
     "sinon": "^7.5.0"
   }
 }

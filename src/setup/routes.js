@@ -11,6 +11,7 @@ import obsRouter from "../modules/observations/observations.route";
 import miscRouter from "../modules/misc/misc.route";
 
 import errorMiddleware from "../middlewares/error";
+import path from "path";
 
 
 /**
@@ -22,7 +23,10 @@ export default function (server) {
 
     console.info('SETUP - Routes...');
 
-    // Set up the routes
+    server.get(`/${version}/docs`, (req, res) => {
+        res.sendFile(path.join(__dirname, "..", "..", "docs", "api", "index.html"));
+    });
+
     server.use(`/${version}/auth`, authRouter);
     server.use(`/${version}/users`, usersRouter);
     server.use(`/${version}/rois`, roisRouter);
