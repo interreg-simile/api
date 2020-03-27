@@ -2,14 +2,6 @@ type: object
 
 properties:
 
-  _id:
-    type: string
-    description: Unique identifier of the resource.
-
-  uid:
-    type: string
-    description: Unique identifier of the user who has created the resource.
-
   title:
     type: object
     description: An object containing the title of the altert in different languages.
@@ -43,27 +35,7 @@ properties:
     description: The date from which the alert is no longer valid.
     format: date-time
 
-  markedForDeletion:
-    type: boolean
-    default: false
-    description: Flag that stated if the resource is marked for deletion.
-
-  createdAt:
-    type: string
-    format: date-time
-    description: The date of creation of the resource.
-
-  upadtedAt:
-    type: string
-    format: date-time
-    description: The date of the last update of the resource.
-
 required:
-  - _id
-  - uid
   - title
   - content
   - dateEnd
-  - markedForDeletion
-  - createdAt
-  - upadtedAt

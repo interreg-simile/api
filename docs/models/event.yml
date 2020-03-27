@@ -6,11 +6,11 @@ Event:
 
   title:
     it: string
-    en?: string
+    en: string
 
   description:
     it: string
-    en?: string
+    en: string
 
   position:
     type: "Point"

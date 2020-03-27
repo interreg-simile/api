@@ -29,8 +29,5 @@ router.delete("/:id", vPath.id, controller.markForDeletion);
 // PUT - /alerts/{alert_id}
 router.put("/:id", vPath.id, validator.alert, controller.update);
 
-// PATCH - /alerts/{alert_id}
-router.patch("/:id", vPath.id, validator.patch, controller.patch);
-
 // Export the router
 export default router;

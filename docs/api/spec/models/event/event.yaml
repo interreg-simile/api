@@ -1,0 +1,107 @@
+type: object
+
+properties:
+
+  _id:
+    type: string
+    description: Unique identifier of the resource.
+
+  uid:
+    type: string
+    description: Unique identifier of the user who has created the resource.
+
+  title:
+    type: object
+    description: An object containing the title of the event in different languages.
+    required:
+      - it
+      - en
+    properties:
+      it:
+        type: string
+        description: The title of the event in Italian.
+      en:
+        type: string
+        description: The title of the event in English.
+
+  description:
+    type: object
+    description: An object containing the description of the event in different languages.
+    required:
+      - it
+      - en
+    properties:
+      it:
+        type: string
+        description: The description of the event in Italian.
+      en:
+        type: string
+        description: The description of the event in English.
+
+  position:
+    type: object
+    required:
+      - type
+      - coordinates
+      - address
+      - city
+    description: The details about the location of the event.
+    properties:
+      type:
+        type: string
+        default: Point
+        description: Type of the geometry. Its value is always Point.
+        enum:
+          - Point
+      coordinates:
+        type: array
+        description: 'Coordinates of the event location in format [longiture, latitude].'
+        items:
+          type: number
+      address:
+        type: string
+        description: The address of the event location.
+      city:
+        type: string
+        description: The city in which the event takes place.
+
+  date:
+    type: string
+    format: date-time
+    description: The date of the event.
+  contacts:
+    type: object
+    description: Contacts of the event. At least one is mandatory.
+    properties:
+      email:
+        type: string
+        format: email
+      phone:
+        type: string
+
+  markedForDeletion:
+    type: boolean
+    default: false
+    description: Flag that stated if the resource is marked for deletion.
+
+  createdAt:
+    type: string
+    format: date-time
+    description: The date of creation of the resource.
+
+  upadtedAt:
+    type: string
+    format: date-time
+    description: The date of the last update of the resource.
+
+required:
+  - _id
+  - uid
+  - title
+  - description
+  - position
+  - date
+  - contacts
+  - markedForDeletion
+  - createdAt
+  - upadtedAt

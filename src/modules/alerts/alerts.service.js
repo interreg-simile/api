@@ -101,30 +101,6 @@ export async function update(id, data) {
 
 
 /**
- * Patch an existing alert.
- *
- * @param {string} id - The id of the alert.
- * @param {Object} data - The new data.
- * @returns {Promise<Alert>} A promise containing the patched alert.
- */
-export async function patch(id, data) {
-
-    // Find the alert
-    const alert = await Alert.findById(id);
-
-    // If no data is found, throw an error
-    if (!alert) throw constructError(404);
-
-    // Change the value of the given properties
-    for (const k of Object.keys(data)) alert[k] = data[k];
-
-    // Return the new alert
-    return await alert.save();
-
-}
-
-
-/**
  * Set an alert as marked for deletion.
  *
  * @param {string} id - The id of the alert.
