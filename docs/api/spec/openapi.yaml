@@ -123,6 +123,9 @@ tags:
   - name: event
     x-displayName: Events
     description: "Events created by the project partners."
+  - name: misc
+    x-displayName: Miscellaneous
+    description: "Miscellaneous resources and methods."
   - name: observation_model
     description: |
       <SchemaDefinition schemaRef="#/components/schemas/Observation" />
@@ -145,6 +148,7 @@ x-tagGroups:
       - observation
       - alert
       - event
+      - misc
   - name: Models
     tags:
       - observation_model
@@ -497,6 +501,52 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Observation'
+
+  /misc/weather:
+
+    get:
+      tags:
+        - misc
+      summary: Get Weather Data
+      description: |
+        Return the current weather data of a specific location.
+
+        The data are taken from [OpenWeather](https://openweathermap.org/)
+      operationId: get-weather
+      parameters:
+        - name: lat
+          in: query
+          description: "The latitude of the location."
+          required: true
+          schema:
+            type: number
+        - name: lon
+          in: query
+          description: "The longitude of the location."
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  sky:
+                    type: integer
+                    description: The numeric code corresponding to the weather condition. # ToDo enum
+                  temperature:
+                    type: number
+                    description: The temperature in °C.
+                  wind:
+                    type: number
+                    description: The wind speed in m/s.
+                required:
+                  - sky
+                  - temperature
+                  - wind
 
 #----------------------
 # Reusable components
