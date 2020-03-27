@@ -38,6 +38,10 @@ info:
     - **DELETE** to delete an entity.
 
 
+    ## Authentication
+    Todo...
+
+
     ## Response structure
     Every response has the following structure:
     ```json
@@ -81,9 +85,6 @@ info:
     The data key contains the actual response. It may be and Array or an Object, but either way here you will find the
     data requested. Unless otherwise specified in the docs, the data will be in **JSON format**.
 
-
-    ## Code-Description properties
-    Todo...
 
     ## Response language
     Some resources are available in mutiple languages. You can specify your preferred language or languages using the
@@ -133,6 +134,180 @@ tags:
     description: "Miscellaneous resources and methods."
   - name: observation_model
     description: |
+      The data gathered by the citizens are called *observations*.
+
+      ## Enums
+
+      ### position
+
+      #### crs
+      | Code | Description           |
+      |:----:|:----------------------|
+      | 1    | WGS 84                |
+      | 2    | WGS 84 / UTM zone 32N |
+      | 3    | CH1903+ / LV95        |
+
+      ### weather
+
+      #### sky
+      | Code | Description |
+      |:----:|:------------|
+      | 1    | Clear sky   |
+      | 2    | Few clouds  |
+      | 3    | Cloudy      |
+      | 4    | Rain        |
+      | 5    | Snow        |
+      | 6    | Fog         |
+
+      ### details
+
+      #### algae
+
+      ##### extension
+      | Code | Description  |
+      |:----:|:-------------|
+      | 1    | < 5 sq. m    |
+      | 2    | 5 - 20 sq. m |
+      | 3    | > 20 sq. m   |
+
+      ##### look
+      | Code | Description     |
+      |:----:|:----------------|
+      | 1    | Scattered       |
+      | 2    | Compact         |
+      | 3    | Grouped         |
+      | 4    | Surface stripes |
+
+      ##### colour
+      | Code | Description |
+      |:----:|:------------|
+      | 1    | Red         |
+      | 2    | Blu         |
+      | 3    | Green       |
+      | 4    | Grey        |
+      | 5    | Brown       |
+
+      #### foams
+
+      ##### extension
+      | Code | Description  |
+      |:----:|:-------------|
+      | 1    | < 5 sq. m    |
+      | 2    | 5 - 20 sq. m |
+      | 3    | > 20 sq. m   |
+
+      ##### look
+      | Code | Description     |
+      |:----:|:----------------|
+      | 1    | Scattered       |
+      | 2    | Compact         |
+      | 3    | Linear          |
+
+      ##### height
+      | Code | Description |
+      |:----:|:------------|
+      | 1    | < 3 cm      |
+      | 2    | 3 - 20 cm   |
+      | 3    | > 20 cm     |
+
+      #### oils
+
+      ##### extension
+      | Code | Description  |
+      |:----:|:-------------|
+      | 1    | < 5 sq. m    |
+      | 2    | 5 - 20 sq. m |
+      | 3    | > 20 sq. m   |
+
+      ##### type
+      | Code | Description |
+      |:----:|:------------|
+      | 1    | On surface  |
+      | 2    | In depth    |
+
+      #### litters
+
+      ##### quantity
+      | Code | Description |
+      |:----:|:------------|
+      | 1    | 1           |
+      | 2    | 2 - 20      |
+      | 3    | > 20        |
+
+      ##### type
+      | Code | Description               |
+      |:----:|:--------------------------|
+      | 1    | Plastic                   |
+      | 2    | Glass / Ceramic           |
+      | 3    | Metal                     |
+      | 4    | Paper / Cardboard         |
+      | 5    | Textiles                  |
+      | 6    | Rubber                    |
+      | 7    | Treated wood              |
+      | 8    | Bricks                    |
+      | 9    | Vegetal debris            |
+      | 10   | Decaying organic material |
+
+      #### odourds
+
+      ##### intensity
+      | Code | Description |
+      |:----:|:------------|
+      | 1    | Slight      |
+      | 2    | Medium      |
+      | 3    | Strong      |
+
+      ##### type
+      | Code | Description       |
+      |:----:|:------------------|
+      | 1    | Fish              |
+      | 2    | Mold              |
+      | 3    | Hydrocarbon       |
+      | 4    | Solvent           |
+      | 5    | Sewer             |
+      | 6    | Decaying material |
+
+      #### outlets
+
+      ##### terminal
+      | Code | Description |
+      |:----:|:------------|
+      | 1    | Visible     |
+      | 2    | Submerged   |
+
+      ##### colour
+      | Code | Description |
+      |:----:|:------------|
+      | 1    | Red         |
+      | 2    | Blu         |
+      | 3    | Green       |
+      | 4    | Grey        |
+      | 5    | Brown       |
+      | 6    | Yellow      |
+      | 7    | White       |
+
+      #### fauna.*.alien.species
+      | Fauna type  | Code | Description          |
+      |:------------|:----:|:---------------------|
+      | fish        | 1    | Stone moroko         |
+      | birds       | 1    | Egyptian goose       |
+      | birds       | 2    | African sacred ibis  |
+      | molluscs    | 1    | Corbicula fluminea   |
+      | molluscs    | 2    | Dreissena polymorpha |
+      | molluscs    | 3    | Sinanodonta woodiana |
+      | crustaceans | 1    | Spinycheek crayfish  |
+      | crustaceans | 2    | Signal crayfish      |
+      | crustaceans | 3    | Louisiana crayfish   |
+      | turtles     | 1    | Pond slider          |
+
+      ### measures.*.instrument.type
+      | Code | Description  |
+      |:----:|:-------------|
+      | 1    | Professional |
+      | 2    | Artisanal    |
+
+
+      ## Schema
       <SchemaDefinition schemaRef="#/components/schemas/Observation" />
     x-displayName: Observation
   - name: alert_model
@@ -147,28 +322,29 @@ tags:
     description: |
       The system has been desiged to operate on a series of regions of interest, namely the area of the insubric lakes.
 
-      ### Enums
+      ## Enums
 
-      #### Country
+      ### country
       | Code | Description |
       |:----:|:------------|
       | 1    | Italy       |
       | 2    | Switzerland |
 
-      #### Area
+      ### area
       | Code | Description      |
       |:----:|:-----------------|
       | 1    | Lombardy Region  |
       | 2    | Piedmont Region  |
       | 3    | Canton of Ticino |
 
-      #### Lake
+      ### lake
       | Code | Description   |
       |:----:|:--------------|
       | 1    | Lake Maggiore |
       | 2    | Lake Como     |
       | 3    | Lake Lugano   |
 
+      ## Schema
       <SchemaDefinition schemaRef="#/components/schemas/Roi" />
     x-displayName: Region of interest
 
@@ -762,7 +938,7 @@ paths:
                 properties:
                   sky:
                     type: integer
-                    description: The numeric code corresponding to the weather condition. # ToDo enum
+                    description: The numeric code corresponding to the weather condition (see enum in Observation model).
                   temperature:
                     type: number
                     description: The temperature in °C.
