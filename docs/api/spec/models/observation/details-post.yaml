@@ -1,0 +1,499 @@
+type: object
+
+description: Observation details.
+
+properties:
+
+  algae:
+    type: object
+    description: Details about algae presence.
+    properties:
+      checked:
+        type: boolean
+        description: Flag that states if the phenomenon is present.
+      extension:
+        type: object
+        description: Extension of the algae mass.
+        properties:
+          code:
+            type: integer
+          description:
+            type: string
+        required:
+          - code
+          - description
+      look:
+        type: object
+        description: Look of the algae mass.
+        properties:
+          code:
+            type: integer
+          description:
+            type: string
+        required:
+          - code
+          - description
+      colour:
+        type: object
+        description: Colour of the algae mass.
+        properties:
+          code:
+            type: integer
+          description:
+            type: string
+        required:
+          - code
+          - description
+      iridescent:
+        type: boolean
+        description: Flag that states if the algae mass is iridescent.
+    required:
+      - checked
+
+  foams:
+    type: object
+    description: Details about foams presence.
+    properties:
+      checked:
+        type: boolean
+        description: Flag that states if the phenomenon is present.
+      look:
+        type: object
+        description: Look of the foam.
+        properties:
+          code:
+            type: integer
+          description:
+            type: string
+        required:
+          - code
+          - description
+      extension:
+        type: object
+        description: Extension of the foam.
+        properties:
+          code:
+            type: integer
+          description:
+            type: string
+        required:
+          - code
+          - description
+      height:
+        type: object
+        description: Height of the foam.
+        properties:
+          code:
+            type: integer
+          description:
+            type: string
+        required:
+          - code
+          - description
+    required:
+      - checked
+
+  oils:
+    type: object
+    description: Details about spilled oils presence.
+    properties:
+      checked:
+        type: boolean
+        description: Flag that states if the phenomenon is present.
+      type:
+        type: object
+        description: Type of the spilled oil.
+        properties:
+          code:
+            type: integer
+          description:
+            type: string
+        required:
+          - code
+          - description
+      extension:
+        type: object
+        description: Extension of the spilled oil.
+        properties:
+          code:
+            type: integer
+          description:
+            type: string
+        required:
+          - code
+          - description
+    required:
+      - checked
+
+  litters:
+    type: object
+    description: Details about litters presence.
+    properties:
+      checked:
+        type: boolean
+        description: Flag that states if the phenomenon is present.
+      quantity:
+        type: object
+        description: Quantity of litter.
+        properties:
+          code:
+            type: number
+          description:
+            type: string
+        required:
+          - code
+          - description
+      type:
+        type: array
+        description: Type(s) of litter.
+        items:
+          type: object
+          properties:
+            code:
+              type: number
+            description:
+              type: string
+          required:
+            - code
+            - description
+    required:
+      - checked
+
+  odours:
+    type: object
+    description: Details about odours presence.
+    properties:
+      checked:
+        type: boolean
+        description: Flag that states if the phenomenon is present.
+      origin:
+        type: array
+        description: Origin(s) of the odour.
+        items:
+          type: object
+          properties:
+            code:
+              type: number
+            description:
+              type: string
+          required:
+            - code
+            - description
+      intensity:
+        type: object
+        description: Intensity of the odour.
+        properties:
+          code:
+            type: number
+          description:
+            type: string
+        required:
+          - code
+          - description
+    required:
+      - checked
+
+  outlets:
+    type: object
+    description: Details about outlets presence.
+    properties:
+      checked:
+        type: boolean
+        description: Flag that states if the phenomenon is present.
+      inPlace:
+        type: boolean
+        description: Flag that states if the outlet is in place.
+      terminal:
+        type: object
+        description: Type of the outlet terminal.
+        properties:
+          code:
+            type: number
+          description:
+            type: string
+        required:
+          - code
+          - description
+      colour:
+        type: object
+        description: Colour of the outlet.
+        properties:
+          code:
+            type: number
+          description:
+            type: string
+        required:
+          - code
+          - description
+      vapour:
+        type: boolean
+        description: Flag that states if there is vapour coming from the outlet.
+      signage:
+        type: boolean
+        description: Flag that states if there is a signage accompanying the outlet.
+      signagePhoto:
+        type: string
+        description: Url of the photo of the signage accompanying the outlet.
+      prodActNearby:
+        type: boolean
+        description: Flag that states if there are product activities nearby the outlet.
+      prodActNearbyDetails:
+        type: string
+        description: Datils about any product ativity nearby the outlet.
+    required:
+      - checked
+
+  fauna:
+    type: object
+    description: Details about fauna presence.
+    properties:
+      checked:
+        type: boolean
+        description: Flag that states if the phenomenon is present.
+      fish:
+        type: object
+        description: Details about the presence of fish.
+        properties:
+          checked:
+            type: boolean
+            description: Flag that states if there are fish in the area.
+          number:
+            type: integer
+            description: Number of fish in the area.
+          deceased:
+            type: boolean
+            description: Flag that states if there are deceased fish in the area.
+          abnormal:
+            description: Details about fish with abnormal behaviour.
+            type: object
+            properties:
+              checked:
+                type: boolean
+                description: Flag that states if there are fish with abnormal behaviours.
+              details:
+                type: string
+                description: Details about the abnormal behaviours.
+            required:
+              - checked
+          alien:
+            type: object
+            description: Detail about the presence of alien species.
+            properties:
+              checked:
+                type: boolean
+                description: Flag that states if there is presence of alien species.
+              species:
+                type: array
+                description: List of alien species.
+                items:
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                    description:
+                      type: string
+                  required:
+                    - code
+                    - description
+            required:
+              - checked
+        required:
+          - checked
+      birds:
+        type: object
+        description: Details about the presence of birds.
+        properties:
+          checked:
+            type: boolean
+            description: Flag that states if there are birds in the area.
+          number:
+            type: integer
+            description: Number of birds in the area.
+          deceased:
+            type: boolean
+            description: Flag that states if there are deceased birds in the area.
+          abnormal:
+            description: Details about birds with abnormal behaviour.
+            type: object
+            properties:
+              checked:
+                type: boolean
+                description: Flag that states if there are birds with abnormal behaviours.
+              details:
+                type: string
+                description: Details about the abnormal behaviours.
+            required:
+              - checked
+          alien:
+            type: object
+            description: Detail about the presence of alien species.
+            properties:
+              checked:
+                type: boolean
+                description: Flag that states if there is presence of alien species.
+              species:
+                type: array
+                description: List of alien species.
+                items:
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                    description:
+                      type: string
+                  required:
+                    - code
+                    - description
+            required:
+              - checked
+        required:
+          - checked
+      molluscs:
+        type: object
+        description: Details about the presence of molluscs.
+        properties:
+          checked:
+            type: boolean
+            description: Flag that states if there are molluscs in the area.
+          number:
+            type: integer
+            description: Number of molluscs in the area.
+          deceased:
+            type: boolean
+            description: Flag that states if there are deceased molluscs in the area.
+          abnormal:
+            description: Details about molluscs with abnormal behaviour.
+            type: object
+            properties:
+              checked:
+                type: boolean
+                description: Flag that states if there are molluscs with abnormal behaviours.
+              details:
+                type: string
+                description: Details about the abnormal behaviours.
+            required:
+              - checked
+          alien:
+            type: object
+            description: Detail about the presence of alien species.
+            properties:
+              checked:
+                type: boolean
+                description: Flag that states if there is presence of alien species.
+              species:
+                type: array
+                description: List of alien species.
+                items:
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                    description:
+                      type: string
+                  required:
+                    - code
+                    - description
+            required:
+              - checked
+        required:
+          - checked
+      crustaceans:
+        type: object
+        description: Details about the presence of crustaceans.
+        properties:
+          checked:
+            type: boolean
+            description: Flag that states if there are crustaceans in the area.
+          number:
+            type: integer
+            description: Number of crustaceans in the area.
+          deceased:
+            type: boolean
+            description: Flag that states if there are deceased crustaceans in the area.
+          abnormal:
+            description: Details about crustaceans with abnormal behaviour.
+            type: object
+            properties:
+              checked:
+                type: boolean
+                description: Flag that states if there are crustaceans with abnormal behaviours.
+              details:
+                type: string
+                description: Details about the abnormal behaviours.
+            required:
+              - checked
+          alien:
+            type: object
+            description: Detail about the presence of alien species.
+            properties:
+              checked:
+                type: boolean
+                description: Flag that states if there is presence of alien species.
+              species:
+                type: array
+                description: List of alien species.
+                items:
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                    description:
+                      type: string
+                  required:
+                    - code
+                    - description
+            required:
+              - checked
+        required:
+          - checked
+      turtles:
+        type: object
+        description: Details about the presence of turtles.
+        properties:
+          checked:
+            type: boolean
+            description: Flag that states if there are turtles in the area.
+          number:
+            type: integer
+            description: Number of turtles in the area.
+          deceased:
+            type: boolean
+            description: Flag that states if there are deceased turtles in the area.
+          abnormal:
+            description: Details about turtles with abnormal behaviour.
+            type: object
+            properties:
+              checked:
+                type: boolean
+                description: Flag that states if there are turtles with abnormal behaviours.
+              details:
+                type: string
+                description: Details about the abnormal behaviours.
+            required:
+              - checked
+          alien:
+            type: object
+            description: Detail about the presence of alien species.
+            properties:
+              checked:
+                type: boolean
+                description: Flag that states if there is presence of alien species.
+              species:
+                type: array
+                description: List of alien species.
+                items:
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                    description:
+                      type: string
+                  required:
+                    - code
+                    - description
+            required:
+              - checked
+        required:
+          - checked
+    required:
+      - checked

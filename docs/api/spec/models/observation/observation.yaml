@@ -1,0 +1,109 @@
+type: object
+
+properties:
+
+  _id:
+    type: string
+    description: Unique identifier of the resource.
+
+  photos:
+    type: array
+    description: URL of the photos related to the observation (max 3).
+    items:
+      type: string
+
+  position:
+    type: object
+    description: Information about the position of the observation.
+    required:
+      - type
+      - coordinates
+      - crs
+    properties:
+      type:
+        type: string
+        default: Point
+        description: Type of the geometry. Its value is always Point.
+        enum:
+          - Point
+      coordinates:
+        type: array
+        description: Coordinates of the event location in format [longitude, latitude].
+        minItems: 2
+        maxItems: 2
+        items:
+          type: number
+      crs:
+        type: object
+        description: Coordinate reference system of the observation coordinates.
+        required:
+          - code
+          - description
+        properties:
+          code:
+            type: number
+          description:
+            type: string
+      accuracy:
+        type: number
+        description: Accuracy of the position (in m).
+      roi:
+        type: string
+        description: Id of the region of interest in which the observation falls.
+
+  weather:
+    type: object
+    description: Weather data of the observation time and location.
+    required:
+      - sky
+    properties:
+      temperature:
+        type: number
+        description: Temperature in °C.
+      sky:
+        type: object
+        description: Sky conditions.
+        required:
+          - code
+          - description
+        properties:
+          code:
+            type: number
+          description:
+            type: string
+      wind:
+        type: number
+        description: Wind speed in m/s.
+
+  details:
+    $ref: ./details.yaml
+
+  measures:
+    $ref: ./measures.yaml
+
+  other:
+    type: string
+    description: Other specifications.
+
+  markedForDeletion:
+    type: boolean
+    default: false
+    description: Flag that stated if the resource is marked for deletion.
+
+  createdAt:
+    type: string
+    format: date-time
+    description: Date of creation of the resource.
+
+  updatedAt:
+    type: string
+    format: date-time
+    description: Date of the last update of the resource.
+
+required:
+  - _id
+  - position
+  - weather
+  - markedForDeletion
+  - createdAt
+  - updatedAt

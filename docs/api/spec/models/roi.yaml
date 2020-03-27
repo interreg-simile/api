@@ -11,7 +11,7 @@ properties:
     required:
       - code
       - description
-    description: The country in which the roi falls.
+    description: Country in which the roi falls.
     properties:
       code:
         type: integer
@@ -23,7 +23,7 @@ properties:
       - code
       - description
     type: object
-    description: The area in which the roi falls.
+    description: Area in which the roi falls.
     properties:
       code:
         type: integer
@@ -35,7 +35,7 @@ properties:
     required:
       - code
       - description
-    description: The lake in which the roi falls.
+    description: Lake in which the roi falls.
     properties:
       code:
         type: integer
@@ -48,7 +48,7 @@ properties:
       - type
       - coordinates
     description: |
-      The [GeoJSON](https://geojson.org/) geometry.
+      [GeoJSON](https://geojson.org/) geometry.
     properties:
       type:
         type: string
@@ -66,17 +66,17 @@ properties:
             maxItems: 2
             items:
               type: number
-        description: The list of coordinates in format ```[ [ [lon, lat], [lon, lat], ... ] ]```.
+        description: List of coordinates in format ```[ [ [lon, lat], [lon, lat], ... ] ]```.
 
   createdAt:
     type: string
     format: date-time
-    description: The date of creation of the resource.
+    description: Date of creation of the resource.
 
-  upadtedAt:
+  updatedAt:
     type: string
     format: date-time
-    description: The date of the last update of the resource.
+    description: Date of the last update of the resource.
 
 required:
   - _id
@@ -85,4 +85,4 @@ required:
   - lake
   - geometry
   - createdAt
-  - upadtedAt
+  - updatedAt

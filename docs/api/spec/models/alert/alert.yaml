@@ -19,28 +19,28 @@ properties:
     properties:
       it:
         type: string
-        description: The title of the alert in Italian.
+        description: Title of the alert in Italian.
       en:
         type: string
-        description: The title of the alert in English.
+        description: Title of the alert in English.
 
   content:
     type: object
-    description: An object containing the content of the alert in different languages.
+    description: Object containing the content of the alert in different languages.
     required:
       - it
       - en
     properties:
       it:
         type: string
-        description: The content of the alert in Italian.
+        description: Content of the alert in Italian.
       en:
         type: string
-        description: The content of the alert in English.
+        description: Content of the alert in English.
 
   dateEnd:
     type: string
-    description: The date from which the alert is no longer valid.
+    description: Date from which the alert is no longer valid.
     format: date-time
 
   markedForDeletion:
@@ -51,12 +51,12 @@ properties:
   createdAt:
     type: string
     format: date-time
-    description: The date of creation of the resource.
+    description: Date of creation of the resource.
 
-  upadtedAt:
+  updatedAt:
     type: string
     format: date-time
-    description: The date of the last update of the resource.
+    description: Date of the last update of the resource.
 
 required:
   - _id
@@ -66,4 +66,4 @@ required:
   - dateEnd
   - markedForDeletion
   - createdAt
-  - upadtedAt
+  - updatedAt

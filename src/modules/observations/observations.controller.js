@@ -40,7 +40,6 @@ export const getAll = (req, res, next) => {
 
     if (minimalRes === "true") {
         projection._id                     = 1;
-        projection.uid                     = 1;
         projection["position.coordinates"] = 1;
         projection["position.roi"]         = 1;
     }

@@ -12,31 +12,31 @@ properties:
 
   title:
     type: object
-    description: An object containing the title of the event in different languages.
+    description: Oobject containing the title of the event in different languages.
     required:
       - it
       - en
     properties:
       it:
         type: string
-        description: The title of the event in Italian.
+        description: Title of the event in Italian.
       en:
         type: string
-        description: The title of the event in English.
+        description: Title of the event in English.
 
   description:
     type: object
-    description: An object containing the description of the event in different languages.
+    description: Object containing the description of the event in different languages.
     required:
       - it
       - en
     properties:
       it:
         type: string
-        description: The description of the event in Italian.
+        description: Description of the event in Italian.
       en:
         type: string
-        description: The description of the event in English.
+        description: Description of the event in English.
 
   position:
     type: object
@@ -45,7 +45,7 @@ properties:
       - coordinates
       - address
       - city
-    description: The details about the location of the event.
+    description: Details about the location of the event.
     properties:
       type:
         type: string
@@ -55,20 +55,23 @@ properties:
           - Point
       coordinates:
         type: array
-        description: 'Coordinates of the event location in format [longitude, latitude].'
+        minItems: 2
+        maxItems: 2
+        description: Coordinates of the event location in format [longitude, latitude].
         items:
           type: number
       address:
         type: string
-        description: The address of the event location.
+        description: Address of the event location.
       city:
         type: string
-        description: The city in which the event takes place.
+        description: City in which the event takes place.
 
   date:
     type: string
     format: date-time
-    description: The date of the event.
+    description: Date of the event.
+
   contacts:
     type: object
     description: Contacts of the event. At least one is mandatory.
@@ -87,12 +90,12 @@ properties:
   createdAt:
     type: string
     format: date-time
-    description: The date of creation of the resource.
+    description: Date of creation of the resource.
 
-  upadtedAt:
+  updatedAt:
     type: string
     format: date-time
-    description: The date of the last update of the resource.
+    description: Date of the last update of the resource.
 
 required:
   - _id
@@ -104,4 +107,4 @@ required:
   - contacts
   - markedForDeletion
   - createdAt
-  - upadtedAt
+  - updatedAt

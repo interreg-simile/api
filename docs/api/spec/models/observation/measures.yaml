@@ -1,0 +1,200 @@
+type: object
+
+description: Scientific measures linked to the observation.
+
+properties:
+
+  transparency:
+    type: object
+    description: A transparency measure.
+    properties:
+      val:
+        type: number
+        description: Value of the measure (m).
+      instrument:
+        type: object
+        description: Instrument used to perform the measure.
+        required:
+          - type
+        properties:
+          type:
+            type: object
+            description: Type of instrument.
+            required:
+              - code
+              - description
+            properties:
+              code:
+                type: number
+              description:
+                type: string
+          precision:
+            type: number
+            description: Instrument precision (m).
+          details:
+            type: string
+            description: Instrument details.
+    required:
+      - val
+      - instrument
+
+  temperature:
+    type: object
+    description: A temperature measure.
+    properties:
+      multiple:
+        type: boolean
+        description: Flag that states if the measure is conducted at multiple depths.
+      val:
+        type: array
+        description: Value(s) of the measure.
+        items:
+          type: object
+          properties:
+            depth:
+              type: number
+              description: Depth at which the measure has been taken (m).
+            val:
+              type: number
+              description: Value of the measure (°C).
+          required:
+            - depth
+            - val
+      instrument:
+        type: object
+        description: Instrument used to perform the measure.
+        properties:
+          type:
+            type: object
+            description: Type of instrument.
+            required:
+              - code
+              - description
+            properties:
+              code:
+                type: number
+              description:
+                type: string
+          precision:
+            type: number
+            description: Instrument precision (°C).
+          details:
+            type: string
+            description: Instrument details.
+        required:
+          - type
+
+  ph:
+    type: object
+    description: A pH measure.
+    properties:
+      multiple:
+        type: boolean
+        description: Flag that states if the measure is conducted at multiple depths.
+      val:
+        type: array
+        description: Value(s) of the measure.
+        items:
+          type: object
+          properties:
+            depth:
+              type: number
+              description: Depth at which the measure has been taken.
+            val:
+              type: number
+              description: Value of the measure.
+          required:
+            - depth
+            - val
+      instrument:
+        type: object
+        description: Instrument used to perform the measure.
+        required:
+          - type
+        properties:
+          type:
+            type: object
+            description: Type of instrument.
+            required:
+              - code
+              - description
+            properties:
+              code:
+                type: number
+              description:
+                type: string
+          precision:
+            type: number
+            description: Instrument precision.
+          details:
+            type: string
+            description: Instrument details.
+    required:
+      - multiple
+      - val
+      - instrument
+
+  oxygen:
+    type: object
+    description: An oxygen concentration measure.
+    properties:
+      multiple:
+        type: boolean
+        description: Flag that states if the measure is conducted at multiple depths.
+      percentage:
+        type: boolean
+        description: Flag that states if the concentration is in form of percentage or mg/l.
+      val:
+        type: array
+        description: Value(s) of the measure.
+        items:
+          type: object
+          properties:
+            depth:
+              type: number
+              description: Depth at which the measure has been taken (m).
+            val:
+              type: number
+              description: 'Value of the measure (% or mg/l).'
+          required:
+            - depth
+            - val
+      instrument:
+        type: object
+        description: Instrument used to perform the measure.
+        required:
+          - type
+        properties:
+          type:
+            type: object
+            description: Type of instrument.
+            required:
+              - code
+              - description
+            properties:
+              code:
+                type: number
+              description:
+                type: string
+          precision:
+            type: number
+            description: 'Instrument precision (% or mg/l).'
+          details:
+            type: string
+            description: Instrument details.
+    required:
+      - multiple
+      - percentage
+      - val
+      - instrument
+
+  bacteria:
+    description: A becteria measure.
+    type: object
+    properties:
+      escherichiaColi:
+        type: number
+        description: Escherichia Coli presence (UFC/100ml).
+      enterococci:
+        type: number
+        description: Enterococci presence (UFC/100ml).

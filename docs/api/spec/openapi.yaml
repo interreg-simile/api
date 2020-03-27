@@ -134,15 +134,15 @@ tags:
   - name: observation_model
     description: |
       <SchemaDefinition schemaRef="#/components/schemas/Observation" />
-    x-displayName: Observation model
+    x-displayName: Observation
   - name: alert_model
     description: |
       <SchemaDefinition schemaRef="#/components/schemas/Alert" />
-    x-displayName: Alert model
+    x-displayName: Alert
   - name: event_model
     description: |
       <SchemaDefinition schemaRef="#/components/schemas/Event" />
-    x-displayName: Event model
+    x-displayName: Event
   - name: roi_model
     description: |
       The system has been desiged to operate on a series of regions of interest, namely the area of the insubric lakes.
@@ -170,7 +170,7 @@ tags:
       | 3    | Lake Lugano   |
 
       <SchemaDefinition schemaRef="#/components/schemas/Roi" />
-    x-displayName: Region of interest model
+    x-displayName: Region of interest
 
 #----------------------
 # Tags groups
@@ -527,6 +527,69 @@ paths:
           schema:
             type: boolean
             default: false
+        - name: excludeOutOfRois
+          in: query
+          description: States if the response has to exclude the observations outside of the regions of interest.
+          required: false
+          schema:
+            type: boolean
+            default: false
+        - name: crs
+          in: query
+          description: |
+            Desired coordinate reference system of the observations position. For the possible values see the
+            corresponding enumeration in the model section.
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: minimalRes
+          in: query
+          description: |
+            States if the response has to contain only the essential data of the observations:
+            ```json
+            [
+              {
+                "_id": "string",
+                "position": {
+                  "coordinates": [0, 0],
+                  "roi": "string"
+                }
+              },
+              ...
+            ]
+            ```
+          required: false
+          schema:
+            type: boolean
+            default: false
+        - name: mode
+          in: query
+          description: |
+            States if the response has to follow the [GeoJSON](https://geojson.org/) specification:
+            ```json
+            {
+              "type": "FeatureCollection",
+              "features": [
+                {
+                  "type"      : "Feature",
+                  "geometry"  : {
+                    "type"       : "Point",
+                    "coordinates": [0, 0]
+                  },
+                  "properties": { ... }
+                },
+                ...
+              ]
+            }
+            ```
+          required: false
+          schema:
+            type: string
+            enum:
+              - json
+              - geojson
+            default: json
       responses:
         '200':
           description: OK
@@ -536,6 +599,90 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Observation'
+
+    post:
+      tags:
+        - observation
+      summary: Create One
+      description: Creates a new observation.
+      operationId: post-observation
+      parameters:
+        - name: minimalRes
+          in: query
+          description: |
+            States if the response has to contain only the essential data of the observations:
+            ```json
+            {
+              "_id": "string",
+              "position": {
+                "coordinates": [0, 0],
+                "roi": "string"
+              }
+            }
+            ```
+          required: false
+          schema:
+            type: boolean
+            default: false
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: ./models/observation/observation-post.yaml
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Observation'
+
+  /observations/{id}:
+
+    get:
+      tags:
+        - observation
+      summary: Get by Id
+      description: Returns the observation with the given id.
+      operationId: get-observation
+      parameters:
+        - name: crs
+          in: query
+          description: |
+            Desired coordinate reference system of the observation position. For the possible values see the
+            corresponding enumeration in the model section.
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: mode
+          in: query
+          description: |
+            States if the response has to follow the [GeoJSON](https://geojson.org/) specification:
+            ```json
+            {
+              "type"      : "Feature",
+              "geometry"  : {
+                "type"       : "Point",
+                "coordinates": [0, 0]
+              },
+              "properties": { ... }
+            }
+            ```
+          required: false
+          schema:
+            type: string
+            enum:
+              - json
+              - geojson
+            default: json
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Observation'
 
   /rois:
 
@@ -634,7 +781,7 @@ components:
 
   schemas:
     Observation:
-      $ref: ./models/observation.yaml
+      $ref: ./models/observation/observation.yaml
     Alert:
       $ref: ./models/alert/alert.yaml
     Event:

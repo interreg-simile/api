@@ -1,0 +1,71 @@
+type: object
+
+properties:
+
+  photos:
+    description: Up to three photos related to the observation.
+    type: array
+    maxItems: 3
+    items:
+      type: string
+      format: binary
+
+  position:
+    type: object
+    description: Information about the position of the observation.
+    required:
+      - coordinates
+    properties:
+      coordinates:
+        type: array
+        description: Coordinates of the event location in format [longitude, latitude].
+        minItems: 2
+        maxItems: 2
+        items:
+          type: number
+      accuracy:
+        type: number
+        description: Accuracy of the position (in m).
+      roi:
+        type: string
+        description: Id of the region of interest in which the observation falls.
+
+  weather:
+    type: object
+    description: Weather data of the observation time and location.
+    required:
+      - sky
+    properties:
+      temperature:
+        type: number
+        description: Temperature in °C.
+      sky:
+        type: object
+        description: Sky conditions.
+        required:
+          - code
+        properties:
+          code:
+            type: number
+      wind:
+        type: number
+        description: Wind speed in m/s.
+
+  details:
+    $ref: ./details-post.yaml
+
+  signage:
+    description: Photo of the outlet signage.
+    type: string
+    format: binary
+
+  measures:
+    $ref: ./measures-post.yaml
+
+  other:
+    type: string
+    description: Other specifications.
+
+required:
+  - position
+  - weather
