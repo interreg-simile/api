@@ -22,12 +22,9 @@ properties:
             description: Type of instrument.
             required:
               - code
-              - description
             properties:
               code:
                 type: number
-              description:
-                type: string
           precision:
             type: number
             description: Instrument precision (m).
@@ -69,12 +66,9 @@ properties:
             description: Type of instrument.
             required:
               - code
-              - description
             properties:
               code:
                 type: number
-              description:
-                type: string
           precision:
             type: number
             description: Instrument precision (°C).
@@ -117,12 +111,9 @@ properties:
             description: Type of instrument.
             required:
               - code
-              - description
             properties:
               code:
                 type: number
-              description:
-                type: string
           precision:
             type: number
             description: Instrument precision.
@@ -155,7 +146,7 @@ properties:
               description: Depth at which the measure has been taken (m).
             val:
               type: number
-              description: 'Value of the measure (% or mg/l).'
+              description: Value of the measure (% or mg/l).
           required:
             - depth
             - val
@@ -170,15 +161,12 @@ properties:
             description: Type of instrument.
             required:
               - code
-              - description
             properties:
               code:
                 type: number
-              description:
-                type: string
           precision:
             type: number
-            description: 'Instrument precision (% or mg/l).'
+            description: Instrument precision (% or mg/l).
           details:
             type: string
             description: Instrument details.

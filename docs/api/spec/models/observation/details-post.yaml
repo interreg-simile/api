@@ -8,6 +8,7 @@ properties:
     type: object
     description: Details about algae presence.
     properties:
+
       checked:
         type: boolean
         description: Flag that states if the phenomenon is present.
@@ -17,33 +18,24 @@ properties:
         properties:
           code:
             type: integer
-          description:
-            type: string
         required:
           - code
-          - description
       look:
         type: object
         description: Look of the algae mass.
         properties:
           code:
             type: integer
-          description:
-            type: string
         required:
           - code
-          - description
       colour:
         type: object
         description: Colour of the algae mass.
         properties:
           code:
             type: integer
-          description:
-            type: string
         required:
           - code
-          - description
       iridescent:
         type: boolean
         description: Flag that states if the algae mass is iridescent.
@@ -63,33 +55,24 @@ properties:
         properties:
           code:
             type: integer
-          description:
-            type: string
         required:
           - code
-          - description
       extension:
         type: object
         description: Extension of the foam.
         properties:
           code:
             type: integer
-          description:
-            type: string
         required:
           - code
-          - description
       height:
         type: object
         description: Height of the foam.
         properties:
           code:
             type: integer
-          description:
-            type: string
         required:
           - code
-          - description
     required:
       - checked
 
@@ -106,22 +89,16 @@ properties:
         properties:
           code:
             type: integer
-          description:
-            type: string
         required:
           - code
-          - description
       extension:
         type: object
         description: Extension of the spilled oil.
         properties:
           code:
             type: integer
-          description:
-            type: string
         required:
           - code
-          - description
     required:
       - checked
 
@@ -138,11 +115,8 @@ properties:
         properties:
           code:
             type: number
-          description:
-            type: string
         required:
           - code
-          - description
       type:
         type: array
         description: Type(s) of litter.
@@ -151,11 +125,8 @@ properties:
           properties:
             code:
               type: number
-            description:
-              type: string
           required:
             - code
-            - description
     required:
       - checked
 
@@ -174,22 +145,16 @@ properties:
           properties:
             code:
               type: number
-            description:
-              type: string
           required:
             - code
-            - description
       intensity:
         type: object
         description: Intensity of the odour.
         properties:
           code:
             type: number
-          description:
-            type: string
         required:
           - code
-          - description
     required:
       - checked
 
@@ -209,31 +174,22 @@ properties:
         properties:
           code:
             type: number
-          description:
-            type: string
         required:
           - code
-          - description
       colour:
         type: object
         description: Colour of the outlet.
         properties:
           code:
             type: number
-          description:
-            type: string
         required:
           - code
-          - description
       vapour:
         type: boolean
         description: Flag that states if there is vapour coming from the outlet.
       signage:
         type: boolean
         description: Flag that states if there is a signage accompanying the outlet.
-      signagePhoto:
-        type: string
-        description: Url of the photo of the signage accompanying the outlet.
       prodActNearby:
         type: boolean
         description: Flag that states if there are product activities nearby the outlet.
@@ -290,11 +246,8 @@ properties:
                   properties:
                     code:
                       type: integer
-                    description:
-                      type: string
                   required:
                     - code
-                    - description
             required:
               - checked
         required:
@@ -339,11 +292,8 @@ properties:
                   properties:
                     code:
                       type: integer
-                    description:
-                      type: string
                   required:
                     - code
-                    - description
             required:
               - checked
         required:
@@ -388,11 +338,8 @@ properties:
                   properties:
                     code:
                       type: integer
-                    description:
-                      type: string
                   required:
                     - code
-                    - description
             required:
               - checked
         required:
@@ -437,11 +384,8 @@ properties:
                   properties:
                     code:
                       type: integer
-                    description:
-                      type: string
                   required:
                     - code
-                    - description
             required:
               - checked
         required:
@@ -486,11 +430,8 @@ properties:
                   properties:
                     code:
                       type: integer
-                    description:
-                      type: string
                   required:
                     - code
-                    - description
             required:
               - checked
         required:
