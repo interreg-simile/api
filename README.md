@@ -32,6 +32,13 @@ Please refer to the official documentation (*coming soon...*).
 1. (*Optional*) Populate the database with some dummy data: ```npm run seed:prod```
 1. Run: ```npm run start:server```
 
+#### Docs
+
+The API documentation follows the [OpenAPI Specification](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md).
+
+Use ```npm run build:docs``` to build the documentation. For testing purposes you can use ```npm run serve:docs```
+to spin up a live server that allows you to visualize the changes in real time.
+
 #### Built with
 
 - [Node.js](https://nodejs.org/it/)

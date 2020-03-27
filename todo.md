@@ -2,7 +2,7 @@
   
 - [ ] Scrivere la documentazione
     - [ ] Schede di deployment per App e API
-    - [ ] Documentazione vera e propria dell'API
+    - [x] Documentazione vera e propria dell'API
 
     
 #### Future releases
