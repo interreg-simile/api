@@ -275,7 +275,7 @@ paths:
       parameters:
         - name: id
           in: path
-          description: The id of the alert to return.
+          description: The id of the alert to update.
           required: true
           schema:
             type: string
@@ -306,6 +306,162 @@ paths:
         - name: id
           in: path
           description: The id of the alert to delete.
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: No Content
+
+  /events:
+
+    get:
+      tags:
+        - event
+      summary: Get All
+      description: |
+        Returs all the events.
+
+        **N.B.**  The field ```uid``` will be returned only if an admin user performs the request.
+      operationId: get-events
+      parameters:
+        - name: includePast
+          in: query
+          description: |
+            States if the response has to include the events with a ```date``` property older than the current date.
+          required: false
+          schema:
+            type: boolean
+            default: true
+        - name: includeDeleted
+          in: query
+          description: |
+            States if the response has to include the events with the ```markedForDeletion``` flag set to true.
+
+            Only **admin** users can set this parameter to true.
+          required: false
+          schema:
+            type: boolean
+            default: false
+        - name: sort
+          in: query
+          description: |
+            Allows to specify which field(s) to use to sort the data. If more than one filed is specified, the data
+            will be sorted in order from left to right. You can decide whether you want the sorting to be done in ascending
+            or descending order by adding respectively ```:asc``` or ```:desc``` after each of the field. If no order is
+            given it will default to ascending.
+          required: false
+          schema:
+            type: string
+            enum:
+              - date
+          example: date:asc
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Event'
+
+    post:
+      tags:
+        - event
+      summary: Create One
+      description: |
+        Creates a new event.
+
+        **N.B.** Only admin users can create new events.
+      operationId: post-events
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ./models/event/event-post.yaml
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+
+  /events/{id}:
+
+    get:
+      tags:
+        - event
+      summary: Get by Id
+      description: |
+        Returns the event with the given id.
+
+        **N.B.**  The field ```uid``` will be returned only if an admin user performs the request.
+      operationId: get-event
+      parameters:
+        - name: id
+          in: path
+          description: The id of the event to return.
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+
+    put:
+      tags:
+        - event
+      summary: Update One
+      description: |
+        Updates an event. If the event does not exist, it creates a new one.
+
+        **N.B.** Only admin users can update events.
+      operationId: put-event
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ./models/event/event-post.yaml
+      parameters:
+        - name: id
+          in: path
+          description: The id of the event to update.
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+
+    delete:
+      tags:
+        - event
+      summary: Delete One
+      description: |
+        Deletes an event.
+
+        **N.B.** Only admin users can delete events.
+      operationId: delete-event
+      parameters:
+        - name: id
+          in: path
+          description: The id of the event to delete.
           required: true
           schema:
             type: string

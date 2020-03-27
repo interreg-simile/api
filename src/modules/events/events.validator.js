@@ -72,7 +72,3 @@ export const event = [
     body("markedForDeletion").isEmpty()
 
 ];
-
-
-// Validation chain for the body of the "patch" requests
-export const patch = []; // ToDo

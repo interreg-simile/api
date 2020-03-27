@@ -130,26 +130,6 @@ export const update = (req, res, next) => {
 
 
 /**
- * Patch an event.
- *
- * @param {Object} req - The Express request object.
- * @param {Object} res - The Express response object.
- * @param {Function} next - The Express next middleware function.
- */
-export const patch = (req, res, next) => {
-
-    // Validate the body of the request
-    if (!checkValidation(req, next)) return;
-
-    // Patch the event
-    eventService.patch(req.params.id, ...req.body)
-        .then(event => res.status(200).json({ meta: { code: 200 }, data: { event } }))
-        .catch(err => next(err));
-
-};
-
-
-/**
  * Marks an event for deletion.
  *
  * @param {Object} req - The Express request object.

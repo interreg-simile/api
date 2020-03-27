@@ -115,30 +115,6 @@ export async function update(id, data) {
 
 
 /**
- * Patch an existing event.
- *
- * @param {string} id - The id of the event.
- * @param {Object} data - The new data.
- * @returns {Promise<Event>} A promise containing the patched event.
- */
-export async function patch(id, data) {
-
-    // Find the event
-    const event = await Event.findById(id);
-
-    // If no data is found, throw an error
-    if (!event) throw constructError(404);
-
-    // Change the value of the given properties
-    for (const k of Object.keys(data)) event[k] = data[k];
-
-    // Save the event
-    return event.save();
-
-}
-
-
-/**
  * Set an event as marked for deletion.
  *
  * @param {String} id - The id of the event.
