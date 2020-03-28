@@ -24,7 +24,7 @@ export default function (server) {
     console.info('SETUP - Routes...');
 
     server.get(`/${version}/docs`, (req, res) => {
-        res.sendFile(path.join(__dirname, "..", "..", "docs", "api", "index.html"));
+        res.sendFile(path.join(__dirname, "..", "..", "docs", "index.html"));
     });
 
     server.use(`/${version}/auth`, authRouter);

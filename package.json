@@ -13,8 +13,8 @@
     "start:prod": "npm run build:prod && npm run start:server",
     "build:prod": "babel src -s -D -d build",
     "start:server": "node build/app.js",
-    "serve:docs": "live-server --watch=./docs/api/ --open=./docs/api/temp/",
-    "build:docs": "redoc-cli bundle ./docs/api/spec/openapi.yaml --output ./docs/api/index.html"
+    "serve:docs": "live-server --watch=./docs/ --open=./docs/temp/",
+    "build:docs": "redoc-cli bundle docs/spec/openapi.yaml --output ./docs/index.html --options.hideDownloadButton"
   },
   "repository": {
     "type": "git",
