@@ -19,7 +19,7 @@ RESTFul API developed the manage the citizen generated data of interreg project 
 
 ## Usage
 
-Please refer to the official documentation (*coming soon...*).
+Please refer to the [official documentation](https://api-simile.como.polimi.it/v1/docs).
 
 
 ## Development setup
