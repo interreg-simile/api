@@ -35,7 +35,7 @@ export default async function () {
                 address    : "Corso Giuseppe Garibaldi 23, Baveno (VB), Italia",
                 city       : "Baveno"
             },
-            date       : new Date().setMonth(new Date().getMonth() + 1),
+            date       : new Date().setMonth(new Date().getMonth() + 6),
             contacts   : { email: "info@simile.it", phone: "+393349969525" }
         },
         {
@@ -48,7 +48,7 @@ export default async function () {
                 address    : "Largo Fratelli Calvi 2, Lecco (LC), Italia",
                 city       : "Lecco"
             },
-            date       : new Date().setMonth(new Date().getMonth() + 3),
+            date       : new Date().setMonth(new Date().getMonth() + 9),
             contacts   : { phone: "+393349969525" }
         },
         {
