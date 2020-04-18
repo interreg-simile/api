@@ -20,29 +20,18 @@ export default async function () {
 
     console.info("SEED - Alerts...");
 
-    // Drop the collection
     await dropCollection(collection);
 
-    // Create the dummy data
     const alerts = [
         {
             uid    : "5dd7bbe0701d5bdd685c1f17",
-            title  : { it: "Comunicazione 1", en: "Communication 1" },
+            title  : { it: "Rilascio App SIMILE", en: "SIMILE App release" },
             content: { it: new LoremIpsum().generateParagraphs(1), en: new LoremIpsum().generateParagraphs(1) },
-            dateEnd: new Date().setMonth(new Date().getMonth() + 6)
-        },
-        {
-            uid    : "5dd7bbe0701d5bdd685c1f17",
-            title  : { it: "Comunicazione 2", en: "Communication 2" },
-            content: { it: new LoremIpsum().generateParagraphs(1), en: new LoremIpsum().generateParagraphs(1) },
-            dateEnd: new Date().setMonth(new Date().getMonth() + 9)
+            dateEnd: new Date().setMonth(new Date().getMonth() + 6),
+            createdAt: new Date("2020-04-01T10:00:00")
         }
     ];
 
-    // Retrieve the id of the admin
-    const adminId = await User.findOne({ email: "admin@example.com" }, "_id");
-
-    // For each dummy data
     for (const alert of alerts) await Alert.create(alert);
 
 }

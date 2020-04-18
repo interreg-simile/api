@@ -20,14 +20,12 @@ export default async function () {
 
     console.info("SEED - Events...");
 
-    // Drop the collection
     await dropCollection(collection);
 
-    // Create the dummy data
     const events = [
         {
             uid        : "5dd7bbe0701d5bdd685c1f17",
-            title      : { it: "Evento futuro", en: "Future event" },
+            title      : { it: "Puliamo il lago!", en: "Lets clean the lake!" },
             description: { it: new LoremIpsum().generateParagraphs(1), en: new LoremIpsum().generateParagraphs(1) },
             position   : {
                 type       : "Point",
@@ -36,38 +34,39 @@ export default async function () {
                 city       : "Baveno"
             },
             date       : new Date().setMonth(new Date().getMonth() + 6),
-            contacts   : { email: "info@simile.it", phone: "+393349969525" }
+            contacts   : { email: "interreg-simile@polimi.it" }
         },
         {
             uid        : "5dd7bbe0701d5bdd685c1f17",
-            title      : { it: "Evento futuro 2" },
-            description: { it: new LoremIpsum().generateParagraphs(1) },
+            title      : { it: "Corso di Formazione", en: "Training course" },
+            description: {
+                it: "Corso della durata di 4h rivolto ai tecnici della pubblica amministrazione in cui si approfondiranno le tecnologie utilizzate dal progetto SIMILE (sensori, satelliti, App) fornendo strumenti pratici per migliorare l'attività di monitoraggio del lago.",
+                en: "Four hours course for public administration technicians in which the technologies used in SIMILE project (sensors, satellites, App) will be deepened providing practical instruments to improve the lake monitoring activities."
+            },
             position   : {
                 type       : "Point",
-                coordinates: [9.389224, 45.852352],
-                address    : "Largo Fratelli Calvi 2, Lecco (LC), Italia",
+                coordinates: [9.396085, 45.849199],
+                address    : "Via Gaetano Previati, 1/c, Lecco (LC), Italia",
                 city       : "Lecco"
             },
-            date       : new Date().setMonth(new Date().getMonth() + 9),
-            contacts   : { phone: "+393349969525" }
+            date       : new Date("2020-09-09T11:00:00"),
+            contacts   : { phone: "+39334992357", email: "interreg-simile@polimi.it" }
         },
         {
-            uid         : "5dd7bbe0701d5bdd685c1f17",
-            title       : { it: "Evento passato" },
-            description : { it: new LoremIpsum().generateParagraphs(1) },
-            position    : {
+            uid        : "5dd7bbe0701d5bdd685c1f17",
+            title      : { it: "Visita alla Zattera", en: "Raft visit" },
+            description: { it: new LoremIpsum().generateParagraphs(1), en: new LoremIpsum().generateParagraphs(1) },
+            position   : {
                 type       : "Point",
-                coordinates: [8.948400, 45.991756],
-                address    : "Riva Paradiso 1, Paradiso, Svizzera",
-                city       : "Paradiso"
+                coordinates: [8.962459, 46.004063],
+                address    : "Via Foce, 5, Lugano, Svizzera",
+                city       : "Lugano"
             },
-            date        : new Date().setMonth(new Date().getMonth() - 2),
-            contacts    : { mail: "info@simile.it" }
+            date       : new Date().setMonth(new Date().getMonth() + 3),
+            contacts   : { email: "interreg-simile@polimi.it" }
         }
     ];
 
-
-    // For each dummy data
     for (const event of events) await Event.create(event);
 
 }

@@ -18,4 +18,5 @@ uploads/**/*.png
 uploads/**/*.jpg
 uploads/**/*.jpeg
 !uploads/**/default.*
+!uploads/**/foams.*
 

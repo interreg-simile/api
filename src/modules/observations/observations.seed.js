@@ -19,13 +19,32 @@ export default async function () {
 
     console.info("SEED - Observations...");
 
-    // Drop the collection
     await dropCollection(collection);
 
-    // Create the dummy data
     const observations = [
         {
-            // uid     : "5dd7bbe0701d5bdd685c1f19", // User 2
+            position : {
+                coordinates: [9.386683, 45.855060],
+                crs        : { code: 1 },
+                accuracy   : 20.86549,
+                roi        : "5e5500755d38df9529cb6a1b"
+            },
+            weather  : { temperature: 25.8, sky: { code: 1 }, wind: 32 },
+            details  : {
+                foams  : { checked: true, extension: { code: 1 }, look: { code: 2 }, height: { code: 1 } },
+                litters: { checked: true, type: [{ code: 9 }] }
+            },
+            measures : {
+                temperature: {
+                    multiple  : false,
+                    val       : [{ depth: 0, val: 16 }],
+                    instrument: { type: { code: 2 } }
+                }
+            },
+            photos   : ["uploads/observations/foams.jpg"],
+            createdAt: new Date("2020-04-17T12:00:00")
+        },
+        {
             position: {
                 coordinates: [9.079017, 45.824735],
                 crs        : { code: 1 },
@@ -46,7 +65,6 @@ export default async function () {
             other   : "Altri dettagli sull'osservazione..."
         },
         {
-            // uid     : "5dd7bbe0701d5bdd685c1f19", // User 2
             position: {
                 coordinates: [8.947198, 45.935249],
                 crs        : { code: 1 },
@@ -62,7 +80,6 @@ export default async function () {
             photos  : ["uploads/observations/default.jpg", "uploads/observations/default.jpg"]
         },
         {
-            // uid     : "5dd7bbe0701d5bdd685c1f18", // User 1
             position: {
                 coordinates: [9.102516, 45.861128],
                 crs        : { code: 1 },
@@ -80,7 +97,6 @@ export default async function () {
         }
     ];
 
-    // Save the dummy data
     for (const obs of observations) await Observation.create(obs);
 
 }

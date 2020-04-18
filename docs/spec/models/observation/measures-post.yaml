@@ -77,6 +77,10 @@ properties:
             description: Instrument details.
         required:
           - type
+    required:
+      - multiple
+      - val
+      - instrument
 
   ph:
     type: object
