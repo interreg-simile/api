@@ -783,6 +783,13 @@ paths:
       description: Creates a new observation.
       operationId: post-observation
       parameters:
+        - name: callId
+          in: query
+          description: States if the five digits code that links the observation to a call to the competent authority has to be generated.
+          required: false
+          schema:
+            type: boolean
+            default: false
         - name: minimalRes
           in: query
           description: |
@@ -790,6 +797,7 @@ paths:
             ```json
             {
               "_id": "string",
+              "callId": "number",
               "position": {
                 "coordinates": [0, 0],
                 "roi": "string"

@@ -6,6 +6,10 @@ properties:
     type: string
     description: Unique identifier of the resource.
 
+  callId:
+    type: number
+    description: Five digits code that links the observation to a call to the competent authority.
+
   photos:
     type: array
     description: URL of the photos related to the observation (max 3).

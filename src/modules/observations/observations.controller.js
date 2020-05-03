@@ -87,12 +87,15 @@ export const create = (req, res, next) => {
 
     if (!checkValidation(req, next)) return;
 
-    const minimalRes = req.query.minimalRes || "false";
+    const minimalRes     = req.query.minimalRes || "false";
+    const generateCallId = req.query.callId || "false";
 
     const data = {
         // uid   : req.userId,
         ...req.body
     };
+
+    if (generateCallId === "true") data.callId = Math.floor(10000 + Math.random() * 90000);
 
     if (_.has(req, ["files", "photos"]))
         data.photos = req.files.photos.map(p => p.path);
@@ -108,7 +111,8 @@ export const create = (req, res, next) => {
             if (minimalRes === "true") {
                 resData = {
                     _id     : observation._id,
-                    // uid     : observation.uid,
+                    // uid  : observation.uid,
+                    callId  : observation.callId,
                     position: {
                         coordinates: observation.position.coordinates,
                         roi        : observation.position.roi

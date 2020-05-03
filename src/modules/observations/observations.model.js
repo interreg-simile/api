@@ -11,11 +11,8 @@ import { collection as Rois } from "../rois/rois.model";
 import { genDCode } from "../../utils/common-schemas";
 
 
-/** Name of the collection. */
 export const collection = "Observations";
 
-
-/** Schema of a the observation position. */
 const position = new Schema({
     _id        : false,
     type       : { type: String, enum: ["Point"], required: true, default: "Point" },
@@ -25,8 +22,6 @@ const position = new Schema({
     roi        : { type: mongoose.Schema.Types.ObjectId, ref: Rois, required: false },
 });
 
-
-/** Schema of the weather. */
 const weather = new Schema({
     _id        : false,
     temperature: { type: Number, required: false },
@@ -34,10 +29,9 @@ const weather = new Schema({
     wind       : { type: Number, required: false }
 });
 
-
-/** Schema of an observation. */
 const schema = new Schema({
     // uid              : { type: Schema.Types.ObjectId, ref: User, required: true },
+    callId           : { type: Number, required: false },
     position         : { type: position, required: true },
     weather          : { type: weather, required: true },
     details          : { type: Schema.Types.Mixed, required: false },
@@ -46,6 +40,8 @@ const schema = new Schema({
     photos           : { type: [String], required: false },
     markedForDeletion: { type: Boolean, required: true, default: false }
 }, { timestamps: true });
+
+schema.index({callId: 1 })
 
 
 /** Exports the schema. */

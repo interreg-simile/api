@@ -28,8 +28,8 @@ async function seeder() {
 
         // await users();
         // await rois();
-        await events();
-        await alerts();
+        // await events();
+        // await alerts();
         await observations();
 
         await mongoose.connection.close();
