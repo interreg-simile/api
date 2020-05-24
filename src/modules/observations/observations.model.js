@@ -20,6 +20,7 @@ const position = new Schema({
     crs        : { type: { code: Number }, required: true },
     accuracy   : { type: Number, required: false },
     roi        : { type: mongoose.Schema.Types.ObjectId, ref: Rois, required: false },
+    area       : { type: Number, required: false }
 });
 
 const weather = new Schema({
@@ -41,7 +42,7 @@ const schema = new Schema({
     markedForDeletion: { type: Boolean, required: true, default: false }
 }, { timestamps: true });
 
-schema.index({callId: 1 })
+schema.index({ callId: 1 })
 
 
 /** Exports the schema. */

@@ -115,7 +115,8 @@ export const create = (req, res, next) => {
                     callId  : observation.callId,
                     position: {
                         coordinates: observation.position.coordinates,
-                        roi        : observation.position.roi
+                        roi        : observation.position.roi,
+                        area       : observation.position.area
                     }
                 };
             } else {

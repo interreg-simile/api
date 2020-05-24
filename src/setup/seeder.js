@@ -26,10 +26,10 @@ async function seeder() {
 
     try {
 
-        // await users();
-        // await rois();
-        // await events();
-        // await alerts();
+        await users();
+        await rois();
+        await events();
+        await alerts();
         await observations();
 
         await mongoose.connection.close();

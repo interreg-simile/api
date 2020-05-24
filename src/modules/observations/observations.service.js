@@ -9,7 +9,7 @@ import _ from "lodash";
 
 import Observation from "./observations.model";
 import constructError from "../../utils/construct-error";
-import { getIdByCoords } from "../rois/rois.service";
+import { getRoiByCoords } from "../rois/rois.service";
 import { project } from "../../utils/spatial";
 
 
@@ -60,19 +60,14 @@ export async function getById(id, filter, projection, options) {
  */
 export async function create(data) {
 
-    // If no region of interest has been passed
-    if (!data.position.roi) {
-
-        // Find a roi in which the observation falls
-        const roi = await getIdByCoords(data.position.coordinates[0], data.position.coordinates[1])
+    const roi = await getRoiByCoords(data.position.coordinates[0], data.position.coordinates[1])
             .catch(err => console.error(err));
 
-        // If a roi is found, save it
-        if (roi) data.position.roi = roi._id;
-
+    if (roi) {
+        data.position.area = roi.area.code
+        if (!data.position.roi) data.position.roi = roi._id;
     }
 
-    // Create the new observation
     const obs = new Observation({
         // uid     : data.uid,
         callId  : data.callId,
@@ -86,12 +81,9 @@ export async function create(data) {
 
     if (data.createdAt) obs.createdAt = data.createdAt;
 
-    // If the observation id is provided, set it
     if (data.id) obs._id = data.id;
 
-    // Save the observation
     return obs.save();
-
 }
 
 

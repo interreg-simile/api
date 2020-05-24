@@ -797,10 +797,11 @@ paths:
             ```json
             {
               "_id": "string",
-              "callId": "number",
+              "callId": 0,
               "position": {
                 "coordinates": [0, 0],
-                "roi": "string"
+                "roi": "string",
+                "area": 0
               }
             }
             ```

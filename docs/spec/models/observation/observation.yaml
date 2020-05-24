@@ -54,6 +54,11 @@ properties:
       roi:
         type: string
         description: Id of the region of interest in which the observation falls.
+      area:
+        type: number
+        description: |
+          Code of the area in which the observation falls.
+          See *Region of interest* section for the list of possible codes.
 
   weather:
     type: object
