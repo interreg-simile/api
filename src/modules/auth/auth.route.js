@@ -1,5 +1,5 @@
 /**
- * @fileoverview This file defines the auth endpoints to access and manipulate the API keys.
+ * @fileoverview This file defines the auth endpoints.
  *
  * @author Edoardo Pessina <edoardo.pessina@polimi.it>
  */
@@ -17,8 +17,8 @@ const router = Router();
 // POST /auth/keys
 router.post("/keys", validator.apiKey, controller.createApiKey);
 
-// GET /auth/register
-router.post("/register", controller.register);
+// POST /auth/register
+router.post("/register", validator.register, controller.register);
 
 // Export the router
 export default router;

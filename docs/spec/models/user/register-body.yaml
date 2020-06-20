@@ -1,0 +1,28 @@
+type: object
+
+properties:
+
+  email:
+    type: string
+    description: User's email.
+
+  password:
+    type: string
+    format: password
+    description: |
+      User's password.
+
+      **N.b.** It must be at least 8 characters long.
+
+  confirmPassword:
+    type: string
+    format: password
+    description: |
+      Repeted user's password.
+
+      **N.b.** It must be equal to the field ```password```.
+
+required:
+  - email
+  - password
+  - confirmPassword

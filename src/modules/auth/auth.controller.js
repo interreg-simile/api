@@ -19,10 +19,8 @@ import * as authService from "./auth.service";
  */
 export const createApiKey = (req, res, next) => {
 
-    // Validate the body of the request
     if (!checkValidation(req, next)) return;
 
-    // Create the resource
     authService.createKey(req.body)
         .then(key => res.status(201).json({ meta: { code: 201 }, data: { key } }))
         .catch(err => next(err));
@@ -32,8 +30,10 @@ export const createApiKey = (req, res, next) => {
 
 export const register = (req, res, next) => {
 
-    authService.register()
-        .then(() => res.status(201).json({ meta: { code: 201 } }))
+    if (!checkValidation(req, next)) return;
+
+    authService.register(req.body)
+        .then(user => res.status(201).json({ meta: { code: 201 }, data: { email: user.email  }}))
         .catch(err => next(err))
 
 };

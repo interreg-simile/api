@@ -117,6 +117,9 @@ info:
 # Tags
 #----------------------
 tags:
+  - name: auth
+    x-displayName: Auth
+    description: Authorization and authentication.
   - name: observation
     x-displayName: Observations
     description: "User generated data."
@@ -132,6 +135,10 @@ tags:
   - name: misc
     x-displayName: Miscellaneous
     description: "Miscellaneous resources and methods."
+  - name: user_model
+    description: |
+      <SchemaDefinition schemaRef="#/components/schemas/User" />
+    x-displayName: User
   - name: observation_model
     description: |
       The data gathered by the citizens are called *observations*.
@@ -354,6 +361,7 @@ tags:
 x-tagGroups:
   - name: Endpoints
     tags:
+      - auth
       - observation
       - alert
       - event
@@ -361,6 +369,7 @@ x-tagGroups:
       - misc
   - name: Models
     tags:
+      - user_model
       - observation_model
       - alert_model
       - event_model
@@ -370,6 +379,31 @@ x-tagGroups:
 # Endpoints
 #----------------------
 paths:
+
+  /auth/register:
+    post:
+      tags:
+        - auth
+      summary: Register
+      description: Register a new account into the system.
+      operationId: register
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ./models/user/register-body.yaml
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  email:
+                    type: string
+                required:
+                  - email
 
   /alerts:
 
@@ -965,6 +999,8 @@ paths:
 components:
 
   schemas:
+    User:
+      $ref: ./models/user/user.yaml
     Observation:
       $ref: ./models/observation/observation.yaml
     Alert:

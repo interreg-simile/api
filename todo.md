@@ -1,24 +1,31 @@
-## ToDo
+## Registrazione
+
+- [ ] Documentazione generale
+
+- [ ] /auth/registration
+	- [ ] implementare endpoint
+	- [ ] invio mail
+	- [ ] documentazione
+	
+- [ ] /auth/login
+	- [ ] implementare endpoint
+	- [ ] refresh token
+	- [ ] documentazione
+	
+- [ ] /auth/logout
+	- [ ] implementare endpoint
+	- [ ] documentazione
   
-- [ ] Scrivere la documentazione
-    - [ ] Schede di deployment per App e API
-    - [x] Documentazione vera e propria dell'API
+- [ ] Update utente
+	- [ ] info generali -> PATCH
+	- [ ] mail -> ???
+	- [ ] password -> ???
+	- [ ] foto -> ???
+	- [ ] documentazione
+	
+- [ ] Cancellazione utente (?)
+	
+- [ ] Aggiungere user id a Osservazioni, Eventi, Alert
+	- documentazione
 
-    
-#### Future releases
-
-- [ ] Implementare login/registrazione utenti in app
-    - [ ] Implementare cancellazione delle osservazioni
-
-- [ ] Capire dopo quanto tempo le osservazioni scompaiono dalla mappa
-
-- [ ] Implementare sezione "quiz"
-
-- [ ] Creare interfaccia web per admin
-    - [ ] Implementare inserimento di eventi, alert, quiz
-    - [ ] Implementare la visualizzazione delle osservazioni
-    - [ ] Login admin con registrazione da superadmin
-    
-- [ ] Implementare chiamata alle autorità
-
-- [ ] Implementare fade dei marker delle osservazioni in base alla data
+- [ ] Cancellazione osservazioni (?)

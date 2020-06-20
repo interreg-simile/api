@@ -6,10 +6,11 @@
  */
 
 import crypto from "crypto";
+import bcrypt from "bcryptjs";
 
 import Key from "./keys.model";
+import User from "../users/user.model"
 import constructError from "../../utils/construct-error";
-import { sendEmail } from "../emails/email.service";
 
 
 /**
@@ -50,8 +51,18 @@ export async function createKey(data) {
 }
 
 
-export async function register() {
+export async function register(data) {
 
-    await sendEmail();
+    // TODO check email existence and eventually throw a 409 error
+
+    const hashPassword = await bcrypt.hash(data.password, 12);
+
+    const user = new User({
+        email: data.email,
+        password: hashPassword,
+        isConfirmed: true // TODO set this to false and implement email confirmation
+    });
+
+    return user.save();
 
 }
