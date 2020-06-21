@@ -53,7 +53,8 @@ export async function createKey(data) {
 
 export async function register(data) {
 
-    // TODO check email existence and eventually throw a 409 error
+    if (await User.exists({ email: data.email }))
+        throw constructError(409, "Email already in use", "ConflictException");
 
     const hashPassword = await bcrypt.hash(data.password, 12);
 

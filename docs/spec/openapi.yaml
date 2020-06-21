@@ -404,6 +404,8 @@ paths:
                     type: string
                 required:
                   - email
+        '409':
+          description: Conflict, email already in use
 
   /alerts:
 
