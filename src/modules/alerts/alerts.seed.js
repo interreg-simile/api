@@ -26,6 +26,13 @@ export default async function () {
         {
             uid    : "5dd7bbe0701d5bdd685c1f17",
             title  : { it: "Rilascio App SIMILE", en: "SIMILE App release" },
+            links: [
+                {
+                    nameIta: "Link Uno",
+                    nameEng: "link One",
+                    url    : "https://www.google.com/"
+                },
+            ],
             content: { it: new LoremIpsum().generateParagraphs(1), en: new LoremIpsum().generateParagraphs(1) },
             dateEnd: new Date().setMonth(new Date().getMonth() + 6),
             createdAt: new Date("2020-04-01T10:00:00")

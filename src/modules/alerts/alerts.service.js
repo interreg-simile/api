@@ -60,6 +60,7 @@ export async function create(data) {
     const alert = new Alert({
         uid    : data.uid,
         title  : data.title,
+        links  : data.links,
         content: data.content,
         dateEnd: data.dateEnd
     });
@@ -91,6 +92,7 @@ export async function update(id, data) {
 
     // Update the values
     alert.title   = data.title;
+    alert.links   = data.links;
     alert.content = data.content;
     alert.dateEnd = data.dateEnd;
 

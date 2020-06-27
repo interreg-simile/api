@@ -35,6 +35,14 @@ export const alert = [
 
     body("title.*").trim().escape(),
 
+    body("links").optional().isArray(),
+
+    body("links.*.nameIta").not().isEmpty().trim().escape(),
+
+    body("links.*.nameEng").not().isEmpty().trim().escape(),
+
+    body("links.*.url").not().isEmpty().isURL(),
+
     body("content")
         .not().isEmpty()
         .custom(v => {

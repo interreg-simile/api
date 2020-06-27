@@ -13,11 +13,18 @@ import { genDCode } from "../../utils/common-schemas";
 /** Name of the collection. */
 export const collection = "Alerts";
 
+const link = new Schema({
+    _id    : false,
+    nameIta: { type: String, required: true },
+    nameEng: { type: String, required: true },
+    url    : { type: String, required: true }
+})
 
 /** Schema of an alert. */
 const schema = new Schema({
     uid              : { type: mongoose.Schema.Types.ObjectId, ref: User, required: true },
     title            : { type: Schema.Types.Mixed, required: true },
+    links            : { type: [link], required: false },
     content          : { type: Schema.Types.Mixed, required: true },
     dateEnd          : { type: Date, required: true },
     markedForDeletion: { type: Boolean, required: true, default: false }

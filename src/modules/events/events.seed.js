@@ -27,6 +27,18 @@ export default async function () {
             uid        : "5dd7bbe0701d5bdd685c1f17",
             title      : { it: "Puliamo il lago!", en: "Lets clean the lake!" },
             description: { it: new LoremIpsum().generateParagraphs(1), en: new LoremIpsum().generateParagraphs(1) },
+            links: [
+                {
+                    nameIta: "Link Uno",
+                    nameEng: "link One",
+                    url    : "https://www.google.com/"
+                },
+                {
+                    nameIta: "Link Due",
+                    nameEng: "link Two",
+                    url    : "https://www.google.com/"
+                }
+            ],
             position   : {
                 type       : "Point",
                 coordinates: [8.504056, 45.912573],

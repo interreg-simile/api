@@ -23,6 +23,12 @@ const position = new Schema({
     city       : { type: String, required: true }
 });
 
+const link = new Schema({
+    _id    : false,
+    nameIta: { type: String, required: true },
+    nameEng: { type: String, required: true },
+    url    : { type: String, required: true }
+})
 
 /** Schema of the contacts. */
 const contacts = new Schema({
@@ -37,6 +43,7 @@ const schema = new Schema({
     uid              : { type: mongoose.Schema.Types.ObjectId, ref: User, required: true },
     title            : { type: Schema.Types.Mixed, required: true },
     description      : { type: Schema.Types.Mixed, required: true },
+    links            : { type: [link], required: false },
     position         : { type: position, required: true },
     date             : { type: Date, required: true },
     contacts         : { type: contacts, required: true },

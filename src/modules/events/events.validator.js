@@ -52,6 +52,14 @@ export const event = [
 
     body("description.*").trim().escape(),
 
+    body("links").optional().isArray(),
+
+    body("links.*.nameIta").not().isEmpty().trim().escape(),
+
+    body("links.*.nameEng").not().isEmpty().trim().escape(),
+
+    body("links.*.url").not().isEmpty().isURL(),
+
     body("position.type").isEmpty(),
 
     ...vCoords("position.coordinates", false),

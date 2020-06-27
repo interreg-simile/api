@@ -30,6 +30,26 @@ properties:
         type: string
         description: The content of the alert in English.
 
+  links:
+    type: array
+    description: An array of useful links
+    items:
+      type: object
+      properties:
+        nameIta:
+          type: string
+          description: Italian name of the link
+        nameEng:
+          type: string
+          description: English name of the link
+        url:
+          type: string
+          description: Link url
+      required:
+        - nameIta
+        - nameEng
+        - url
+
   dateEnd:
     type: string
     description: The date from which the alert is no longer valid.
