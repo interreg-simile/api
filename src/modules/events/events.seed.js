@@ -27,7 +27,7 @@ export default async function () {
             uid        : "5dd7bbe0701d5bdd685c1f17",
             title      : { it: "Puliamo il lago!", en: "Lets clean the lake!" },
             description: { it: new LoremIpsum().generateParagraphs(1), en: new LoremIpsum().generateParagraphs(1) },
-            links: [
+            links      : [
                 {
                     nameIta: "Link Uno",
                     nameEng: "link One",
@@ -55,12 +55,7 @@ export default async function () {
                 it: "Corso della durata di 4h rivolto ai tecnici della pubblica amministrazione in cui si approfondiranno le tecnologie utilizzate dal progetto SIMILE (sensori, satelliti, App) fornendo strumenti pratici per migliorare l'attività di monitoraggio del lago.",
                 en: "Four hours course for public administration technicians in which the technologies used in SIMILE project (sensors, satellites, App) will be deepened providing practical instruments to improve the lake monitoring activities."
             },
-            position   : {
-                type       : "Point",
-                coordinates: [9.396085, 45.849199],
-                address    : "Via Gaetano Previati, 1/c, Lecco (LC), Italia",
-                city       : "Lecco"
-            },
+            hasDetails : false,
             date       : new Date("2020-09-09T11:00:00"),
             contacts   : { phone: "+39334992357", email: "interreg-simile@polimi.it" }
         },

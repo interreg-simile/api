@@ -58,13 +58,12 @@ properties:
         - nameEng
         - url
 
+  hasDetails:
+    type: boolean
+    description: Flag that states if the event has details (poistion and date).
+
   position:
     type: object
-    required:
-      - type
-      - coordinates
-      - address
-      - city
     description: Details about the location of the event.
     properties:
       type:
@@ -122,7 +121,6 @@ required:
   - uid
   - title
   - description
-  - position
   - date
   - contacts
   - markedForDeletion

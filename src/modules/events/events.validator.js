@@ -60,13 +60,17 @@ export const event = [
 
     body("links.*.url").not().isEmpty().isURL(),
 
+    body("hasDetails").optional().isBoolean(),
+
+    body("position").optional(),
+
     body("position.type").isEmpty(),
 
-    ...vCoords("position.coordinates", false),
+    ...vCoords("position.coordinates", true),
 
-    body("position.address").trim().escape().not().isEmpty(),
+    body("position.address").optional().trim().escape(),
 
-    body("position.city").trim().escape().not().isEmpty(),
+    body("position.city").optional().trim().escape(),
 
     body("date").not().isEmpty().isISO8601(),
 

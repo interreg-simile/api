@@ -17,10 +17,10 @@ export const collection = "Events";
 /** Schema of the position. */
 const position = new Schema({
     _id        : false,
-    type       : { type: String, enum: ["Point"], required: true, default: "Point" },
-    coordinates: { type: [Number], required: true },
-    address    : { type: String, required: true },
-    city       : { type: String, required: true }
+    type       : { type: String, enum: ["Point"], required: false, default: "Point" },
+    coordinates: { type: [Number], required: false },
+    address    : { type: String, required: false },
+    city       : { type: String, required: false }
 });
 
 const link = new Schema({
@@ -44,7 +44,8 @@ const schema = new Schema({
     title            : { type: Schema.Types.Mixed, required: true },
     description      : { type: Schema.Types.Mixed, required: true },
     links            : { type: [link], required: false },
-    position         : { type: position, required: true },
+    hasDetails       : { type: Boolean, required: false, default: true },
+    position         : { type: position, required: false },
     date             : { type: Date, required: true },
     contacts         : { type: contacts, required: true },
     markedForDeletion: { type: Boolean, required: true, default: false }

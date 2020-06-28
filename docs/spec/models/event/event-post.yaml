@@ -50,12 +50,13 @@ properties:
         - nameEng
         - url
 
+  hasDetails:
+    type: boolean
+    description: Flag that states if the event has details (poistion and date).
+    default: true
+
   position:
     type: object
-    required:
-      - coordinates
-      - address
-      - city
     description: The details about the location of the event.
     properties:
       coordinates:
@@ -87,6 +88,5 @@ properties:
 required:
   - title
   - description
-  - position
   - date
   - contacts
