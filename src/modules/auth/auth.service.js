@@ -5,51 +5,12 @@
  * @author Edoardo Pessina <edoardo.pessina@polimi.it>
  */
 
-import crypto from "crypto";
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken"
 
-import Key from "./keys.model";
+import { JWT_PK } from "../../setup/env";
 import User from "../users/user.model"
 import constructError from "../../utils/construct-error";
-
-
-/**
- * Retrieves the API key with the given value.
- *
- * @param {String} val - The value of the API key.
- * @returns {Promise<Key>} A promise containing the key.
- */
-export async function getKeyByValue(val) {
-
-    const key = await Key.findOne({ key: val });
-
-    // If no data is found, throw an error
-    if (!key) throw constructError(404);
-
-    // Return the data
-    return key;
-
-}
-
-
-/**
- * Creates a new API key and saves it in the database.
- *
- * @param {Object} data - The API key data.
- * @returns {Promise<Key>} A promise containing the newly created API key.
- */
-export async function createKey(data) {
-
-    // Create the new key
-    const key = new Key({
-        key        : crypto.randomBytes(32).toString("hex"),
-        description: data.description
-    });
-
-    return key.save();
-
-}
-
 
 export async function register(data) {
 
@@ -65,5 +26,20 @@ export async function register(data) {
     });
 
     return user.save();
+
+}
+
+export async function login(data) {
+
+    const user = await User.findOne({ email: data.email })
+    if (!user) throw constructError(404)
+
+    const passwordMatch = await bcrypt.compare(data.password, user.password)
+    if (!passwordMatch) throw constructError(401, "Invalid credentials")
+    if (!user.isConfirmed) throw constructError(401, "Email not verified")
+
+    const token = jwt.sign({ userId: user._id.toString(), email: user.email }, JWT_PK)
+
+    return { token, userId: user._id.toString() }
 
 }

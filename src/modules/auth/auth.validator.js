@@ -6,14 +6,6 @@
 
 import { body } from "express-validator";
 
-
-// Validation for the body of a post request
-export const apiKey = [
-    body("description")
-        .escape().trim()
-        .not().isEmpty().isAscii()
-];
-
 export const register = [
     body("email")
         .not().isEmpty()
@@ -30,3 +22,12 @@ export const register = [
         .trim()
         .custom((value, { req }) => value === req.body.password)
 ]
+
+export const login = [
+    body("email")
+        .not().isEmpty()
+        .isEmail()
+        .normalizeEmail(),
+
+    body("password").not().isEmpty()
+];

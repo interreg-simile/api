@@ -1,129 +1,89 @@
 --- # Configuration of the API endpoints.
 
-
 /auth:
-
-  - path: /keys
-    method: POST
-    key_required: false
-    admin_required: false
-    token_required: false
-    paternity: false
 
   - path: /register
     method: POST
-    key_required: false
-    admin_required: false
     token_required: false
-    paternity: false
 
+  - path: /login
+    method: POST
+    token_required: false
+
+/users:
+
+  - path: /:id/change-email
+    method: PATCH
+    token_required: true
+
+  - path: /:id/change-password
+    method: PATCH
+    token_required: true
 
 /rois:
 
   - path: ""
     method: GET
-    key_required: false
-    admin_required: false
     token_required: false
-    paternity: false
-
 
 /events:
 
   - path: ""
     method: GET
-    key_required: false
-    admin_required: false
     token_required: false
-    paternity: false
     sort:
       - date
 
   - path: ""
     method: POST
-    key_required: false
-    admin_required: true
     token_required: true
-    paternity: false
 
   - path: /:id
     method: GET
-    key_required: false
-    admin_required: false
     token_required: false
-    paternity: false
 
   - path: /:id
     method: PUT
-    key_required: false
-    admin_required: true
     token_required: true
-    paternity: false
 
   - path: /:id
     method: DELETE
-    key_required: false
-    admin_required: true
     token_required: true
-    paternity: false
-
 
 /alerts:
 
   - path: ""
     method: GET
-    key_required: false
-    admin_required: false
     token_required: false
-    paternity: false
     sort:
       - createdAt
       - dateEnd
 
   - path: ""
     method: POST
-    key_required: false
-    admin_required: true
     token_required: true
-    paternity: false
 
   - path: /:id
     method: GET
-    key_required: false
-    admin_required: false
     token_required: false
-    paternity: false
 
   - path: /:id
     method: PUT
-    key_required: false
-    admin_required: true
     token_required: true
-    paternity: false
 
   - path: /:id
     method: DELETE
-    key_required: false
-    admin_required: true
     token_required: true
-    paternity: false
-
 
 /observations:
 
   - path: ""
     method: GET
-    key_required: false
-    admin_required: false
     token_required: false
-    paternity: false
 
   - path: ""
     method: POST
-    key_required: false
-    admin_required: false
     token_required: false
-    paternity: false
     upload:
       dest: ./uploads/observations
       fields:
@@ -136,32 +96,20 @@
 
   - path: /:id
     method: GET
-    key_required: false
-    admin_required: false
     token_required: false
-    paternity: false
 
   - path: /:id
     method: DELETE
-    key_required: false
-    admin_required: false
     token_required: true
-    paternity: true
-
 
 /misc:
+  -
   - path: /weather
     method: GET
-    key_required: false
-    admin_required: false
     token_required: false
-    paternity: false
-
 
 /docs:
+  -
   - path: ""
     method: GET
-    key_required: false
-    admin_required: false
     token_required: false
-    paternity: false

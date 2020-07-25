@@ -9,25 +9,6 @@
 import { checkValidation } from "../../utils/common-checks";
 import * as authService from "./auth.service";
 
-
-/**
- * Inserts a new API key in the database.
- *
- * @param {Object} req - The Express request object.
- * @param {Object} res - The Express response object.
- * @param {Function} next - The Express next middleware function.
- */
-export const createApiKey = (req, res, next) => {
-
-    if (!checkValidation(req, next)) return;
-
-    authService.createKey(req.body)
-        .then(key => res.status(201).json({ meta: { code: 201 }, data: { key } }))
-        .catch(err => next(err));
-
-};
-
-
 export const register = (req, res, next) => {
 
     if (!checkValidation(req, next)) return;
@@ -38,3 +19,12 @@ export const register = (req, res, next) => {
 
 };
 
+export const login = (req, res, next) => {
+
+    if (!checkValidation(req, next)) return;
+
+    authService.login(req.body)
+        .then(data => res.status(200).json({ meta: { code: 200 }, data}))
+        .catch(err => next(err))
+
+};

@@ -8,24 +8,19 @@
 	- [ ] documentazione
 	
 - [ ] /auth/login
-	- [ ] implementare endpoint
-	- [ ] refresh token
-	- [ ] documentazione
-	
-- [ ] /auth/logout
-	- [ ] implementare endpoint
+	- [x] implementare endpoint
 	- [ ] documentazione
   
 - [ ] Update utente
-	- [ ] info generali -> PATCH
-	- [ ] mail -> ???
-	- [ ] password -> ???
-	- [ ] foto -> ???
+	- [ ] info generali
+	- [x] mail
+	- [ ] password
+	- [ ] foto (?)
 	- [ ] documentazione
 	
 - [ ] Cancellazione utente (?)
 	
-- [ ] Aggiungere user id a Osservazioni, Eventi, Alert
-	- documentazione
+- [ ] Aggiungere user id a Osservazioni
+	- [ ] documentazione
 
 - [ ] Cancellazione osservazioni (?)

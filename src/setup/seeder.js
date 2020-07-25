@@ -5,7 +5,6 @@ import mongoose from "mongoose";
 import { appConf } from "../middlewares/load-config";
 import connectDb from "./database";
 
-import apiKeys from "../modules/auth/keys.seed";
 import users from "../modules/users/user.seed";
 import rois from "../modules/rois/rois.seed";
 import events from "../modules/events/events.seed";
