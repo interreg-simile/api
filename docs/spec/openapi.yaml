@@ -457,7 +457,10 @@ paths:
       tags:
         - user
       summary: Get by Id
-      description: Returns the user with the given id.
+      description: |
+        Returns the user with the given id.
+
+        **N.B.** This route requires an **authenticated user**.
       operationId: get-user
       responses:
         '200':
@@ -473,7 +476,10 @@ paths:
       tags:
         - user
       summary: Change email
-      description: Change user's email.
+      description: |
+        Change user's email.
+
+        **N.B.** This route requires an **authenticated user**.
       operationId: change-email
       requestBody:
         content:
@@ -496,7 +502,10 @@ paths:
       tags:
         - user
       summary: Change password
-      description: Change user's password.
+      description: |
+        Change user's password.
+
+        **N.B.** This route requires an **authenticated user**.
       operationId: change-password
       requestBody:
         content:
@@ -568,7 +577,7 @@ paths:
       description: |
         Creates a new alert.
 
-        **N.B.** Only admin users can create new alerts.
+        **N.B.** This route requires an **authenticated admin**.
       operationId: post-alerts
       requestBody:
         content:
@@ -616,7 +625,7 @@ paths:
       description: |
         Updates an alert. If the alert does not exist, it creates a new one.
 
-        **N.B.** Only admin users can update alerts.
+        **N.B.** This route requires an **authenticated admin**.
       operationId: put-alert
       requestBody:
         content:
@@ -651,7 +660,7 @@ paths:
       description: |
         Deletes an alert.
 
-        **N.B.** Only admin users can delete alerts.
+        **N.B.** This route requires an **authenticated admin**.
       operationId: delete-alert
       parameters:
         - name: id
@@ -724,7 +733,7 @@ paths:
       description: |
         Creates a new event.
 
-        **N.B.** Only admin users can create new events.
+        **N.B.** This route requires an **authenticated admin**.
       operationId: post-events
       requestBody:
         content:
@@ -772,7 +781,7 @@ paths:
       description: |
         Updates an event. If the event does not exist, it creates a new one.
 
-        **N.B.** Only admin users can update events.
+        **N.B.** This route requires an **authenticated admin**.
       operationId: put-event
       requestBody:
         content:
@@ -807,7 +816,7 @@ paths:
       description: |
         Deletes an event.
 
-        **N.B.** Only admin users can delete events.
+        **N.B.** This route requires an **authenticated admin**.
       operationId: delete-event
       parameters:
         - name: id
