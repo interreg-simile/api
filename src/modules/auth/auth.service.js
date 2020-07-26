@@ -20,9 +20,14 @@ export async function register(data) {
     const hashPassword = await bcrypt.hash(data.password, 12);
 
     const user = new User({
-        email: data.email,
-        password: hashPassword,
-        isConfirmed: true // TODO set this to false and implement email confirmation
+        email      : data.email,
+        password   : hashPassword,
+        isConfirmed: true, // TODO set this to false and implement email confirmation
+        name       : data.name,
+        surname    : data.surname,
+        city       : data.city,
+        yearOfBirth: data.yearOfBirth,
+        gender     : data.gender
     });
 
     return user.save();

@@ -20,7 +20,17 @@ export const register = [
     body("confirmPassword")
         .not().isEmpty()
         .trim()
-        .custom((value, { req }) => value === req.body.password)
+        .custom((value, { req }) => value === req.body.password),
+
+    body("name").trim().escape().not().isEmpty(),
+
+    body("surname").trim().escape().not().isEmpty(),
+
+    body("city").optional().trim().escape(),
+
+    body("yearOfBirth").optional().isLength({ min: 4, max: 4 }),
+
+    body("gender").optional().trim().escape()
 ]
 
 export const login = [
