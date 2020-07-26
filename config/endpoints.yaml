@@ -12,6 +12,10 @@
 
 /users:
 
+  - path: /:id
+    method: GET
+    token_required: true
+
   - path: /:id/change-email
     method: PATCH
     token_required: true

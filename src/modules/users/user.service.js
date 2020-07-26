@@ -10,6 +10,16 @@ import bcrypt from "bcryptjs";
 import User from "./user.model";
 import constructError from "../../utils/construct-error";
 
+export async function getById(id, filter, projection, options) {
+
+    const user = await User.findOne({ _id: id, ...filter }, projection, { lean: true, ...options });
+
+    if (!user) throw constructError(404);
+
+    return user;
+
+}
+
 export async function changeEmail(id, newEmail) {
     const user = await User.findOne({ _id: id })
     if (!user) throw constructError(404);

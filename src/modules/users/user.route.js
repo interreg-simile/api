@@ -7,6 +7,7 @@ import * as controller from "./user.controller";
 const router = Router();
 
 // GET - /user/{user_id}
+router.get("/:id", controller.getById)
 
 // PATCH - /user/{user_id}/change-email
 router.patch("/:id/change-email", validator.changeEmail, controller.changeEmail);
