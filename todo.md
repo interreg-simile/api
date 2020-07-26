@@ -3,18 +3,16 @@
 - [ ] Documentazione generale
 
 - [ ] /auth/registration
-	- [ ] implementare endpoint
-	- [ ] invio mail
-	- [ ] documentazione
-	
-- [ ] /auth/login
 	- [x] implementare endpoint
-	- [ ] documentazione
+	- [ ] invio mail
+	- [x] documentazione
+	
+- [x] /auth/login
   
 - [ ] Update utente
 	- [ ] info generali
 	- [x] mail
-	- [ ] password
+	- [x] password
 	- [ ] foto (?)
 	- [ ] documentazione
 	

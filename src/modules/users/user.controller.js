@@ -12,7 +12,10 @@ export const getById = (req, res, next) => {
         return;
     }
 
-    const projection = { password: 0 }
+    const projection = {
+        password: 0,
+        isConfirmed: 0
+    }
 
     userService.getById(userId, {}, projection, {})
         .then(user => res.status(200).json({ meta: { code: 200 }, data: user }))

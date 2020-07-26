@@ -10,16 +10,6 @@ properties:
     type: string
     description: User's email.
 
-  password:
-    type: string
-    format: password
-    description: User's password.
-
-  isConfirmed:
-    type: boolean
-    default: false
-    description: Flag that states if the user's email has been confirmed.
-
   name:
     type: string
     description: User's name.
@@ -43,7 +33,5 @@ properties:
 required:
   - _id
   - email
-  - password
-  - isConfirmed
   - name
   - surname

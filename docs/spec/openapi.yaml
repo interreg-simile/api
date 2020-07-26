@@ -39,7 +39,16 @@ info:
 
 
     ## Authentication
-    Todo...
+    Some routes requires an authenticated user, while some others offers authenticated users more funciontalities.
+
+    This API uses the [JSON Web Token](https://jwt.io/introduction/) standard to implement users authentication. When a user logs in,
+    the system generates and returns a random JWT that has to be sent with all the subsequent requests as an
+    [Authorization header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization) with the following
+    syntax:
+
+    ```
+    Authorization: Bearer <token>
+    ```
 
 
     ## Response structure
@@ -119,7 +128,10 @@ info:
 tags:
   - name: auth
     x-displayName: Auth
-    description: Authorization and authentication.
+    description: "Authorization and authentication."
+  - name: user
+    x-displayName: Users
+    description: "Registered users"
   - name: observation
     x-displayName: Observations
     description: "User generated data."
@@ -362,6 +374,7 @@ x-tagGroups:
   - name: Endpoints
     tags:
       - auth
+      - user
       - observation
       - alert
       - event
@@ -381,6 +394,7 @@ x-tagGroups:
 paths:
 
   /auth/register:
+
     post:
       tags:
         - auth
@@ -406,6 +420,92 @@ paths:
                   - email
         '409':
           description: Conflict, email already in use
+
+  /auth/login:
+
+    post:
+      tags:
+        - auth
+      summary: Login
+      description: Login into the system.
+      operationId: login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ./models/user/login-body.yaml
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    description: Gnerated JWT.
+                  userId:
+                    type: string
+                required:
+                  - email
+                  - token
+
+  /users/{id}:
+
+    get:
+      tags:
+        - user
+      summary: Get by Id
+      description: Returns the user with the given id.
+      operationId: get-user
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: ./models/user/get-user-response.yaml
+
+  /users/{id}/change-email:
+
+    patch:
+      tags:
+        - user
+      summary: Change email
+      description: Change user's email.
+      operationId: change-email
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: New email.
+              required:
+                - email
+      responses:
+        '204':
+          description: No Content
+
+  /users/{id}/change-password:
+
+    patch:
+      tags:
+        - user
+      summary: Change password
+      description: Change user's password.
+      operationId: change-password
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ./models/user/change-password-body.yaml
+      responses:
+        '204':
+          description: No Content
 
   /alerts:
 

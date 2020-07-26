@@ -22,7 +22,29 @@ properties:
 
       **N.b.** It must be equal to the field ```password```.
 
+  name:
+    type: string
+    description: User's name.
+
+  surname:
+    type: string
+    description: User's surname.
+
+  city:
+    type: string
+    description: User's city.
+
+  yearOfBirth:
+    type: string
+    description: User's year of birth (in format YYYY).
+
+  gender:
+    type: string
+    description: User's gender.
+
 required:
   - email
   - password
   - confirmPassword
+  - name
+  - surname
