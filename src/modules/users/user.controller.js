@@ -58,3 +58,19 @@ export const changePassword = (req, res, next) => {
         .catch(err => next(err));
 
 };
+
+export const changeInfo = (req, res, next) => {
+
+    if (!checkValidation(req, next)) return;
+
+    const userId = req.params.id
+    if (userId !== req.userId) {
+        next(constructError(401));
+        return;
+    }
+
+    userService.changeInfo(userId, req.body)
+        .then(() =>  res.status(204).json({ meta: { code: 204 } }))
+        .catch(err => next(err));
+
+};

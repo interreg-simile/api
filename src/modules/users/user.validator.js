@@ -29,3 +29,15 @@ export const changePassword = [
         .custom((value, { req }) => value === req.body.newPassword)
 ]
 
+export const changeInfo = [
+    body("name").optional().trim().escape().not().isEmpty(),
+
+    body("surname").optional().trim().escape().not().isEmpty(),
+
+    body("city").optional().trim().escape(),
+
+    body("yearOfBirth").optional().isLength({ min: 4, max: 4 }),
+
+    body("gender").optional().trim().escape()
+]
+

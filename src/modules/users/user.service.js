@@ -28,7 +28,7 @@ export async function changeEmail(id, newEmail) {
     return user.save()
 }
 
-export async function changePassword(id,  oldPassword, newPassword) {
+export async function changePassword(id, oldPassword, newPassword) {
     const user = await User.findOne({ _id: id })
     if (!user) throw constructError(404)
 
@@ -36,5 +36,18 @@ export async function changePassword(id,  oldPassword, newPassword) {
     if (!passwordMatch) throw constructError(401)
 
     user.password = await bcrypt.hash(newPassword, 12);
+    return user.save()
+}
+
+export async function changeInfo(id, newInfo) {
+    const user = await User.findOne({ _id: id })
+    if (!user) throw constructError(404);
+
+    user.name        = newInfo.name || user.name;
+    user.surname     = newInfo.surname || user.surname;
+    user.city        = newInfo.city || user.city;
+    user.yearOfBirth = newInfo.yearOfBirth || user.yearOfBirth;
+    user.gender      = newInfo.gender || user.gender;
+
     return user.save()
 }

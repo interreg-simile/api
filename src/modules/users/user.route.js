@@ -3,7 +3,6 @@ import { Router } from "express";
 import * as validator from "./user.validator";
 import * as controller from "./user.controller";
 
-// Create a router object
 const router = Router();
 
 // GET - /users/{user_id}
@@ -15,5 +14,7 @@ router.patch("/:id/change-email", validator.changeEmail, controller.changeEmail)
 // PATCH - /users/{user_id}/change-password
 router.patch("/:id/change-password", validator.changePassword, controller.changePassword);
 
-// Export the router
+// PATCH - /users/{user_id}/change-info
+router.patch("/:id/change-info", validator.changeInfo, controller.changeInfo);
+
 export default router;

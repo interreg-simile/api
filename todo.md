@@ -1,20 +1,14 @@
 ## Registrazione
 
-- [ ] Documentazione generale
+- [x] Documentazione generale
 
-- [ ] /auth/registration
-	- [x] implementare endpoint
-	- [ ] invio mail
-	- [x] documentazione
+- [ ] Gestione mail
+
+- [x] /auth/registration
 	
 - [x] /auth/login
   
-- [ ] Update utente
-	- [ ] info generali
-	- [x] mail
-	- [x] password
-	- [ ] foto (?)
-	- [ ] documentazione
+- [x] Update utente
 	
 - [ ] Cancellazione utente (?)
 	

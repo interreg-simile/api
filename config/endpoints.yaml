@@ -24,6 +24,10 @@
     method: PATCH
     token_required: true
 
+  - path: /:id/change-info
+    method: PATCH
+    token_required: true
+
 /rois:
 
   - path: ""

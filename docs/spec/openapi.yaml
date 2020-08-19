@@ -516,6 +516,26 @@ paths:
         '204':
           description: No Content
 
+  /users/{id}/change-info:
+
+    patch:
+      tags:
+        - user
+      summary: Change info
+      description: |
+        Change user's information.
+
+        **N.B.** This route requires an **authenticated user**.
+      operationId: change-info
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ./models/user/change-info-body.yaml
+      responses:
+        '204':
+          description: No Content
+
   /alerts:
 
     get:
