@@ -33,8 +33,6 @@ export const alert = [
             )
         }),
 
-    body("title.*").trim().escape(),
-
     body("links").optional().isArray(),
 
     body("links.*.nameIta").not().isEmpty().trim().escape(),
@@ -52,8 +50,6 @@ export const alert = [
                 Object.keys(v).every(k => appConf.lngs.includes(k))
             )
         }),
-
-    body("content.*").trim().escape(),
 
     body("dateEnd").not().isEmpty().isISO8601()
         .custom(v => new Date(v).getTime() > new Date().getTime()),

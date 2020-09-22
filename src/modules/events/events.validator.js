@@ -38,8 +38,6 @@ export const event = [
             )
         }),
 
-    body("title.*").trim().escape(),
-
     body("description")
         .not().isEmpty()
         .custom(v => {
@@ -49,8 +47,6 @@ export const event = [
                 Object.keys(v).every(k => appConf.lngs.includes(k))
             )
         }),
-
-    body("description.*").trim().escape(),
 
     body("links").optional().isArray(),
 
