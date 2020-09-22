@@ -111,13 +111,11 @@
     token_required: true
 
 /misc:
-  -
   - path: /weather
     method: GET
     token_required: false
 
 /docs:
-  -
   - path: ""
     method: GET
     token_required: false
