@@ -24,6 +24,9 @@ export async function changeEmail(id, newEmail) {
     const user = await User.findOne({ _id: id })
     if (!user) throw constructError(404);
 
+    if (await User.exists({ email: newEmail }))
+        throw constructError(409, "Email already in use", "ConflictException");
+
     user.email = newEmail
     return user.save()
 }
@@ -45,9 +48,9 @@ export async function changeInfo(id, newInfo) {
 
     user.name        = newInfo.name || user.name;
     user.surname     = newInfo.surname || user.surname;
-    user.city        = newInfo.city || user.city;
-    user.yearOfBirth = newInfo.yearOfBirth || user.yearOfBirth;
-    user.gender      = newInfo.gender || user.gender;
+    user.city        = newInfo.city;
+    user.yearOfBirth = newInfo.yearOfBirth;
+    user.gender      = newInfo.gender;
 
     return user.save()
 }
