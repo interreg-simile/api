@@ -91,7 +91,7 @@ export const create = (req, res, next) => {
     const generateCallId = req.query.callId || "false";
 
     const data = {
-        // uid   : req.userId,
+        uid   : req.userId,
         ...req.body
     };
 
@@ -111,7 +111,7 @@ export const create = (req, res, next) => {
             if (minimalRes === "true") {
                 resData = {
                     _id     : observation._id,
-                    // uid  : observation.uid,
+                    ...(observation.uid && { uid: observation.uid }),
                     callId  : observation.callId,
                     position: {
                         coordinates: observation.position.coordinates,

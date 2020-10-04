@@ -61,7 +61,7 @@ export async function getById(id, filter, projection, options) {
 export async function create(data) {
 
     const roi = await getRoiByCoords(data.position.coordinates[0], data.position.coordinates[1])
-            .catch(err => console.error(err));
+        .catch(err => console.error(err));
 
     if (roi) {
         data.position.area = roi.area.code
@@ -69,7 +69,7 @@ export async function create(data) {
     }
 
     const obs = new Observation({
-        // uid     : data.uid,
+        ...(data.uid && { uid: data.uid }),
         callId  : data.callId,
         position: { type: "Point", crs: { code: 1 }, ...data.position },
         weather : data.weather,

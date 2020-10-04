@@ -31,7 +31,7 @@ const weather = new Schema({
 });
 
 const schema = new Schema({
-    // uid              : { type: Schema.Types.ObjectId, ref: User, required: true },
+    uid              : { type: Schema.Types.ObjectId, ref: User, required: false },
     callId           : { type: Number, required: false },
     position         : { type: position, required: true },
     weather          : { type: weather, required: true },
