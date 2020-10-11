@@ -6,6 +6,10 @@ properties:
     type: string
     description: Unique identifier of the resource.
 
+  uid:
+    type: string
+    description: Id of the user who has inserted the observation.
+
   callId:
     type: number
     description: Five digits code that links the observation to a call to the competent authority.

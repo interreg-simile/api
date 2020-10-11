@@ -892,6 +892,7 @@ paths:
             [
               {
                 "_id": "string",
+                "uid": "string",
                 "position": {
                   "coordinates": [0, 0],
                   "roi": "string"
