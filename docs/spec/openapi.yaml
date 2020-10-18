@@ -470,6 +470,19 @@ paths:
               schema:
                 $ref: ./models/user/get-user-response.yaml
 
+    delete:
+      tags:
+        - user
+      summary: Delete by Id
+      description: |
+        Deletes a user by id.
+
+        **N.B.** This route requires an **authenticated user**.
+      operationId: delete-user
+      responses:
+        '204':
+          description: No Content
+
   /users/{id}/change-email:
 
     patch:

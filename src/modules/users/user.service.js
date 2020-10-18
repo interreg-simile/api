@@ -54,3 +54,10 @@ export async function changeInfo(id, newInfo) {
 
     return user.save()
 }
+
+export async function deleteById(id) {
+    const user = await User.findOne({ _id: id })
+    if (!user) throw constructError(404);
+
+    return User.deleteOne({ _id: id })
+}

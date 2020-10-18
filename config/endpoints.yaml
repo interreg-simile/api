@@ -28,6 +28,10 @@
     method: PATCH
     token_required: true
 
+  - path: /:id
+    method: DELETE
+    token_required: true
+
 /rois:
 
   - path: ""

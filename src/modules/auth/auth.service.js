@@ -41,7 +41,7 @@ export async function login(data) {
 
     const passwordMatch = await bcrypt.compare(data.password, user.password)
     if (!passwordMatch) throw constructError(401, "Invalid credentials")
-    if (!user.isConfirmed) throw constructError(401, "Email not verified")
+    if (!user.isConfirmed) throw constructError(403, "Email not verified")
 
     const token = jwt.sign({ userId: user._id.toString(), email: user.email }, JWT_PK)
 

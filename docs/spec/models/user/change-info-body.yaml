@@ -15,7 +15,7 @@ properties:
     description: User's city.
 
   yearOfBirth:
-    type: string
+    type: number
     description: User's year of birth (in format YYYY).
 
   gender:

@@ -36,7 +36,7 @@ export const changeInfo = [
 
     body("city").optional().trim().escape(),
 
-    body("yearOfBirth").optional().isLength({ min: 4, max: 4 }),
+    body("yearOfBirth").optional().isInt().isLength({ min: 4, max: 4 }),
 
     body("gender").optional().trim().escape()
 ]

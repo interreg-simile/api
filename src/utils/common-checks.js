@@ -45,3 +45,12 @@ export const checkValidation = (req, next) => {
     return true;
 
 };
+
+export const checkAdminOrPaternity = (userId, req, next) => {
+    if (!req.isAdmin && userId !== req.userId) {
+        next(constructError(401));
+        return false;
+    }
+
+    return true;
+};

@@ -9,7 +9,7 @@ const schema = new Schema({
     name       : { type: String, required: true },
     surname    : { type: String, required: true },
     city       : { type: String, required: false },
-    yearOfBirth: { type: String, required: false },
+    yearOfBirth: { type: Number, required: false },
     gender     : { type: String, required: false }
 }, { timestamps: true });
 

@@ -192,10 +192,8 @@ export const getById = (req, res, next) => {
  */
 export const markForDeletion = (req, res, next) => {
 
-    // Validate the request
     if (!checkValidation(req, next)) return;
 
-    // Mark the observation for deletion
     observationService.softDelete(req.params.id, req.isAdmin, req.userId)
         .then(() => res.status(204).json({ meta: { code: 204 } }))
         .catch(err => next(err));

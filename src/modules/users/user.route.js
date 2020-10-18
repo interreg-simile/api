@@ -17,4 +17,7 @@ router.patch("/:id/change-password", validator.changePassword, controller.change
 // PATCH - /users/{user_id}/change-info
 router.patch("/:id/change-info", validator.changeInfo, controller.changeInfo);
 
+// DELETE - /users/{user_id}
+router.delete("/:id", controller.deleteById)
+
 export default router;
