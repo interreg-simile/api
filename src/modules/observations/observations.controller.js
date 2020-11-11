@@ -14,14 +14,6 @@ import { populateDescriptions } from "./observations.service";
 import { projectObservation } from "./observations.service";
 import { convertToGeoJsonFeature } from "./observations.service";
 
-
-/**
- * Returns all the observations saved in the database.
- *
- * @param {Object} req - The Express request object.
- * @param {Object} res - The Express response object.
- * @param {Function} next - The Express next middleware function.
- */
 export const getAll = (req, res, next) => {
 
     if (!checkValidation(req, next)) return;
@@ -76,14 +68,6 @@ export const getAll = (req, res, next) => {
 
 };
 
-
-/**
- * Inserts a new event in the database.
- *
- * @param {Object} req - The Express request object.
- * @param {Object} res - The Express response object.
- * @param {Function} next - The Express next middleware function.
- */
 export const create = (req, res, next) => {
 
     if (!checkValidation(req, next)) return;
@@ -92,9 +76,12 @@ export const create = (req, res, next) => {
     const generateCallId = req.query.callId || "false";
 
     const data = {
-        uid   : req.userId,
-        ...req.body
-    };
+      uid: req.userId,
+      ...req.body
+    }
+
+    if (data.details) data.details = fixDetails(data.details)
+    if (data.measures) data.measures = fixMeasures(data.measures)
 
     if (generateCallId === "true") data.callId = Math.floor(10000 + Math.random() * 90000);
 
@@ -131,14 +118,6 @@ export const create = (req, res, next) => {
 
 };
 
-
-/**
- * Returns the observation with a given id.
- *
- * @param {Object} req - The Express request object.
- * @param {Object} res - The Express response object.
- * @param {Function} next - The Express next middleware function.
- */
 export const getById = (req, res, next) => {
 
     // Validate the request
@@ -182,14 +161,6 @@ export const getById = (req, res, next) => {
 
 };
 
-
-/**
- * Marks an observation for deletion.
- *
- * @param {Object} req - The Express request object.
- * @param {Object} res - The Express response object.
- * @param {Function} next - The Express next middleware function.
- */
 export const markForDeletion = (req, res, next) => {
 
     if (!checkValidation(req, next)) return;
@@ -199,3 +170,42 @@ export const markForDeletion = (req, res, next) => {
         .catch(err => next(err));
 
 };
+
+function fixDetails(originalDetails) {
+  const details = _.cloneDeep(originalDetails)
+  loopProps(details)
+  return details
+}
+
+function loopProps(prop) {
+  if (!prop) return
+
+  if (typeof prop === 'object') {
+    Object.keys(prop).forEach(key => {
+      if (key === "code" && typeof prop[key] === 'string') {
+        prop[key] = parseInt(prop[key])
+        return
+      }
+      loopProps(prop[key])
+    })
+  }
+
+  if (Array.isArray(prop)) {
+    prop.forEach(innerProp => {
+      loopProps(innerProp)
+    })
+  }
+}
+
+function fixMeasures(originalMeasures) {
+  const measures = _.cloneDeep(originalMeasures)
+
+  Object.keys(measures).forEach(key => {
+    const measure = measures[key]
+    if (measure.instrument && measure.instrument.type && measure.instrument.type.code && typeof measure.instrument.type.code === 'string') {
+      measure.instrument.type.code = parseInt(measure.instrument.type.code)
+    }
+  })
+
+  return measures
+}
