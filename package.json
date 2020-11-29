@@ -6,15 +6,17 @@
   "license": "SEE LICENSE IN LICENSE",
   "main": "index.js",
   "scripts": {
+    "start": "nodemon index.js",
+    "test": "npm run unit",
+    "unit": "tap -b tests/**/*.test.js",
+
     "seed": "babel-node src/setup/seeder.js",
     "seed:prod": "babel-node build/setup/seeder.js",
-    "start": "nodemon index.js",
     "start:prod": "npm run build:prod && npm run start:server",
     "build:prod": "babel src -s -D -d build",
     "start:server": "node build/app.js",
     "serve:docs": "live-server --watch=./docs/ --open=./docs/temp/",
-    "build:docs": "redoc-cli bundle docs/spec/openapi.yaml --output ./docs/index.html --options.hideDownloadButton",
-    "unit": "tap -b tests/**/*.test.js"
+    "build:docs": "redoc-cli bundle docs/spec/openapi.yaml --output ./docs/index.html --options.hideDownloadButton"
   },
   "dependencies": {
     "@babel/runtime": "7.12.5",
@@ -56,6 +58,7 @@
     "live-server": "1.2.1",
     "lorem-ipsum": "^2.0.3",
     "nodemon": "2.0.6",
+    "pre-commit": "1.2.2",
     "redoc-cli": "0.10.1",
     "sinon": "9.2.1",
     "tap": "^14.11.0"
