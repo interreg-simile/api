@@ -13,7 +13,8 @@
     "build:prod": "babel src -s -D -d build",
     "start:server": "node build/app.js",
     "serve:docs": "live-server --watch=./docs/ --open=./docs/temp/",
-    "build:docs": "redoc-cli bundle docs/spec/openapi.yaml --output ./docs/index.html --options.hideDownloadButton"
+    "build:docs": "redoc-cli bundle docs/spec/openapi.yaml --output ./docs/index.html --options.hideDownloadButton",
+    "unit": "tap -b tests/**/*.test.js"
   },
   "dependencies": {
     "@babel/runtime": "7.12.5",
@@ -55,7 +56,9 @@
     "live-server": "1.2.1",
     "lorem-ipsum": "^2.0.3",
     "nodemon": "2.0.6",
-    "redoc-cli": "0.10.1"
+    "redoc-cli": "0.10.1",
+    "sinon": "9.2.1",
+    "tap": "^14.11.0"
   },
   "eslintConfig": {
     "extends": "@mia-platform/eslint-config-mia"
