@@ -4,11 +4,11 @@
   "description": "A RESTFul API that powers project SIMILE applications.",
   "author": "Edoardo Pessina <edoardopessina.priv@gmail.com>",
   "license": "SEE LICENSE IN LICENSE",
-  "main": "src/app.js",
+  "main": "index.js",
   "scripts": {
     "seed": "babel-node src/setup/seeder.js",
     "seed:prod": "babel-node build/setup/seeder.js",
-    "start": "nodemon src/app.js --exec babel-node",
+    "start": "nodemon index.js",
     "start:prod": "npm run build:prod && npm run start:server",
     "build:prod": "babel src -s -D -d build",
     "start:server": "node build/app.js",
@@ -23,6 +23,7 @@
     "date-fns": "2.16.1",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "express-pino-logger": "5.0.0",
     "express-validator": "6.7.0",
     "helmet": "3.23.3",
     "i18next": "19.8.4",
@@ -35,6 +36,7 @@
     "multer": "^1.4.2",
     "node-fetch": "2.6.1",
     "path-to-regexp": "6.2.0",
+    "pino": "6.7.0",
     "proj4": "2.6.3",
     "redoc": "2.0.0-rc.47",
     "rotating-file-stream": "2.1.3",
@@ -48,10 +50,15 @@
     "@babel/plugin-transform-runtime": "7.12.1",
     "@babel/preset-env": "7.12.7",
     "@babel/register": "7.12.1",
+    "@mia-platform/eslint-config-mia": "3.0.0",
+    "eslint": "7.14.0",
     "live-server": "1.2.1",
     "lorem-ipsum": "^2.0.3",
     "nodemon": "2.0.6",
     "redoc-cli": "0.10.1"
+  },
+  "eslintConfig": {
+    "extends": "@mia-platform/eslint-config-mia"
   },
   "engines": {
     "node": ">=12"
