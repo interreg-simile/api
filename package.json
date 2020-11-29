@@ -1,11 +1,10 @@
 {
   "name": "simile-api",
   "version": "1.0.0",
-  "description": "SEE LICENSE IN LICENSE",
+  "description": "A RESTFul API that powers project SIMILE applications.",
+  "author": "Edoardo Pessina <edoardopessina.priv@gmail.com>",
+  "license": "SEE LICENSE IN LICENSE",
   "main": "src/app.js",
-  "engines": {
-    "node": "13.0.1"
-  },
   "scripts": {
     "seed": "babel-node src/setup/seeder.js",
     "seed:prod": "babel-node build/setup/seeder.js",
@@ -16,16 +15,6 @@
     "serve:docs": "live-server --watch=./docs/ --open=./docs/temp/",
     "build:docs": "redoc-cli bundle docs/spec/openapi.yaml --output ./docs/index.html --options.hideDownloadButton"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/interreg-simile/api.git"
-  },
-  "author": "Edoardo Pessina",
-  "license": "AGPL-3.0-only",
-  "bugs": {
-    "url": "https://github.com/interreg-simile/api/issues"
-  },
-  "homepage": "https://github.com/interreg-simile/api#readme",
   "dependencies": {
     "@babel/runtime": "^7.8.3",
     "bcryptjs": "2.4.3",
@@ -70,5 +59,16 @@
     "nyc": "^14.1.1",
     "redoc-cli": "0.9.7",
     "sinon": "^7.5.0"
-  }
+  },
+  "engines": {
+    "node": ">=12"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/interreg-simile/api.git"
+  },
+  "bugs": {
+    "url": "https://github.com/interreg-simile/api/issues"
+  },
+  "homepage": "https://github.com/interreg-simile/api#readme"
 }
