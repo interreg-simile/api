@@ -1,6 +1,6 @@
 {
   "name": "simile-api",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "A RESTFul API that powers project SIMILE applications.",
   "main": "src/app.js",
   "engines": {
