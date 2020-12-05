@@ -1,11 +1,10 @@
 'use strict'
 
 const mongoose = require('mongoose')
-const logger = require('pino')()
 
 const { MONGO_URL } = process.env
 
-async function connectDb() {
+async function connectDb(logger) {
   const options = {
     useNewUrlParser: true,
     useCreateIndex: true,
@@ -17,7 +16,7 @@ async function connectDb() {
   logger.info(`[setup] Connected to db ${MONGO_URL}`)
 }
 
-async function disconnectDb() {
+async function disconnectDb(logger) {
   if (mongoose.connection) {
     await mongoose.connection.close()
     logger.info(`[setup] Disconnected from db ${MONGO_URL}`)

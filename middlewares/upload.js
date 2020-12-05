@@ -3,7 +3,7 @@
 const multer = require('multer')
 const uuid = require('uuid/v4')
 
-const constructError = require('../lib/constructError')
+const { CustomError } = require('../lib/CustomError')
 
 module.exports = (req, res, next) => {
   if (!req.config.upload) {
@@ -20,7 +20,8 @@ module.exports = (req, res, next) => {
 
   const fileFilter = (request, file, callback) => {
     if (!(file.mimetype === 'image/png' || file.mimetype === 'image/jpg' || file.mimetype === 'image/jpeg')) {
-      callback(constructError(415))
+      request.log.error(`File type ${file.mimetype} not supported`)
+      callback(new CustomError(415))
       return
     }
 
@@ -32,16 +33,12 @@ module.exports = (req, res, next) => {
   const callback = error => {
     if (error) {
       if (error.code === 'LIMIT_UNEXPECTED_FILE') {
-        next(constructError(
-          422,
-          `messages.tooManyFiles;{"max": "${req.config.upload.max}", "field": "${error.field}" }`,
-          'types.fileUploadException')
-        )
-        return
+        req.log.error(error, `Max number of ${req.config.upload.max} file(s) exceeded`)
+        throw new CustomError(422, 'Too many files', 'FileUploadException')
       }
 
-      next(constructError(500, '', 'types.fileUploadException'))
-      return
+      req.log.error(error, 'Error uploading files')
+      throw new CustomError(500, 'Error uploading files')
     }
 
     let tooFewFilesField
@@ -59,13 +56,8 @@ module.exports = (req, res, next) => {
     })
 
     if (tooFewFilesField) {
-      next(constructError(
-        422,
-        `messages.tooFewFiles;{ "min": "${error.min}", "field": "${error.name}" }`,
-        'types.fileUploadException'
-      ))
-
-      return
+      req.log.error(error, `Min number of ${error.min} file(s) not reached`)
+      throw new CustomError(422, 'Too few files', 'FileUploadException')
     }
 
     next()

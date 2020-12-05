@@ -24,6 +24,8 @@ tap.test('checkToken middleware', t => {
       middleware(mockReq, mockRes, mockNext)
 
       t.ok(mockNext.calledOnce)
+      t.deepEquals(mockReq.isAdmin, false)
+      t.deepEquals(mockReq.userId, null)
       t.end()
     })
 

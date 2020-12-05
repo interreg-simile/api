@@ -2,7 +2,6 @@
 
 const path = require('path')
 const express = require('express')
-const logger = require('pino')()
 const cors = require('cors')()
 const helmet = require('helmet')()
 const pinoExpress = require('express-pino-logger')()
@@ -14,7 +13,7 @@ const checkToken = require('../middlewares/checkToken')
 const upload = require('../middlewares/upload')
 const parseFormdata = require('../middlewares/parseFormdata')
 
-function initMiddlewares(app) {
+function initMiddlewares(app, logger) {
   app.use(cors)
   app.use(helmet)
   app.use(pinoExpress)

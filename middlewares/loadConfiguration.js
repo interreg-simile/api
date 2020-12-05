@@ -5,7 +5,7 @@ const yaml = require('yamljs')
 const { find } = require('lodash')
 const { match } = require('path-to-regexp')
 
-const constructError = require('../lib/constructError')
+const { CustomError } = require('../lib/CustomError')
 
 const generalConf = yaml.load(path.resolve('./config/default.yaml'))
 const endpointsConf = yaml.load(path.resolve('./config/endpoints.yaml'))
@@ -20,8 +20,8 @@ function setRequestConfig(req, res, next) {
   const params = find(endpointsConf[baseUrl], i => match(i.path)(reqPath) && i.method === req.method)
 
   if (!params) {
-    next(constructError(404, 'messages.routeNotFound'))
-    return
+    req.log.error('Route not found')
+    throw new CustomError(404, 'Route not found')
   }
 
   req.config = params

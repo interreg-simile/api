@@ -1,7 +1,7 @@
 'use strict'
 
 const jwt = require('jsonwebtoken')
-const constructError = require('../lib/constructError')
+const { CustomError } = require('../lib/CustomError')
 
 const { JWT_PK } = process.env
 
@@ -12,8 +12,8 @@ module.exports = (req, res, next) => {
     const { token_required: isTokenRequired } = req.config
 
     if (isTokenRequired) {
-      next(constructError(401))
-      return
+      req.log.error('KWT token required, but not found')
+      throw new CustomError(401)
     }
 
     req.isAdmin = false
@@ -28,8 +28,8 @@ module.exports = (req, res, next) => {
   try {
     decodedToken = jwt.verify(token, JWT_PK)
   } catch (error) {
-    next(constructError(500, 'messages.jwtMalformed'))
-    return
+    req.log.error(error, 'Error decoding JWT token')
+    throw new CustomError(500, 'Malformed JTW token')
   }
 
   req.userId = decodedToken.userId
