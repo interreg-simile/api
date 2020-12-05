@@ -1,16 +1,16 @@
 'use strict'
 
 const i18next = require('i18next')
-const { appConf } = require('./loadConfiguration')
+const loadConfiguration = require('./loadConfiguration')
 
 module.exports = (req, res, next) => {
-  let { defaultLng: lng } = appConf
+  let { defaultLng: lng } = loadConfiguration.appConf
 
   const lngHeader = req.get('Accept-Language')
 
   if (lngHeader) {
     lngHeader.split(',').some(acceptedLanguage => {
-      if (appConf.lngs.includes(acceptedLanguage.trim())) {
+      if (loadConfiguration.appConf.lngs.includes(acceptedLanguage.trim())) {
         lng = acceptedLanguage.trim()
         return true
       }
