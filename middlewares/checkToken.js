@@ -12,7 +12,7 @@ module.exports = (req, res, next) => {
     const { token_required: isTokenRequired } = req.config
 
     if (isTokenRequired) {
-      req.log.error('KWT token required, but not found')
+      req.log.error('JWT token required, but not found')
       throw new CustomError(401)
     }
 
@@ -29,7 +29,7 @@ module.exports = (req, res, next) => {
     decodedToken = jwt.verify(token, JWT_PK)
   } catch (error) {
     req.log.error(error, 'Error decoding JWT token')
-    throw new CustomError(500, 'Malformed JTW token')
+    throw new CustomError(500, 'Error decoding JWT token')
   }
 
   req.userId = decodedToken.userId

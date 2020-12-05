@@ -4,7 +4,7 @@
 const { errorTypes, errorMessages } = require('../lib/CustomError')
 
 // TODO remove saved files
-function handleErrors(error, req, res, next) {
+module.exports = (error, req, res, next) => {
   const statusCode = error.code || 500
 
   const meta = {
@@ -15,5 +15,3 @@ function handleErrors(error, req, res, next) {
 
   res.status(statusCode).json({ meta })
 }
-
-module.exports = { handleErrors }

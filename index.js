@@ -8,7 +8,7 @@ const { appConf } = require('./middlewares/loadConfiguration')
 const { connectDb, disconnectDb } = require('./setup/db')
 const { initMiddlewares } = require('./setup/middlewares')
 const { initRoutes } = require('./setup/routes')
-const { handleErrors } = require('./middlewares/handle-errors')
+const handleErrors = require('./middlewares/handleErrors')
 
 async function start() {
   const { port } = appConf
