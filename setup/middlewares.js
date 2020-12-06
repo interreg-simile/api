@@ -17,6 +17,7 @@ function initMiddlewares(app, logger) {
   app.use(cors)
   app.use(helmet)
   app.use(pinoExpress)
+
   app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')))
 
   app.use(setLanguage)

@@ -9,6 +9,8 @@ const { connectDb, disconnectDb } = require('./setup/db')
 const { initMiddlewares } = require('./setup/middlewares')
 const { initRoutes } = require('./setup/routes')
 const handleErrors = require('./middlewares/handleErrors')
+const { loadProjections } = require('./lib/spatialOperations')
+const initInternationalization = require('./lib/i18n')
 
 async function start() {
   const { port } = appConf
@@ -19,6 +21,10 @@ async function start() {
   initMiddlewares(app, logger)
   initRoutes(app, logger)
   app.use(handleErrors)
+
+  loadProjections(logger)
+
+  await initInternationalization(logger)
 
   const serverProcess = app.listen(port, () => logger.info(`[setup] Server listening on port ${port}`))
   onClose(serverProcess)
@@ -39,5 +45,4 @@ function onClose(serverProcess) {
   }
 }
 
-start()
-  .catch(error => logger.error('[setup] Error starting the server', error))
+start().catch(error => logger.error(error, '[setup] Error starting the server'))
