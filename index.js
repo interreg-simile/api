@@ -1,30 +1,18 @@
 'use strict'
 
 require('dotenv').config()
-const express = require('express')
 const logger = require('pino')()
 
+const initServer = require('./setup/server')
 const { appConf } = require('./middlewares/loadConfiguration')
 const { connectDb, disconnectDb } = require('./setup/db')
-const { initMiddlewares } = require('./setup/middlewares')
-const { initRoutes } = require('./setup/routes')
-const handleErrors = require('./middlewares/handleErrors')
-const { loadProjections } = require('./lib/spatialOperations')
-const initInternationalization = require('./lib/i18n')
 
 async function start() {
   const { port } = appConf
 
-  const app = express()
+  const app = await initServer(logger)
 
   await connectDb(logger)
-  initMiddlewares(app, logger)
-  initRoutes(app, logger)
-  app.use(handleErrors)
-
-  loadProjections(logger)
-
-  await initInternationalization(logger)
 
   const serverProcess = app.listen(port, () => logger.info(`[setup] Server listening on port ${port}`))
   onClose(serverProcess)
