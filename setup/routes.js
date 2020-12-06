@@ -1,11 +1,10 @@
 'use strict'
 
 const { version } = require('../middlewares/loadConfiguration')
+const { router: roisRouter } = require('../modules/rois/rois.route')
 
 function initRoutes(app, logger) {
-  app.get(`/${version}/`, (req, res) => {
-    res.status(200).send('Hello World!')
-  })
+  app.use(`/${version}/rois`, roisRouter)
 
   logger.info('[setup] Routes initialized')
 }
