@@ -4,7 +4,7 @@ const path = require('path')
 const express = require('express')
 const cors = require('cors')()
 const helmet = require('helmet')()
-const pinoExpress = require('express-pino-logger')()
+const pinoExpress = require('express-pino-logger')
 const bodyParser = require('body-parser')
 
 const setLanguage = require('../middlewares/setLanguage')
@@ -13,10 +13,10 @@ const checkToken = require('../middlewares/checkToken')
 const upload = require('../middlewares/upload')
 const parseFormdata = require('../middlewares/parseFormdata')
 
-function initMiddlewares(app, logger) {
+function initMiddlewares(app, logger, logLevel) {
   app.use(cors)
   app.use(helmet)
-  app.use(pinoExpress)
+  app.use(pinoExpress({ level: logLevel }))
 
   app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')))
 

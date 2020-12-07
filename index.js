@@ -1,16 +1,19 @@
 'use strict'
 
 require('dotenv').config()
-const logger = require('pino')()
+const pino = require('pino')
 
 const initServer = require('./setup/server')
 const { appConf } = require('./middlewares/loadConfiguration')
 const { connectDb, disconnectDb } = require('./setup/db')
 
+const { LOG_LEVEL } = process.env
+const logger = pino({ level: LOG_LEVEL })
+
 async function start() {
   const { port } = appConf
 
-  const app = await initServer(logger)
+  const app = await initServer(logger, LOG_LEVEL)
 
   await connectDb(logger)
 

@@ -8,10 +8,10 @@ const handleErrors = require('../middlewares/handleErrors')
 const { loadProjections } = require('../lib/spatialOperations')
 const initInternationalization = require('../lib/i18n')
 
-module.exports = async(logger) => {
+module.exports = async(logger, logLevel) => {
   const app = express()
 
-  initMiddlewares(app, logger)
+  initMiddlewares(app, logger, logLevel)
   initRoutes(app, logger)
   app.use(handleErrors)
 

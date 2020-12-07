@@ -7,7 +7,7 @@ const yaml = require('yamljs')
 const { mockLogger } = require('../utils')
 const { setRequestConfig: middleware } = require('../../middlewares/loadConfiguration')
 
-tap.test('checkToken middleware', t => {
+tap.test('loadConfiguration middleware', t => {
   const mockRes = {}
   const mockNext = sinon.spy()
 
