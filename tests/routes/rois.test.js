@@ -4,7 +4,7 @@ const tap = require('tap')
 const sinon = require('sinon')
 
 const { createMockRequest, connectTestDb, disconnectTestDb } = require('../setup')
-const { compareBodies, compareValidationErrorBodies } = require('../utils')
+const { sortById, cleanDbData, compareValidationErrorBodies } = require('../utils')
 const { version } = require('../../middlewares/loadConfiguration')
 const { seed } = require('./__mocks__/rois.mock')
 const service = require('../../modules/rois/rois.service')
@@ -228,7 +228,7 @@ tap.test('/rois', async t => {
       const res = await request.get(baseUrl)
 
       t.strictSame(res.status, 200)
-      compareBodies(res.body, 200, expectedData, t)
+      t.strictSame(cleanDbData(sortById(res.body.data)), expectedData)
       t.end()
     })
 
@@ -275,7 +275,7 @@ tap.test('/rois', async t => {
         .query(query)
 
       t.strictSame(res.status, 200)
-      compareBodies(res.body, 200, expectedData, t)
+      t.strictSame(cleanDbData(sortById(res.body.data)), expectedData)
       t.end()
     })
 

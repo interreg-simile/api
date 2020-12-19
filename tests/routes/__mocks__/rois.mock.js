@@ -4,6 +4,7 @@ const { model: roisModel } = require('../../../modules/rois/rois.model')
 
 const data = [
   {
+    _id: '000000000000000000000001',
     country: { code: 1 },
     area: { code: 1 },
     lake: { code: 1 },
@@ -32,6 +33,7 @@ const data = [
     },
   },
   {
+    _id: '000000000000000000000002',
     country: { code: 2 },
     area: { code: 2 },
     lake: { code: 2 },
@@ -60,6 +62,7 @@ const data = [
     },
   },
   {
+    _id: '000000000000000000000003',
     country: { code: 2 },
     area: { code: 3 },
     lake: { code: 3 },

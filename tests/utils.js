@@ -8,9 +8,17 @@ const mockLogger = {
   info: () => '',
 }
 
-function cleanFoundBody(body) {
-  const { data } = body
+function sortById(array) {
+  const compare = (objA, objB) => {
+    if (objA._id < objB._id) { return -1 }
+    if (objA._id > objB._id) { return 1 }
+    return 0
+  }
 
+  return array.sort(compare)
+}
+
+function cleanDbData(data) {
   const arrayData = Array.isArray(data) ? data : [data]
 
   arrayData.forEach(element => {
@@ -20,18 +28,7 @@ function cleanFoundBody(body) {
     delete element.updatedAt
   })
 
-  body.data = Array.isArray(data) ? arrayData : arrayData[0]
-
-  return body
-}
-
-function compareBodies(foundBody, wantedCode, wantedData, tap) {
-  const wantedBody = {
-    meta: { code: wantedCode },
-    data: wantedData,
-  }
-
-  tap.strictSame(cleanFoundBody(foundBody), wantedBody)
+  return Array.isArray(data) ? arrayData : arrayData[0]
 }
 
 function compareValidationErrorBodies(foundBody, wantedErrors, tap) {
@@ -49,4 +46,4 @@ function compareValidationErrorBodies(foundBody, wantedErrors, tap) {
   tap.strictSame(foundBody, wantedBody)
 }
 
-module.exports = { mockLogger, compareBodies, compareValidationErrorBodies }
+module.exports = { mockLogger, sortById, cleanDbData, compareValidationErrorBodies }
