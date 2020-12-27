@@ -8,7 +8,7 @@ async function getAll(filter, projection, options) {
 }
 
 async function getById(id, filter, projection, options) {
-  const alert = alertsModel.findOne({ _id: id, ...filter }, projection, { lean: true, ...options })
+  const alert = await alertsModel.findOne({ _id: id, ...filter }, projection, { lean: true, ...options })
 
   if (!alert) {
     throw new CustomError(404)
@@ -34,7 +34,7 @@ async function create(data) {
 }
 
 async function upsert(id, data) {
-  const alert = alertsModel.findById(id)
+  const alert = await alertsModel.findById(id)
 
   if (!alert) {
     const newAlert = await create({ id, ...data })
@@ -51,7 +51,7 @@ async function upsert(id, data) {
 }
 
 async function softDelete(id) {
-  const alert = alertsModel.findOne({ _id: id, markedForDeletion: false })
+  const alert = await alertsModel.findOne({ _id: id, markedForDeletion: false })
 
   if (!alert) {
     throw new CustomError(404)

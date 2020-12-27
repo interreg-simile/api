@@ -6,7 +6,7 @@ const { model: alertsModel } = require('../../../modules/alerts/alerts.model')
 
 const data = [
   {
-    _id: '000000000000000000000001',
+    _id: '111111111111111111111111',
     uid: '5dd7bbe0701d5bdd685c1f10',
     title: { it: 'Past alert', en: 'Past alert' },
     links: [
@@ -22,7 +22,7 @@ const data = [
     createdAt: moment('2020-01-01').toISOString(),
   },
   {
-    _id: '000000000000000000000002',
+    _id: '222222222222222222222222',
     uid: '5dd7bbe0701d5bdd685c1f10',
     title: { it: 'Valid alert', en: 'Valid alert' },
     links: [],
@@ -32,7 +32,7 @@ const data = [
     createdAt: moment('2020-03-01').toISOString(),
   },
   {
-    _id: '000000000000000000000003',
+    _id: '333333333333333333333333',
     uid: '5dd7bbe0701d5bdd685c1f10',
     title: { it: 'Deleted alert', en: 'Deleted alert' },
     links: [],
