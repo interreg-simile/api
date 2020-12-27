@@ -11,7 +11,7 @@ const { seed: seedAlerts, data: mockAlerts } = require('./__mocks__/alerts.mock'
 const service = require('../../modules/alerts/alerts.service')
 
 tap.test('/alerts', async t => {
-  await connectTestDb()
+  await connectTestDb('simile-test-alerts')
   await seedAlerts()
 
   const request = await createMockRequest()

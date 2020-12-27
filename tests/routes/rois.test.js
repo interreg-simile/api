@@ -10,7 +10,7 @@ const { seed } = require('./__mocks__/rois.mock')
 const service = require('../../modules/rois/rois.service')
 
 tap.test('/rois', async t => {
-  await connectTestDb()
+  await connectTestDb('simile-test-rois')
   await seed()
 
   const request = await createMockRequest()
