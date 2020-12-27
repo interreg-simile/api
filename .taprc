@@ -1,0 +1,7 @@
+bail: false
+coverage-report:
+  - text
+  - html
+nyc-arg:
+  - --exclude=tests/*.js
+timeout: 0
