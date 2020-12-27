@@ -24,7 +24,7 @@ async function getAll(req, res, next) {
     res.status(200).json({ meta: { code: 200 }, data: alerts })
   } catch (error) {
     req.log.error({ error, query, projection, options }, 'Error retrieving alerts')
-    return next(error instanceof CustomError ? error : new CustomError(500, error.message))
+    return next(new CustomError(500, error.message))
   }
 }
 
