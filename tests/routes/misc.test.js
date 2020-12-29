@@ -147,7 +147,7 @@ tap.test('/misc', async t => {
       t.end()
     })
 
-    t.test('has success', async t => {
+    t.test('returns 200', async t => {
       const query = { lat: 12.5, lon: 12.5 }
 
       const owmData = {

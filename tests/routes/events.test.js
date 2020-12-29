@@ -307,4 +307,6 @@ tap.test('/events', async t => {
 
     t.end()
   })
+
+  t.end()
 })

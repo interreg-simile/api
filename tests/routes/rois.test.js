@@ -206,7 +206,7 @@ tap.test('/rois', async t => {
       t.end()
     })
 
-    t.test('has success with no query', async t => {
+    t.test('returns 200 with no query', async t => {
       const expectedData = [
         {
           country: { code: 1, description: 'Italy' },
@@ -232,7 +232,7 @@ tap.test('/rois', async t => {
       t.end()
     })
 
-    t.test('has success with query', async t => {
+    t.test('returns 200 with query', async t => {
       const query = {
         includeCoords: true,
         lat: 45.477947646310284,
