@@ -58,6 +58,7 @@
     "eslint": "7.14.0",
     "live-server": "1.2.1",
     "lorem-ipsum": "^2.0.3",
+    "nock": "13.0.5",
     "nodemon": "2.0.6",
     "pre-commit": "1.2.2",
     "redoc-cli": "0.10.1",
