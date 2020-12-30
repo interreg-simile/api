@@ -8,13 +8,13 @@ async function getAll(filter, projection, options) {
 }
 
 async function getById(id, filter, projection, options) {
-  const alert = await eventsModel.findOne({ _id: id, ...filter }, projection, { lean: true, ...options })
+  const event = await eventsModel.findOne({ _id: id, ...filter }, projection, { lean: true, ...options })
 
-  if (!alert) {
+  if (!event) {
     throw new CustomError(404)
   }
 
-  return alert
+  return event
 }
 
 module.exports = { getAll, getById }

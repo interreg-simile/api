@@ -2,12 +2,25 @@
 'use strict'
 
 const { body } = require('express-validator')
+const commonValidations = require('../../lib/commonValidations')
 
-const register = [
+const getById = commonValidations.paramId
+
+const changeEmail = [
+  commonValidations.paramId,
+
   body('email')
     .not().isEmpty().withMessage('Must have a value')
     .isEmail().withMessage('Must be an email')
     .normalizeEmail(),
+]
+
+const changePassword = [
+  commonValidations.paramId,
+
+  body('oldPassword')
+    .trim()
+    .not().isEmpty().withMessage('Must have a value'),
 
   body('password')
     .trim()
@@ -24,15 +37,19 @@ const register = [
 
       return true
     }),
+]
+
+const changeInfo = [
+  commonValidations.paramId,
 
   body('name')
+    .optional()
     .trim()
-    .not().isEmpty().withMessage('Must have a value')
     .escape(),
 
   body('surname')
+    .optional()
     .trim()
-    .not().isEmpty().withMessage('Must have a value')
     .escape(),
 
   body('city')
@@ -53,15 +70,6 @@ const register = [
     .isIn(['male', 'female', 'other']).withMessage('Must be one of \'male\', \'female\', \'other\''),
 ]
 
-const login = [
-  body('email')
-    .not().isEmpty().withMessage('Must have a value')
-    .isEmail().withMessage('Must be an email')
-    .normalizeEmail(),
+const deleteById = commonValidations.paramId
 
-  body('password')
-    .trim()
-    .not().isEmpty().withMessage('Must have a value'),
-]
-
-module.exports = { register, login }
+module.exports = { getById, changeEmail, changePassword, changeInfo, deleteById }
