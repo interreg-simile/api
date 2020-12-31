@@ -26,7 +26,7 @@ tap.test('/alerts', async t => {
     t.test('returns 422 if query includePast is wrong format', async t => {
       const query = { includePast: 'foo' }
 
-      const res = await request
+      const { status, body } = await request
         .get(baseUrl)
         .query(query)
 
@@ -39,8 +39,8 @@ tap.test('/alerts', async t => {
         },
       ]
 
-      t.strictSame(res.status, 422)
-      compareValidationErrorBodies(res.body, expectedErrors, t)
+      t.strictSame(status, 422)
+      compareValidationErrorBodies(body, expectedErrors, t)
       t.end()
     })
 
@@ -49,7 +49,7 @@ tap.test('/alerts', async t => {
 
       const query = { includeDeleted: 'foo' }
 
-      const res = await request
+      const { status, body } = await request
         .get(baseUrl)
         .set('Authorization', 'Bearer foo')
         .query(query)
@@ -63,8 +63,8 @@ tap.test('/alerts', async t => {
         },
       ]
 
-      t.strictSame(res.status, 422)
-      compareValidationErrorBodies(res.body, expectedErrors, t)
+      t.strictSame(status, 422)
+      compareValidationErrorBodies(body, expectedErrors, t)
       jwtStub.restore()
       t.end()
     })
@@ -74,7 +74,7 @@ tap.test('/alerts', async t => {
 
       const query = { includeDeleted: 'true' }
 
-      const res = await request
+      const { status, body } = await request
         .get(baseUrl)
         .set('Authorization', 'Bearer foo')
         .query(query)
@@ -88,8 +88,8 @@ tap.test('/alerts', async t => {
         },
       ]
 
-      t.strictSame(res.status, 422)
-      compareValidationErrorBodies(res.body, expectedErrors, t)
+      t.strictSame(status, 422)
+      compareValidationErrorBodies(body, expectedErrors, t)
       jwtStub.restore()
       t.end()
     })
@@ -97,10 +97,10 @@ tap.test('/alerts', async t => {
     t.test('returns 500 if db query fails', async t => {
       const serviceStub = sinon.stub(service, 'getAll').throws(new Error('Something wrong'))
 
-      const res = await request.get(baseUrl)
+      const { status, body } = await request.get(baseUrl)
 
-      t.strictSame(res.status, 500)
-      t.strictSame(res.body, { meta: { code: 500, errorMessage: 'Something wrong', errorType: 'ServerException' } })
+      t.strictSame(status, 500)
+      t.strictSame(body, { meta: { code: 500, errorMessage: 'Something wrong', errorType: 'ServerException' } })
       serviceStub.restore()
       t.end()
     })
@@ -123,10 +123,10 @@ tap.test('/alerts', async t => {
         },
       ]
 
-      const res = await request.get(baseUrl)
+      const { status, body } = await request.get(baseUrl)
 
-      t.strictSame(res.status, 200)
-      t.strictSame(cleanDbData(sortById(res.body.data)), expectedData)
+      t.strictSame(status, 200)
+      t.strictSame(cleanDbData(sortById(body.data)), expectedData)
       t.end()
     })
 
@@ -154,13 +154,13 @@ tap.test('/alerts', async t => {
 
       const query = { includeDeleted: 'true', includePast: 'false' }
 
-      const res = await request
+      const { status, body } = await request
         .get(baseUrl)
         .set('Authorization', 'Bearer foo')
         .query(query)
 
-      t.strictSame(res.status, 200)
-      const sortedData = sortById(res.body.data)
+      t.strictSame(status, 200)
+      const sortedData = sortById(body.data)
       t.strictSame(cleanDbData(sortedData), expectedData)
       jwtStub.restore()
       t.end()
@@ -186,12 +186,12 @@ tap.test('/alerts', async t => {
 
       const query = { sort: 'dateEnd:desc' }
 
-      const res = await request
+      const { status, body } = await request
         .get(baseUrl)
         .query(query)
 
-      t.strictSame(res.status, 200)
-      t.strictSame(cleanDbData(res.body.data), expectedData)
+      t.strictSame(status, 200)
+      t.strictSame(cleanDbData(body.data), expectedData)
       t.end()
     })
 
@@ -200,7 +200,7 @@ tap.test('/alerts', async t => {
 
   t.test('GET - /:id', async t => {
     t.test('returns 422 if :id is wrong format', async t => {
-      const res = await request.get(`${baseUrl}/foo`)
+      const { status, body } = await request.get(`${baseUrl}/foo`)
 
       const expectedErrors = [
         {
@@ -211,34 +211,34 @@ tap.test('/alerts', async t => {
         },
       ]
 
-      t.strictSame(res.status, 422)
-      compareValidationErrorBodies(res.body, expectedErrors, t)
+      t.strictSame(status, 422)
+      compareValidationErrorBodies(body, expectedErrors, t)
       t.end()
     })
 
     t.test('returns 404 if alert is not found', async t => {
-      const res = await request.get(`${baseUrl}/222222222222222222222223`)
+      const { status, body } = await request.get(`${baseUrl}/222222222222222222222223`)
 
-      t.strictSame(res.status, 404)
-      t.strictSame(res.body, { meta: { code: 404, errorMessage: 'Resource not found', errorType: 'NotFoundException' } })
+      t.strictSame(status, 404)
+      t.strictSame(body, { meta: { code: 404, errorMessage: 'Resource not found', errorType: 'NotFoundException' } })
       t.end()
     })
 
     t.test('returns 404 if non-admin user searches a deleted alert', async t => {
-      const res = await request.get(`${baseUrl}/${mockAlerts[2]._id}`)
+      const { status, body } = await request.get(`${baseUrl}/${mockAlerts[2]._id}`)
 
-      t.strictSame(res.status, 404)
-      t.strictSame(res.body, { meta: { code: 404, errorMessage: 'Resource not found', errorType: 'NotFoundException' } })
+      t.strictSame(status, 404)
+      t.strictSame(body, { meta: { code: 404, errorMessage: 'Resource not found', errorType: 'NotFoundException' } })
       t.end()
     })
 
     t.test('returns 500 if db query fails', async t => {
       const serviceStub = sinon.stub(service, 'getById').throws(new Error('Something wrong'))
 
-      const res = await request.get(`${baseUrl}/${mockAlerts[0]._id}`)
+      const { status, body } = await request.get(`${baseUrl}/${mockAlerts[0]._id}`)
 
-      t.strictSame(res.status, 500)
-      t.strictSame(res.body, { meta: { code: 500, errorMessage: 'Something wrong', errorType: 'ServerException' } })
+      t.strictSame(status, 500)
+      t.strictSame(body, { meta: { code: 500, errorMessage: 'Something wrong', errorType: 'ServerException' } })
       serviceStub.restore()
       t.end()
     })
@@ -252,10 +252,10 @@ tap.test('/alerts', async t => {
         markedForDeletion: mockAlerts[0].markedForDeletion,
       }
 
-      const res = await request.get(`${baseUrl}/${mockAlerts[0]._id}`)
+      const { status, body } = await request.get(`${baseUrl}/${mockAlerts[0]._id}`)
 
-      t.strictSame(res.status, 200)
-      t.strictSame(cleanDbData(res.body.data), expectedData)
+      t.strictSame(status, 200)
+      t.strictSame(cleanDbData(body.data), expectedData)
       t.end()
     })
 
@@ -271,12 +271,12 @@ tap.test('/alerts', async t => {
         markedForDeletion: mockAlerts[2].markedForDeletion,
       }
 
-      const res = await request
+      const { status, body } = await request
         .get(`${baseUrl}/${mockAlerts[2]._id}`)
         .set('Authorization', 'Bearer foo')
 
-      t.strictSame(res.status, 200)
-      t.strictSame(cleanDbData(res.body.data), expectedData)
+      t.strictSame(status, 200)
+      t.strictSame(cleanDbData(body.data), expectedData)
       jwtStub.restore()
       t.end()
     })

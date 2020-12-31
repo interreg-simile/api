@@ -47,46 +47,4 @@ async function getById(req, res, next) {
   }
 }
 
-async function create(req, res, next) {
-  const { userId, body } = req
-
-  const data = { uid: userId, ...body }
-
-  try {
-    const newAlert = await service.create(data)
-    res.status(200).json({ meta: { code: 201 }, data: newAlert })
-  } catch (error) {
-    req.log.error({ error, userId, body }, 'Error creating alert')
-    return next(error instanceof CustomError ? error : new CustomError(500, error.message))
-  }
-}
-
-async function upsert(req, res, next) {
-  const { userId, body } = req
-  const { id } = req.params
-
-  const data = { uid: userId, ...body }
-
-  try {
-    const result = await service.upsert(id, data)
-    const code = result.created ? 201 : 200
-    res.status(200).json({ meta: { code }, data: result.newAlert })
-  } catch (error) {
-    req.log.error({ error, id, userId, body }, 'Error upserting alert')
-    return next(error instanceof CustomError ? error : new CustomError(500, error.message))
-  }
-}
-
-async function softDelete(req, res, next) {
-  const { id } = req.params
-
-  try {
-    await service.softDelete(id)
-    res.status(200).json({ meta: { code: 204 } })
-  } catch (error) {
-    req.log.error({ error, id }, 'Error deleting alert')
-    return next(error instanceof CustomError ? error : new CustomError(500, error.message))
-  }
-}
-
-module.exports = { getAll, getById, create, upsert, softDelete }
+module.exports = { getAll, getById }

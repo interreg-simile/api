@@ -24,7 +24,7 @@ tap.test('/misc', async t => {
     t.test('returns 422 if query lat is defined and lon is not', async t => {
       const query = { lat: 0.0 }
 
-      const res = await request
+      const { status, body } = await request
         .get(baseUrl)
         .query(query)
 
@@ -41,15 +41,15 @@ tap.test('/misc', async t => {
         },
       ]
 
-      t.strictSame(res.status, 422)
-      compareValidationErrorBodies(res.body, expectedErrors, t)
+      t.strictSame(status, 422)
+      compareValidationErrorBodies(body, expectedErrors, t)
       t.end()
     })
 
     t.test('returns 422 if query lon is defined and lat is not', async t => {
       const query = { lon: 0.0 }
 
-      const res = await request
+      const { status, body } = await request
         .get(baseUrl)
         .query(query)
 
@@ -66,15 +66,15 @@ tap.test('/misc', async t => {
         },
       ]
 
-      t.strictSame(res.status, 422)
-      compareValidationErrorBodies(res.body, expectedErrors, t)
+      t.strictSame(status, 422)
+      compareValidationErrorBodies(body, expectedErrors, t)
       t.end()
     })
 
     t.test('returns 422 if query lat is wrong format', async t => {
       const query = { lat: 'foo', lon: 0.0 }
 
-      const res = await request
+      const { status, body } = await request
         .get(baseUrl)
         .query(query)
 
@@ -87,15 +87,15 @@ tap.test('/misc', async t => {
         },
       ]
 
-      t.strictSame(res.status, 422)
-      compareValidationErrorBodies(res.body, expectedErrors, t)
+      t.strictSame(status, 422)
+      compareValidationErrorBodies(body, expectedErrors, t)
       t.end()
     })
 
     t.test('returns 422 if query lon is wrong format', async t => {
       const query = { lat: 0.0, lon: 'foo' }
 
-      const res = await request
+      const { status, body } = await request
         .get(baseUrl)
         .query(query)
 
@@ -108,8 +108,8 @@ tap.test('/misc', async t => {
         },
       ]
 
-      t.strictSame(res.status, 422)
-      compareValidationErrorBodies(res.body, expectedErrors, t)
+      t.strictSame(status, 422)
+      compareValidationErrorBodies(body, expectedErrors, t)
       t.end()
     })
 
@@ -120,12 +120,12 @@ tap.test('/misc', async t => {
         .get('/data/2.5/weather?lat=12.5&lon=12.5&appid=undefined&lang=en&units=metric')
         .replyWithError('Something wrong')
 
-      const res = await request
+      const { status, body } = await request
         .get(baseUrl)
         .query(query)
 
-      t.strictSame(res.status, 500)
-      t.strictSame(res.body, { meta: { code: 500, errorMessage: 'Error calling OpenWeatherMap', errorType: 'ServerException' } })
+      t.strictSame(status, 500)
+      t.strictSame(body, { meta: { code: 500, errorMessage: 'Error calling OpenWeatherMap', errorType: 'ServerException' } })
       t.ok(owmScope.isDone())
       t.end()
     })
@@ -137,12 +137,12 @@ tap.test('/misc', async t => {
         .get('/data/2.5/weather?lat=12.5&lon=12.5&appid=undefined&lang=en&units=metric')
         .reply(400, { error: 'error' })
 
-      const res = await request
+      const { status, body } = await request
         .get(baseUrl)
         .query(query)
 
-      t.strictSame(res.status, 500)
-      t.strictSame(res.body, { meta: { code: 500, errorMessage: 'Error calling OpenWeatherMap', errorType: 'ServerException' } })
+      t.strictSame(status, 500)
+      t.strictSame(body, { meta: { code: 500, errorMessage: 'Error calling OpenWeatherMap', errorType: 'ServerException' } })
       t.ok(owmScope.isDone())
       t.end()
     })
@@ -160,12 +160,12 @@ tap.test('/misc', async t => {
         .get('/data/2.5/weather?lat=12.5&lon=12.5&appid=undefined&lang=en&units=metric')
         .reply(200, owmData)
 
-      const res = await request
+      const { status, body } = await request
         .get(baseUrl)
         .query(query)
 
-      t.strictSame(res.status, 200)
-      t.strictSame(res.body.data, { sky: 4, temperature: 10, wind: 10 })
+      t.strictSame(status, 200)
+      t.strictSame(body.data, { sky: 4, temperature: 10, wind: 10 })
       t.ok(owmScope.isDone())
       t.end()
     })

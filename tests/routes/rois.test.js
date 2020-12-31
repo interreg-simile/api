@@ -25,7 +25,7 @@ tap.test('/rois', async t => {
     t.test('returns 422 if query lat is defined and lon is not', async t => {
       const query = { lat: 0.0 }
 
-      const res = await request
+      const { status, body } = await request
         .get(baseUrl)
         .query(query)
 
@@ -54,15 +54,15 @@ tap.test('/rois', async t => {
         },
       ]
 
-      t.strictSame(res.status, 422)
-      compareValidationErrorBodies(res.body, expectedErrors, t)
+      t.strictSame(status, 422)
+      compareValidationErrorBodies(body, expectedErrors, t)
       t.end()
     })
 
     t.test('returns 422 if query lon is defined and lat is not', async t => {
       const query = { lon: 0.0 }
 
-      const res = await request
+      const { status, body } = await request
         .get(baseUrl)
         .query(query)
 
@@ -91,15 +91,15 @@ tap.test('/rois', async t => {
         },
       ]
 
-      t.strictSame(res.status, 422)
-      compareValidationErrorBodies(res.body, expectedErrors, t)
+      t.strictSame(status, 422)
+      compareValidationErrorBodies(body, expectedErrors, t)
       t.end()
     })
 
     t.test('returns 422 if query lat is wrong format', async t => {
       const query = { lat: 'foo', lon: 0.0 }
 
-      const res = await request
+      const { status, body } = await request
         .get(baseUrl)
         .query(query)
 
@@ -130,15 +130,15 @@ tap.test('/rois', async t => {
         },
       ]
 
-      t.strictSame(res.status, 422)
-      compareValidationErrorBodies(res.body, expectedErrors, t)
+      t.strictSame(status, 422)
+      compareValidationErrorBodies(body, expectedErrors, t)
       t.end()
     })
 
     t.test('returns 422 if query lon is wrong format', async t => {
       const query = { lat: 0.0, lon: 'foo' }
 
-      const res = await request
+      const { status, body } = await request
         .get(baseUrl)
         .query(query)
 
@@ -169,15 +169,15 @@ tap.test('/rois', async t => {
         },
       ]
 
-      t.strictSame(res.status, 422)
-      compareValidationErrorBodies(res.body, expectedErrors, t)
+      t.strictSame(status, 422)
+      compareValidationErrorBodies(body, expectedErrors, t)
       t.end()
     })
 
     t.test('returns 422 if query includeCoords is wrong format', async t => {
       const query = { includeCoords: 'foo' }
 
-      const res = await request
+      const { status, body } = await request
         .get(baseUrl)
         .query(query)
 
@@ -190,18 +190,18 @@ tap.test('/rois', async t => {
         },
       ]
 
-      t.strictSame(res.status, 422)
-      compareValidationErrorBodies(res.body, expectedErrors, t)
+      t.strictSame(status, 422)
+      compareValidationErrorBodies(body, expectedErrors, t)
       t.end()
     })
 
     t.test('returns 500 if db query fails', async t => {
       const serviceStub = sinon.stub(service, 'getAll').throws(new Error('Something wrong'))
 
-      const res = await request.get(baseUrl)
+      const { status, body } = await request.get(baseUrl)
 
-      t.strictSame(res.status, 500)
-      t.strictSame(res.body, { meta: { code: 500, errorMessage: 'Something wrong', errorType: 'ServerException' } })
+      t.strictSame(status, 500)
+      t.strictSame(body, { meta: { code: 500, errorMessage: 'Something wrong', errorType: 'ServerException' } })
       serviceStub.restore()
       t.end()
     })
@@ -225,10 +225,10 @@ tap.test('/rois', async t => {
         },
       ]
 
-      const res = await request.get(baseUrl)
+      const { status, body } = await request.get(baseUrl)
 
-      t.strictSame(res.status, 200)
-      t.strictSame(cleanDbData(sortById(res.body.data)), expectedData)
+      t.strictSame(status, 200)
+      t.strictSame(cleanDbData(sortById(body.data)), expectedData)
       t.end()
     })
 
@@ -270,12 +270,12 @@ tap.test('/rois', async t => {
         },
       ]
 
-      const res = await request
+      const { status, body } = await request
         .get(baseUrl)
         .query(query)
 
-      t.strictSame(res.status, 200)
-      t.strictSame(cleanDbData(sortById(res.body.data)), expectedData)
+      t.strictSame(status, 200)
+      t.strictSame(cleanDbData(sortById(body.data)), expectedData)
       t.end()
     })
 

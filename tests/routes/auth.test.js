@@ -25,11 +25,11 @@ tap.test('auth', async t => {
     const baseUrl = `/${version}/auth/register`
 
     t.test('returns 422 if body is empty', async t => {
-      const body = {}
+      const reqBody = {}
 
-      const res = await request
+      const { status, body } = await request
         .post(baseUrl)
-        .send(body)
+        .send(reqBody)
 
       const expectedErrors = [
         {
@@ -74,13 +74,13 @@ tap.test('auth', async t => {
         },
       ]
 
-      t.strictSame(res.status, 422)
-      compareValidationErrorBodies(res.body, expectedErrors, t)
+      t.strictSame(status, 422)
+      compareValidationErrorBodies(body, expectedErrors, t)
       t.end()
     })
 
     t.test('returns 422 if body contains errors', async t => {
-      const body = {
+      const reqBody = {
         email: 'foo',
         password: 'foo',
         confirmPassword: 'bar',
@@ -90,9 +90,9 @@ tap.test('auth', async t => {
         gender: 'foo',
       }
 
-      const res = await request
+      const { status, body } = await request
         .post(baseUrl)
-        .send(body)
+        .send(reqBody)
 
       const expectedErrors = [
         {
@@ -139,13 +139,13 @@ tap.test('auth', async t => {
         },
       ]
 
-      t.strictSame(res.status, 422)
-      compareValidationErrorBodies(res.body, expectedErrors, t)
+      t.strictSame(status, 422)
+      compareValidationErrorBodies(body, expectedErrors, t)
       t.end()
     })
 
     t.test('returns 409 if email is already in use', async t => {
-      const body = {
+      const reqBody = {
         email: 'user@example.com',
         password: '12345678',
         confirmPassword: '12345678',
@@ -153,19 +153,19 @@ tap.test('auth', async t => {
         surname: 'test',
       }
 
-      const res = await request
+      const { status, body } = await request
         .post(baseUrl)
-        .send(body)
+        .send(reqBody)
 
-      t.strictSame(res.status, 409)
-      t.strictSame(res.body, { meta: { code: 409, errorMessage: 'Email already in use', errorType: 'ConflictException' } })
+      t.strictSame(status, 409)
+      t.strictSame(body, { meta: { code: 409, errorMessage: 'Email already in use', errorType: 'ConflictException' } })
       t.end()
     })
 
     t.test('returns 500 if db operation fails', async t => {
       const serviceStub = sinon.stub(service, 'register').throws(new Error('Something wrong'))
 
-      const body = {
+      const reqBody = {
         email: 'user@example.com',
         password: '12345678',
         confirmPassword: '12345678',
@@ -173,18 +173,18 @@ tap.test('auth', async t => {
         surname: 'test',
       }
 
-      const res = await request
+      const { status, body } = await request
         .post(baseUrl)
-        .send(body)
+        .send(reqBody)
 
-      t.strictSame(res.status, 500)
-      t.strictSame(res.body, { meta: { code: 500, errorMessage: 'Something wrong', errorType: 'ServerException' } })
+      t.strictSame(status, 500)
+      t.strictSame(body, { meta: { code: 500, errorMessage: 'Something wrong', errorType: 'ServerException' } })
       serviceStub.restore()
       t.end()
     })
 
     t.test('returns 201', async t => {
-      const body = {
+      const reqBody = {
         email: 'test@test.com',
         password: '12345678',
         confirmPassword: '12345678',
@@ -195,14 +195,14 @@ tap.test('auth', async t => {
         gender: 'other',
       }
 
-      const res = await request
+      const { status, body } = await request
         .post(baseUrl)
-        .send(body)
+        .send(reqBody)
 
-      t.strictSame(res.status, 201)
-      t.strictSame(res.body.data, { email: body.email })
+      t.strictSame(status, 201)
+      t.strictSame(body.data, { email: reqBody.email })
 
-      const existsUser = await usersModel.exists({ email: body.email })
+      const existsUser = await usersModel.exists({ email: reqBody.email })
       t.ok(existsUser)
       t.end()
     })
@@ -216,11 +216,11 @@ tap.test('auth', async t => {
     const baseUrl = `/${version}/auth/login`
 
     t.test('returns 422 if body is empty', async t => {
-      const body = {}
+      const reqBody = {}
 
-      const res = await request
+      const { status, body } = await request
         .post(baseUrl)
-        .send(body)
+        .send(reqBody)
 
       const expectedErrors = [
         {
@@ -241,20 +241,20 @@ tap.test('auth', async t => {
         },
       ]
 
-      t.strictSame(res.status, 422)
-      compareValidationErrorBodies(res.body, expectedErrors, t)
+      t.strictSame(status, 422)
+      compareValidationErrorBodies(body, expectedErrors, t)
       t.end()
     })
 
     t.test('returns 422 if email is wrong format', async t => {
-      const body = {
+      const reqBody = {
         email: 'foo',
         password: plainPassword,
       }
 
-      const res = await request
+      const { status, body } = await request
         .post(baseUrl)
-        .send(body)
+        .send(reqBody)
 
       const expectedErrors = [
         {
@@ -265,70 +265,70 @@ tap.test('auth', async t => {
         },
       ]
 
-      t.strictSame(res.status, 422)
-      compareValidationErrorBodies(res.body, expectedErrors, t)
+      t.strictSame(status, 422)
+      compareValidationErrorBodies(body, expectedErrors, t)
       t.end()
     })
 
     t.test('returns 404 if user not found', async t => {
-      const body = {
+      const reqBody = {
         email: 'foo@bar.com',
         password: plainPassword,
       }
 
-      const res = await request
+      const { status, body } = await request
         .post(baseUrl)
-        .send(body)
+        .send(reqBody)
 
-      t.strictSame(res.status, 404)
-      t.strictSame(res.body, { meta: { code: 404, errorMessage: 'Resource not found', errorType: 'NotFoundException' } })
+      t.strictSame(status, 404)
+      t.strictSame(body, { meta: { code: 404, errorMessage: 'Resource not found', errorType: 'NotFoundException' } })
       t.end()
     })
 
     t.test('returns 401 if password is wrong', async t => {
-      const body = {
+      const reqBody = {
         email: plainData[1].email,
         password: 'foo',
       }
 
-      const res = await request
+      const { status, body } = await request
         .post(baseUrl)
-        .send(body)
+        .send(reqBody)
 
-      t.strictSame(res.status, 401)
-      t.strictSame(res.body, { meta: { code: 401, errorMessage: 'Invalid credentials', errorType: 'NotAuthorizedException' } })
+      t.strictSame(status, 401)
+      t.strictSame(body, { meta: { code: 401, errorMessage: 'Invalid credentials', errorType: 'NotAuthorizedException' } })
       t.end()
     })
 
     t.test('returns 403 if email is not verified', async t => {
-      const body = {
+      const reqBody = {
         email: plainData[2].email,
         password: plainPassword,
       }
 
-      const res = await request
+      const { status, body } = await request
         .post(baseUrl)
-        .send(body)
+        .send(reqBody)
 
-      t.strictSame(res.status, 403)
-      t.strictSame(res.body, { meta: { code: 403, errorMessage: 'Email not verified', errorType: 'ForbiddenException' } })
+      t.strictSame(status, 403)
+      t.strictSame(body, { meta: { code: 403, errorMessage: 'Email not verified', errorType: 'ForbiddenException' } })
       t.end()
     })
 
     t.test('returns 500 if db operation fails', async t => {
       const serviceStub = sinon.stub(service, 'login').throws(new Error('Something wrong'))
 
-      const body = {
+      const reqBody = {
         email: plainData[2].email,
         password: plainPassword,
       }
 
-      const res = await request
+      const { status, body } = await request
         .post(baseUrl)
-        .send(body)
+        .send(reqBody)
 
-      t.strictSame(res.status, 500)
-      t.strictSame(res.body, { meta: { code: 500, errorMessage: 'Something wrong', errorType: 'ServerException' } })
+      t.strictSame(status, 500)
+      t.strictSame(body, { meta: { code: 500, errorMessage: 'Something wrong', errorType: 'ServerException' } })
       serviceStub.restore()
       t.end()
     })
@@ -336,17 +336,17 @@ tap.test('auth', async t => {
     t.test('returns 200', async t => {
       const jwtStub = sinon.stub(jwt, 'sign').returns(token)
 
-      const body = {
+      const reqBody = {
         email: plainData[1].email,
         password: plainPassword,
       }
 
-      const res = await request
+      const { status, body } = await request
         .post(baseUrl)
-        .send(body)
+        .send(reqBody)
 
-      t.strictSame(res.status, 200)
-      t.strictSame(res.body.data, { token, userId: plainData[1]._id })
+      t.strictSame(status, 200)
+      t.strictSame(body.data, { token, userId: plainData[1]._id })
       t.ok(jwtStub.calledOnce)
       t.ok(jwtStub.calledWith({ userId: plainData[1]._id, email: plainData[1].email }, undefined))
       jwtStub.restore()
