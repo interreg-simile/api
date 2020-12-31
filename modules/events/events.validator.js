@@ -4,8 +4,7 @@ const commonValidations = require('../../lib/commonValidations')
 
 const getAll = [
   commonValidations.queryIncludePast,
-  commonValidations.queryIncludeDeletedOnlyIfAdmin,
-  commonValidations.querySort,
+  ...commonValidations.querySort(['date']),
 ]
 
 const getById = commonValidations.paramId

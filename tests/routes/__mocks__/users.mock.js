@@ -9,17 +9,6 @@ const plainPassword = '12345678'
 const plainData = [
   {
     _id: '000000000000000000000001',
-    email: 'admin@example.com',
-    password: plainPassword,
-    isConfirmed: 'true',
-    name: 'Giulia',
-    surname: 'Bianchi',
-    city: 'Lecco',
-    yearOfBirth: 1990,
-    gender: 'female',
-  },
-  {
-    _id: '000000000000000000000002',
     email: 'user@example.com',
     password: plainPassword,
     isConfirmed: 'true',
@@ -28,6 +17,17 @@ const plainData = [
     city: 'Como',
     yearOfBirth: 1984,
     gender: 'male',
+  },
+  {
+    _id: '000000000000000000000002',
+    email: 'user2@example.com',
+    password: plainPassword,
+    isConfirmed: 'true',
+    name: 'Giulia',
+    surname: 'Bianchi',
+    city: 'Lecco',
+    yearOfBirth: 1990,
+    gender: 'female',
   },
   {
     _id: '000000000000000000000003',
@@ -57,4 +57,4 @@ async function seed() {
   await usersModel.create(data)
 }
 
-module.exports = { plainPassword, plainData, createData, seed }
+module.exports = { plainPassword, plainData, seed }

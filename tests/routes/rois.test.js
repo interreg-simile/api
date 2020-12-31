@@ -21,12 +21,12 @@ tap.test('/rois', async t => {
     await disconnectTestDb()
   })
 
-  t.test('GET - \'\'', async t => {
+  t.test('GET - /', async t => {
     t.test('returns 422 if query lat is defined and lon is not', async t => {
       const query = { lat: 0.0 }
 
       const { status, body } = await request
-        .get(baseUrl)
+        .get(`${baseUrl}/`)
         .query(query)
 
       const expectedErrors = [
@@ -63,7 +63,7 @@ tap.test('/rois', async t => {
       const query = { lon: 0.0 }
 
       const { status, body } = await request
-        .get(baseUrl)
+        .get(`${baseUrl}/`)
         .query(query)
 
       const expectedErrors = [
@@ -100,7 +100,7 @@ tap.test('/rois', async t => {
       const query = { lat: 'foo', lon: 0.0 }
 
       const { status, body } = await request
-        .get(baseUrl)
+        .get(`${baseUrl}/`)
         .query(query)
 
       const expectedErrors = [
@@ -139,7 +139,7 @@ tap.test('/rois', async t => {
       const query = { lat: 0.0, lon: 'foo' }
 
       const { status, body } = await request
-        .get(baseUrl)
+        .get(`${baseUrl}/`)
         .query(query)
 
       const expectedErrors = [
@@ -178,7 +178,7 @@ tap.test('/rois', async t => {
       const query = { includeCoords: 'foo' }
 
       const { status, body } = await request
-        .get(baseUrl)
+        .get(`${baseUrl}/`)
         .query(query)
 
       const expectedErrors = [
@@ -198,7 +198,7 @@ tap.test('/rois', async t => {
     t.test('returns 500 if db query fails', async t => {
       const serviceStub = sinon.stub(service, 'getAll').throws(new Error('Something wrong'))
 
-      const { status, body } = await request.get(baseUrl)
+      const { status, body } = await request.get(`${baseUrl}/`)
 
       t.strictSame(status, 500)
       t.strictSame(body, { meta: { code: 500, errorMessage: 'Something wrong', errorType: 'ServerException' } })
@@ -225,7 +225,7 @@ tap.test('/rois', async t => {
         },
       ]
 
-      const { status, body } = await request.get(baseUrl)
+      const { status, body } = await request.get(`${baseUrl}/`)
 
       t.strictSame(status, 200)
       t.strictSame(cleanDbData(sortById(body.data)), expectedData)
@@ -271,7 +271,7 @@ tap.test('/rois', async t => {
       ]
 
       const { status, body } = await request
-        .get(baseUrl)
+        .get(`${baseUrl}/`)
         .query(query)
 
       t.strictSame(status, 200)

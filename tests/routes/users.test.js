@@ -36,7 +36,7 @@ tap.test('/users', async t => {
     })
 
     t.test('returns 401 if paternity is not satisfied', async t => {
-      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: plainData[1]._id, isAdmin: 'false' })
+      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: plainData[1]._id })
 
       const { status, body } = await request
         .get(`${baseUrl}/${plainData[0]._id}`)
@@ -49,7 +49,7 @@ tap.test('/users', async t => {
     })
 
     t.test('returns 422 if :id is wrong format', async t => {
-      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: 'foo', isAdmin: 'false' })
+      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: 'foo' })
 
       const expectedErrors = [
         {
@@ -71,7 +71,7 @@ tap.test('/users', async t => {
     })
 
     t.test('returns 404 if user is not found', async t => {
-      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: '000000000000000000000004', isAdmin: 'false' })
+      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: '000000000000000000000004' })
 
       const { status, body } = await request
         .get(`${baseUrl}/000000000000000000000004`)
@@ -84,7 +84,7 @@ tap.test('/users', async t => {
     })
 
     t.test('returns 500 if db query fails', async t => {
-      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: plainData[1]._id, isAdmin: 'false' })
+      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: plainData[1]._id })
       const serviceStub = sinon.stub(service, 'getById').throws(new Error('Something wrong'))
 
       const { status, body } = await request
@@ -99,7 +99,7 @@ tap.test('/users', async t => {
     })
 
     t.test('returns 200', async t => {
-      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: plainData[1]._id, isAdmin: 'false' })
+      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: plainData[1]._id })
 
       const expectedData = {
         email: plainData[1].email,
@@ -135,7 +135,7 @@ tap.test('/users', async t => {
     })
 
     t.test('returns 401 if paternity is not satisfied', async t => {
-      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: plainData[1]._id, isAdmin: 'false' })
+      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: plainData[1]._id })
 
       const { status, body } = await request
         .patch(`${baseUrl}/${plainData[0]._id}/change-email`)
@@ -149,7 +149,7 @@ tap.test('/users', async t => {
     })
 
     t.test('returns 422 if :id is wrong format', async t => {
-      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: 'foo', isAdmin: 'false' })
+      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: 'foo' })
 
       const expectedErrors = [
         {
@@ -172,7 +172,7 @@ tap.test('/users', async t => {
     })
 
     t.test('returns 422 if body is empty', async t => {
-      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: plainData[1]._id, isAdmin: 'false' })
+      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: plainData[1]._id })
 
       const expectedErrors = [
         {
@@ -199,7 +199,7 @@ tap.test('/users', async t => {
     })
 
     t.test('returns 422 if email is wrong format', async t => {
-      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: plainData[1]._id, isAdmin: 'false' })
+      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: plainData[1]._id })
 
       const expectedErrors = [
         {
@@ -222,7 +222,7 @@ tap.test('/users', async t => {
     })
 
     t.test('returns 404 if user is not found', async t => {
-      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: '000000000000000000000004', isAdmin: 'false' })
+      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: '000000000000000000000004' })
 
       const { status, body } = await request
         .patch(`${baseUrl}/000000000000000000000004/change-email`)
@@ -236,7 +236,7 @@ tap.test('/users', async t => {
     })
 
     t.test('returns 409 if email is already in use', async t => {
-      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: plainData[1]._id, isAdmin: 'false' })
+      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: plainData[1]._id })
 
       const { status, body } = await request
         .patch(`${baseUrl}/${plainData[1]._id}/change-email`)
@@ -250,7 +250,7 @@ tap.test('/users', async t => {
     })
 
     t.test('returns 500 if db operation fails', async t => {
-      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: plainData[1]._id, isAdmin: 'false' })
+      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: plainData[1]._id })
       const serviceStub = sinon.stub(service, 'changeEmail').throws(new Error('Something wrong'))
 
       const { status, body } = await request
@@ -266,7 +266,7 @@ tap.test('/users', async t => {
     })
 
     t.test('returns 204', async t => {
-      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: plainData[1]._id, isAdmin: 'false' })
+      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: plainData[1]._id })
 
       const { status, body } = await request
         .patch(`${baseUrl}/${plainData[1]._id}/change-email`)
@@ -297,7 +297,7 @@ tap.test('/users', async t => {
     })
 
     t.test('returns 401 if paternity is not satisfied', async t => {
-      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: plainData[1]._id, isAdmin: 'false' })
+      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: plainData[1]._id })
 
       const { status, body } = await request
         .patch(`${baseUrl}/${plainData[0]._id}/change-password`)
@@ -311,7 +311,7 @@ tap.test('/users', async t => {
     })
 
     t.test('returns 422 if :id is wrong format', async t => {
-      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: 'foo', isAdmin: 'false' })
+      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: 'foo' })
 
       const expectedErrors = [
         {
@@ -334,7 +334,7 @@ tap.test('/users', async t => {
     })
 
     t.test('returns 422 if body is empty', async t => {
-      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: plainData[1]._id, isAdmin: 'false' })
+      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: plainData[1]._id })
 
       const expectedErrors = [
         {
@@ -375,7 +375,7 @@ tap.test('/users', async t => {
     })
 
     t.test('returns 422 if body contains errors', async t => {
-      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: plainData[1]._id, isAdmin: 'false' })
+      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: plainData[1]._id })
 
       const expectedErrors = [
         {
@@ -404,7 +404,7 @@ tap.test('/users', async t => {
     })
 
     t.test('returns 404 if user is not found', async t => {
-      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: '000000000000000000000004', isAdmin: 'false' })
+      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: '000000000000000000000004' })
 
       const { status, body } = await request
         .patch(`${baseUrl}/000000000000000000000004/change-password`)
@@ -418,7 +418,7 @@ tap.test('/users', async t => {
     })
 
     t.test('returns 401 if oldPassword is wrong', async t => {
-      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: plainData[1]._id, isAdmin: 'false' })
+      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: plainData[1]._id })
 
       const { status, body } = await request
         .patch(`${baseUrl}/${plainData[1]._id}/change-password`)
@@ -432,7 +432,7 @@ tap.test('/users', async t => {
     })
 
     t.test('returns 500 if db operation fails', async t => {
-      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: plainData[1]._id, isAdmin: 'false' })
+      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: plainData[1]._id })
       const serviceStub = sinon.stub(service, 'changePassword').throws(new Error('Something wrong'))
 
       const { status, body } = await request
@@ -448,7 +448,7 @@ tap.test('/users', async t => {
     })
 
     t.test('returns 204', async t => {
-      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: plainData[1]._id, isAdmin: 'false' })
+      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: plainData[1]._id })
       const jwtStubSign = sinon.stub(jwt, 'sign').returns('token')
 
       const { status, body } = await request
@@ -484,7 +484,7 @@ tap.test('/users', async t => {
     })
 
     t.test('returns 401 if paternity is not satisfied', async t => {
-      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: plainData[1]._id, isAdmin: 'false' })
+      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: plainData[1]._id })
 
       const { status, body } = await request
         .patch(`${baseUrl}/${plainData[0]._id}/change-info`)
@@ -498,7 +498,7 @@ tap.test('/users', async t => {
     })
 
     t.test('returns 422 if :id is wrong format', async t => {
-      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: 'foo', isAdmin: 'false' })
+      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: 'foo' })
 
       const expectedErrors = [
         {
@@ -521,7 +521,7 @@ tap.test('/users', async t => {
     })
 
     t.test('returns 422 if body contains errors', async t => {
-      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: plainData[1]._id, isAdmin: 'false' })
+      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: plainData[1]._id })
 
       const expectedErrors = [
         {
@@ -556,7 +556,7 @@ tap.test('/users', async t => {
     })
 
     t.test('returns 404 if user is not found', async t => {
-      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: '000000000000000000000004', isAdmin: 'false' })
+      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: '000000000000000000000004' })
 
       const { status, body } = await request
         .patch(`${baseUrl}/000000000000000000000004/change-info`)
@@ -570,7 +570,7 @@ tap.test('/users', async t => {
     })
 
     t.test('returns 500 if db operation fails', async t => {
-      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: plainData[1]._id, isAdmin: 'false' })
+      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: plainData[1]._id })
       const serviceStub = sinon.stub(service, 'changeInfo').throws(new Error('Something wrong'))
 
       const { status, body } = await request
@@ -586,19 +586,19 @@ tap.test('/users', async t => {
     })
 
     t.test('returns 204 with no data', async t => {
-      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: plainData[1]._id, isAdmin: 'false' })
+      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: plainData[0]._id })
 
       const { status, body } = await request
-        .patch(`${baseUrl}/${plainData[1]._id}/change-info`)
+        .patch(`${baseUrl}/${plainData[0]._id}/change-info`)
         .set('Authorization', 'Bearer foo')
         .send({ name: ' ', surname: '' })
 
       t.strictSame(status, 204)
       t.strictSame(body.data, undefined)
 
-      const user = await usersModel.findById(plainData[1]._id)
-      t.strictSame(user.name, plainData[1].name)
-      t.strictSame(user.surname, plainData[1].surname)
+      const user = await usersModel.findById(plainData[0]._id)
+      t.strictSame(user.name, plainData[0].name)
+      t.strictSame(user.surname, plainData[0].surname)
       t.strictSame(user.city, undefined)
       t.strictSame(user.yearOfBirth, undefined)
       t.strictSame(user.gender, undefined)
@@ -608,7 +608,7 @@ tap.test('/users', async t => {
     })
 
     t.test('returns 204 with data', async t => {
-      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: plainData[2]._id, isAdmin: 'false' })
+      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: plainData[1]._id })
 
       const reqBody = {
         name: 'Test',
@@ -619,14 +619,14 @@ tap.test('/users', async t => {
       }
 
       const { status, body } = await request
-        .patch(`${baseUrl}/${plainData[2]._id}/change-info`)
+        .patch(`${baseUrl}/${plainData[1]._id}/change-info`)
         .set('Authorization', 'Bearer foo')
         .send(reqBody)
 
       t.strictSame(status, 204)
       t.strictSame(body.data, undefined)
 
-      const user = await usersModel.findById(plainData[2]._id)
+      const user = await usersModel.findById(plainData[1]._id)
       t.strictSame(user.name, reqBody.name)
       t.strictSame(user.surname, reqBody.surname)
       t.strictSame(user.city, reqBody.city)
@@ -650,7 +650,7 @@ tap.test('/users', async t => {
     })
 
     t.test('returns 401 if paternity is not satisfied', async t => {
-      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: plainData[1]._id, isAdmin: 'false' })
+      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: plainData[1]._id })
 
       const { status, body } = await request
         .delete(`${baseUrl}/${plainData[0]._id}`)
@@ -663,7 +663,7 @@ tap.test('/users', async t => {
     })
 
     t.test('returns 422 if :id is wrong format', async t => {
-      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: 'foo', isAdmin: 'false' })
+      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: 'foo' })
 
       const expectedErrors = [
         {
@@ -685,7 +685,7 @@ tap.test('/users', async t => {
     })
 
     t.test('returns 404 if user is not found', async t => {
-      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: '000000000000000000000004', isAdmin: 'false' })
+      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: '000000000000000000000004' })
 
       const { status, body } = await request
         .delete(`${baseUrl}/000000000000000000000004`)
@@ -698,7 +698,7 @@ tap.test('/users', async t => {
     })
 
     t.test('returns 500 if db query fails', async t => {
-      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: plainData[1]._id, isAdmin: 'false' })
+      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: plainData[1]._id })
       const serviceStub = sinon.stub(service, 'deleteById').throws(new Error('Something wrong'))
 
       const { status, body } = await request
@@ -713,7 +713,7 @@ tap.test('/users', async t => {
     })
 
     t.test('returns 204', async t => {
-      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: plainData[1]._id, isAdmin: 'false' })
+      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: plainData[1]._id })
 
       const { status, body } = await request
         .delete(`${baseUrl}/${plainData[1]._id}`)

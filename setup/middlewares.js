@@ -9,7 +9,6 @@ const bodyParser = require('body-parser')
 
 const setLanguage = require('../middlewares/setLanguage')
 const { setRequestConfig } = require('../middlewares/loadConfiguration')
-const checkToken = require('../middlewares/checkToken')
 const upload = require('../middlewares/upload')
 const parseFormdata = require('../middlewares/parseFormdata')
 
@@ -21,9 +20,8 @@ function initMiddlewares(app, logger, logLevel) {
   app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')))
 
   app.use(setLanguage)
-  app.use(setRequestConfig)
-  app.use(checkToken)
-  app.use(upload)
+  // app.use(setRequestConfig)
+  // app.use(upload)
 
   app.use(bodyParser.json())
   app.use(bodyParser.urlencoded({ extended: false }))

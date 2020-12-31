@@ -25,85 +25,50 @@ tap.test('checkToken middleware', t => {
     done()
   })
 
-  t.test('without Authorization header', t => {
-    t.test('calls next if token is not required', t => {
-      const mockReq = getMockReq({}, { token_required: false })
+  t.test('throws an error if no Authorization header is provided', t => {
+    const mockReq = getMockReq({})
 
+    try {
       middleware(mockReq, mockRes, mockNext)
+      t.notOk(true, 'Should have thrown an error')
+    } catch (error) {
+      t.strictSame(error.code, 401)
+    }
 
-      t.ok(mockNext.calledOnce)
-      t.strictSame(mockReq.isAdmin, false)
-      t.strictSame(mockReq.userId, null)
-      t.end()
-    })
-
-    t.test('throws an error if token is required', t => {
-      const mockReq = getMockReq({}, { token_required: true })
-
-      try {
-        middleware(mockReq, mockRes, mockNext)
-        t.notOk(true, 'Should have thrown an error')
-      } catch (error) {
-        t.strictSame(error.code, 401)
-      }
-
-      t.ok(mockNext.notCalled)
-      t.end()
-    })
-
+    t.ok(mockNext.notCalled)
     t.end()
   })
 
-  t.test('with Authorization header', t => {
-    t.test('throws an error if JWT decoding fails', t => {
-      const jwtStub = sinon.stub(jwt, 'verify').throws()
+  t.test('throws an error if JWT decoding fails', t => {
+    const jwtStub = sinon.stub(jwt, 'verify').throws()
 
-      const mockReq = getMockReq({ Authorization: 'Bearer foo' }, { token_required: true })
+    const mockReq = getMockReq({ Authorization: 'Bearer foo' })
 
-      try {
-        middleware(mockReq, mockRes, mockNext)
-        t.notOk(true, 'Should have thrown an error')
-      } catch (error) {
-        t.strictSame(error.code, 500)
-        t.strictSame(error.message, 'Error decoding JWT token')
-      }
-
-      t.ok(jwtStub.calledOnce)
-      t.ok(mockNext.notCalled)
-      jwtStub.restore()
-      t.end()
-    })
-
-    t.test('calls next if JWT decoding succeeds with admin user', t => {
-      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: 'user', isAdmin: 'true' })
-
-      const mockReq = getMockReq({ Authorization: 'Bearer foo' }, { token_required: true })
-
+    try {
       middleware(mockReq, mockRes, mockNext)
+      t.notOk(true, 'Should have thrown an error')
+    } catch (error) {
+      t.strictSame(error.code, 500)
+      t.strictSame(error.message, 'Error decoding JWT token')
+    }
 
-      t.ok(jwtStub.calledOnce)
-      t.strictSame(mockReq.userId, 'user')
-      t.strictSame(mockReq.isAdmin, true)
-      t.ok(mockNext.calledOnce)
-      jwtStub.restore()
-      t.end()
-    })
+    t.ok(jwtStub.calledOnce)
+    t.ok(mockNext.notCalled)
+    jwtStub.restore()
+    t.end()
+  })
 
-    t.test('calls next if JWT decoding succeeds with non-admin user', t => {
-      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: 'user', isAdmin: 'false' })
+  t.test('calls next if JWT decoding succeeds', t => {
+    const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: 'user' })
 
-      const mockReq = getMockReq({ Authorization: 'Bearer foo' }, { token_required: true })
+    const mockReq = getMockReq({ Authorization: 'Bearer foo' })
 
-      middleware(mockReq, mockRes, mockNext)
+    middleware(mockReq, mockRes, mockNext)
 
-      t.ok(jwtStub.calledOnce)
-      t.strictSame(mockReq.userId, 'user')
-      t.strictSame(mockReq.isAdmin, false)
-      t.ok(mockNext.calledOnce)
-      jwtStub.restore()
-      t.end()
-    })
-
+    t.ok(jwtStub.calledOnce)
+    t.strictSame(mockReq.userId, 'user')
+    t.ok(mockNext.calledOnce)
+    jwtStub.restore()
     t.end()
   })
 

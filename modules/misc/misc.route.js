@@ -2,7 +2,7 @@
 
 const { Router } = require('express')
 
-const checkValidation = require('../../lib/checkValidation')
+const checkValidation = require('../../middlewares/checkValidation')
 const validator = require('./misc.validator')
 const controller = require('./misc.controller')
 

@@ -7,17 +7,22 @@ const { CustomError } = require('../../lib/CustomError')
 const { getMongoSortFromQuerySort } = require('../../lib/utils')
 
 async function getAll(req, res, next) {
-  const { includePast = 'true', includeDeleted = 'false', sort } = req.query
+  const { includePast = 'true', sort } = req.query
 
-  const query = {}
-  if (includeDeleted === 'false') { query.markedForDeletion = false }
-  if (includePast === 'false') { query.dateEnd = { $gte: moment().toISOString() } }
+  const query = { markedForDeletion: false }
+  if (includePast === 'false') {
+    query.dateEnd = { $gte: moment().toISOString() }
+  }
 
-  const projection = {}
-  if (!req.isAdmin) { projection.uid = 0 }
+  const projection = {
+    uid: 0,
+    markedForDeletion: 0,
+  }
 
   const options = {}
-  if (sort) { options.sort = getMongoSortFromQuerySort(sort) }
+  if (sort) {
+    options.sort = getMongoSortFromQuerySort(sort)
+  }
 
   try {
     const alerts = await service.getAll(query, projection, options)
@@ -31,11 +36,13 @@ async function getAll(req, res, next) {
 async function getById(req, res, next) {
   const { id } = req.params
 
-  const query = {}
-  const projection = {}
-  if (!req.isAdmin) {
-    query.markedForDeletion = false
-    projection.uid = 0
+  const query = {
+    markedForDeletion: false,
+  }
+
+  const projection = {
+    uid: 0,
+    markedForDeletion: 0,
   }
 
   try {
