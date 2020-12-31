@@ -4,7 +4,7 @@ const tap = require('tap')
 const sinon = require('sinon')
 
 const { mockLogger } = require('../utils')
-const loadConfiguration = require('../../middlewares/loadConfiguration')
+const loadConfiguration = require('../../lib/loadConfigurations')
 const middleware = require('../../middlewares/setLanguage')
 
 tap.test('setLanguage middleware', t => {

@@ -4,7 +4,7 @@ const tap = require('tap')
 const nock = require('nock')
 
 const { createMockRequest } = require('../setup')
-const { version } = require('../../middlewares/loadConfiguration')
+const { version } = require('../../lib/loadConfigurations')
 const { compareValidationErrorBodies } = require('../utils')
 
 tap.test('/misc', async t => {

@@ -5,7 +5,7 @@ const sinon = require('sinon')
 
 const { createMockRequest, connectTestDb, disconnectTestDb } = require('../setup')
 const { sortById, cleanDbData, compareValidationErrorBodies } = require('../utils')
-const { version } = require('../../middlewares/loadConfiguration')
+const { version } = require('../../lib/loadConfigurations')
 const { seed: seedEvents, data: mockEvents } = require('./__mocks__/events.mock')
 const service = require('../../modules/events/events.service')
 

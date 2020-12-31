@@ -8,7 +8,6 @@ const pinoExpress = require('express-pino-logger')
 const bodyParser = require('body-parser')
 
 const setLanguage = require('../middlewares/setLanguage')
-const { setRequestConfig } = require('../middlewares/loadConfiguration')
 const upload = require('../middlewares/upload')
 const parseFormdata = require('../middlewares/parseFormdata')
 

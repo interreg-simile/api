@@ -4,7 +4,7 @@ require('dotenv').config()
 const pino = require('pino')
 
 const initServer = require('./setup/server')
-const { appConf } = require('./middlewares/loadConfiguration')
+const { appConf } = require('./lib/loadConfigurations')
 const { connectDb, disconnectDb } = require('./setup/db')
 
 const { LOG_LEVEL } = process.env

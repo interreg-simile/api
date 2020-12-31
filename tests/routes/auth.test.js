@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken')
 
 const { createMockRequest, connectTestDb, disconnectTestDb } = require('../setup')
 const { compareValidationErrorBodies } = require('../utils')
-const { version } = require('../../middlewares/loadConfiguration')
+const { version } = require('../../lib/loadConfigurations')
 const { plainPassword, plainData, seed: seedUsers } = require('./__mocks__/users.mock')
 const { model: usersModel } = require('../../modules/users/users.model')
 const service = require('../../modules/auth/auth.service')

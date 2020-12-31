@@ -1,7 +1,7 @@
 'use strict'
 
 const i18next = require('i18next')
-const loadConfiguration = require('./loadConfiguration')
+const loadConfiguration = require('../lib/loadConfigurations')
 
 module.exports = (req, res, next) => {
   let { defaultLng: lng } = loadConfiguration.appConf

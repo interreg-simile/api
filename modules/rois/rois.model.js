@@ -1,9 +1,14 @@
 'use strict'
 
 const mongoose = require('mongoose')
-const { polygonSchema } = require('../../lib/commonSchemas')
 
 const collectionName = 'Rois'
+
+const polygonSchema = new mongoose.Schema({
+  _id: false,
+  type: { type: String, enum: ['Polygon'], required: true, default: 'Polygon' },
+  coordinates: { type: [[[Number]]], required: true },
+})
 
 const schema = new mongoose.Schema({
   country: { type: { _id: false, code: Number }, required: true },

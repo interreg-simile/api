@@ -14,10 +14,7 @@ async function getAll(req, res, next) {
     query.date = { $gte: moment().toISOString() }
   }
 
-  const projection = {
-    uid: 0,
-    markedForDeletion: 0,
-  }
+  const projection = { uid: 0, markedForDeletion: 0 }
 
   const options = {}
   if (sort) {
@@ -36,14 +33,8 @@ async function getAll(req, res, next) {
 async function getById(req, res, next) {
   const { id } = req.params
 
-  const query = {
-    markedForDeletion: false,
-  }
-
-  const projection = {
-    uid: 0,
-    markedForDeletion: 0,
-  }
+  const query = { markedForDeletion: false }
+  const projection = { uid: 0, markedForDeletion: 0 }
 
   try {
     const events = await service.getById(id, query, projection, {})

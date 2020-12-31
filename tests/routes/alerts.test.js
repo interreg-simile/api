@@ -5,7 +5,7 @@ const sinon = require('sinon')
 
 const { createMockRequest, connectTestDb, disconnectTestDb } = require('../setup')
 const { sortById, cleanDbData, compareValidationErrorBodies } = require('../utils')
-const { version } = require('../../middlewares/loadConfiguration')
+const { version } = require('../../lib/loadConfigurations')
 const { seed: seedAlerts, data: mockAlerts } = require('./__mocks__/alerts.mock')
 const service = require('../../modules/alerts/alerts.service')
 
@@ -21,7 +21,7 @@ tap.test('/alerts', async t => {
     await disconnectTestDb()
   })
 
-  t.test('GET - \'\'', async t => {
+  t.test('GET - /', async t => {
     t.test('returns 422 if query includePast is wrong format', async t => {
       const query = { includePast: 'foo' }
 
