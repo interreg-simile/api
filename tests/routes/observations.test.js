@@ -2,16 +2,19 @@
 
 const tap = require('tap')
 const sinon = require('sinon')
+const jwt = require('jsonwebtoken')
 
 const { createMockRequest, connectTestDb, disconnectTestDb } = require('../setup')
 const { sortById, cleanDbData, compareValidationErrorBodies } = require('../utils')
 const { version } = require('../../lib/loadConfigurations')
 const { seed: seedObservations, data: mockObservations } = require('./__mocks__/observations.mock')
+const { seed: seedRois } = require('./__mocks__/rois.mock')
 const service = require('../../modules/observations/observations.service')
 
 tap.test('/observations', async t => {
   await connectTestDb('simile-test-observations')
   await seedObservations()
+  await seedRois()
 
   const request = await createMockRequest()
 
@@ -610,6 +613,298 @@ tap.test('/observations', async t => {
 
       t.strictSame(status, 200)
       t.strictSame(body.data, expectedData)
+      t.end()
+    })
+
+    t.end()
+  })
+
+  t.test('POST - /', async t => {
+    // TODO
+    t.test('returns 422 if body has some errors', async t => {
+      t.end()
+    })
+
+    t.test('returns 500 if db operation fails', async t => {
+      const serviceStub = sinon.stub(service, 'create').throws(new Error('Something wrong'))
+
+      const reqBody = {
+        position: { coordinates: [9.386683, 45.855060] },
+        weather: { sky: { code: 1 } },
+      }
+
+      const { status, body } = await request
+        .post(`${baseUrl}/`)
+        .send(reqBody)
+
+      t.strictSame(status, 500)
+      t.strictSame(body, { meta: { code: 500, errorMessage: 'Something wrong', errorType: 'ServerException' } })
+      serviceStub.restore()
+      t.end()
+    })
+
+    t.test('returns 201 with no query', async t => {
+      const reqBody = {
+        position: { coordinates: [9.145174026489258, 45.47758654665813], accuracy: 1, roi: '000000000000000000000001' },
+        weather: { temperature: 1, sky: { code: 1 }, wind: 1 },
+        details: {
+          algae: { checked: true, extension: { code: '1' }, look: { code: 1 }, colour: { code: 1 }, iridescent: true },
+          foams: { checked: true, extension: { code: 1 }, look: { code: '1' }, height: { code: 1 } },
+          oils: { checked: true, type: { code: 1 }, extension: { code: 1 } },
+          litters: { checked: true, quantity: { code: '1' }, type: [{ code: '1' }, { code: '2' }] },
+          odours: { checked: true, intensity: { code: 1 }, origin: [{ code: 1 }, { code: '2' }] },
+          outlets: {
+            checked: true,
+            inPlace: false,
+            terminal: { code: '1' },
+            colour: { code: 1 },
+            vapour: true,
+            signage: true,
+            prodActNearby: true,
+            prodActNearbyDetails: 'foo',
+          },
+          fauna: {
+            checked: true,
+            fish: {
+              checked: true,
+              number: 1,
+              deceased: true,
+              abnormal: { checked: true, details: 'foo' },
+              alien: { checked: true, species: [{ code: '1' }] },
+            },
+            birds: {
+              checked: true,
+              number: 1,
+              deceased: true,
+              abnormal: { checked: true, details: 'foo' },
+              alien: { checked: true, species: [{ code: 1 }] },
+            },
+            molluscs: {
+              checked: true,
+              number: 1,
+              deceased: true,
+              abnormal: { checked: true, details: 'foo' },
+              alien: { checked: true, species: [{ code: 1 }] },
+            },
+            crustaceans: {
+              checked: true,
+              number: 1,
+              deceased: true,
+              abnormal: { checked: true, details: 'foo' },
+              alien: { checked: true, species: [{ code: 1 }] },
+            },
+            turtles: {
+              checked: true,
+              number: 1,
+              deceased: true,
+              abnormal: { checked: true, details: 'foo' },
+              alien: { checked: true, species: [{ code: 1 }] },
+            },
+          },
+        },
+        measures: {
+          transparency: { val: 1, instrument: { type: { code: '1' }, precision: 1, details: 'foo' } },
+          temperature: {
+            multiple: true,
+            val: [{ depth: 0, val: 1 }, { depth: 1, val: 2 }],
+            instrument: { type: { code: 1 }, precision: 1, details: 'foo' },
+          },
+          ph: {
+            multiple: true,
+            val: [{ depth: 0, val: 1 }, { depth: 1, val: 2 }],
+            instrument: { type: { code: 1 }, precision: 1, details: 'foo' },
+          },
+          oxygen: {
+            multiple: true,
+            percentage: true,
+            val: [{ depth: 0, val: 1 }, { depth: 1, val: 2 }],
+            instrument: { type: { code: 1 }, precision: 1, details: 'foo' },
+          },
+          bacteria: { escherichiaColi: 1, enterococci: 1 },
+        },
+        other: 'foo&',
+      }
+
+      const expectedData = {
+        photos: [],
+        markedForDeletion: false,
+        position: {
+          type: 'Point',
+          coordinates: [9.145174026489258, 45.47758654665813],
+          accuracy: 1,
+          crs: { code: 1 },
+          roi: '000000000000000000000001',
+          area: 1,
+        },
+        weather: { temperature: 1, sky: { code: 1 }, wind: 1 },
+        details: {
+          algae: { checked: true, extension: { code: 1 }, look: { code: 1 }, colour: { code: 1 }, iridescent: true },
+          foams: { checked: true, extension: { code: 1 }, look: { code: 1 }, height: { code: 1 } },
+          oils: { checked: true, type: { code: 1 }, extension: { code: 1 } },
+          litters: { checked: true, quantity: { code: 1 }, type: [{ code: 1 }, { code: 2 }] },
+          odours: { checked: true, intensity: { code: 1 }, origin: [{ code: 1 }, { code: 2 }] },
+          outlets: {
+            checked: true,
+            inPlace: false,
+            terminal: { code: 1 },
+            colour: { code: 1 },
+            vapour: true,
+            signage: true,
+            prodActNearby: true,
+            prodActNearbyDetails: 'foo',
+          },
+          fauna: {
+            checked: true,
+            fish: {
+              checked: true,
+              number: 1,
+              deceased: true,
+              abnormal: { checked: true, details: 'foo' },
+              alien: { checked: true, species: [{ code: 1 }] },
+            },
+            birds: {
+              checked: true,
+              number: 1,
+              deceased: true,
+              abnormal: { checked: true, details: 'foo' },
+              alien: { checked: true, species: [{ code: 1 }] },
+            },
+            molluscs: {
+              checked: true,
+              number: 1,
+              deceased: true,
+              abnormal: { checked: true, details: 'foo' },
+              alien: { checked: true, species: [{ code: 1 }] },
+            },
+            crustaceans: {
+              checked: true,
+              number: 1,
+              deceased: true,
+              abnormal: { checked: true, details: 'foo' },
+              alien: { checked: true, species: [{ code: 1 }] },
+            },
+            turtles: {
+              checked: true,
+              number: 1,
+              deceased: true,
+              abnormal: { checked: true, details: 'foo' },
+              alien: { checked: true, species: [{ code: 1 }] },
+            },
+          },
+        },
+        measures: {
+          transparency: { val: 1, instrument: { type: { code: 1 }, precision: 1, details: 'foo' } },
+          temperature: {
+            multiple: true,
+            val: [{ depth: 0, val: 1 }, { depth: 1, val: 2 }],
+            instrument: { type: { code: 1 }, precision: 1, details: 'foo' },
+          },
+          ph: {
+            multiple: true,
+            val: [{ depth: 0, val: 1 }, { depth: 1, val: 2 }],
+            instrument: { type: { code: 1 }, precision: 1, details: 'foo' },
+          },
+          oxygen: {
+            multiple: true,
+            percentage: true,
+            val: [{ depth: 0, val: 1 }, { depth: 1, val: 2 }],
+            instrument: { type: { code: 1 }, precision: 1, details: 'foo' },
+          },
+          bacteria: { escherichiaColi: 1, enterococci: 1 },
+        },
+        other: 'foo&amp;',
+      }
+
+      const { status, body } = await request
+        .post(`${baseUrl}/`)
+        .send(reqBody)
+
+      t.strictSame(status, 201)
+      t.strictSame(cleanDbData(body.data), expectedData)
+      t.end()
+    })
+
+    t.test('returns 201 with query', async t => {
+      const mathStub = sinon.stub(Math, 'random').returns(0.1)
+
+      const reqBody = {
+        position: { coordinates: [9.386683, 45.855060] },
+        weather: { sky: { code: 1 } },
+      }
+
+      const expectedData = {
+        callId: 19000,
+        position: { coordinates: [9.386683, 45.855060] },
+      }
+
+      const { status, body } = await request
+        .post(`${baseUrl}/`)
+        .query({ minimalRes: true, generateCallId: true })
+        .send(reqBody)
+
+      t.strictSame(status, 201)
+      t.strictSame(cleanDbData(body.data), expectedData)
+      mathStub.restore()
+      t.end()
+    })
+
+    t.test('returns 201 with user', async t => {
+      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: '000000000000000000000001' })
+
+      const reqBody = {
+        position: { coordinates: [9.386683, 45.855060] },
+        weather: { sky: { code: 1 } },
+      }
+
+      const expectedData = {
+        uid: '000000000000000000000001',
+        position: { coordinates: [9.386683, 45.855060] },
+      }
+
+      const { status, body } = await request
+        .post(`${baseUrl}/`)
+        .set('Authorization', 'Bearer foo')
+        .query({ minimalRes: true })
+        .send(reqBody)
+
+      t.strictSame(status, 201)
+      t.strictSame(cleanDbData(body.data), expectedData)
+      jwtStub.restore()
+      t.end()
+    })
+
+    t.test('returns 201 with found roi and createdAt in data', async t => {
+      const reqBody = {
+        position: { coordinates: [9.145174026489258, 45.47758654665813] },
+        weather: { sky: { code: 1 } },
+        createdAt: '2020-12-01T00:00:00.000Z',
+      }
+
+      const expectedData = {
+        photos: [],
+        markedForDeletion: false,
+        position: {
+          type: 'Point',
+          coordinates: [9.145174026489258, 45.47758654665813],
+          area: 1,
+          crs: { code: 1 },
+          roi: '000000000000000000000001',
+        },
+        weather: { sky: { code: 1 } },
+      }
+
+      const { status, body } = await request
+        .post(`${baseUrl}/`)
+        .send(reqBody)
+
+      t.strictSame(status, 201)
+      t.strictSame(body.data.createdAt, '2020-12-01T00:00:00.000Z')
+      t.strictSame(cleanDbData(body.data), expectedData)
+      t.end()
+    })
+
+    // TODO
+    t.test('returns 201 with images', async t => {
       t.end()
     })
 
