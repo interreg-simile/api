@@ -7,16 +7,58 @@ const { modelsConfiguration } = require('../../lib/loadConfigurations')
 const { observations: observationsConfiguration } = modelsConfiguration
 
 const getCodeFieldValidation = (fieldName, min, max, isArray = false, isOptional = true) => {
-  const validation = body(`${fieldName}.${isArray ? '*.' : ''}code`)
+  const chain = []
 
-  if (isOptional) {
-    validation.optional()
+  if (isArray) {
+    const fieldValidation = body(fieldName)
+
+    if (isOptional) {
+      fieldValidation.optional()
+    }
+
+    fieldValidation.isArray({ min: 1 }).withMessage('Must be an array with at least one element')
+
+    chain.push(fieldValidation)
   }
 
+  const codeValidation = body(`${fieldName}.${isArray ? '*.' : ''}code`)
+
+  if (isOptional) {
+    codeValidation.if(body(fieldName).exists())
+  }
+
+  codeValidation
+    .not().isEmpty().withMessage('Must have a value')
+    .isInt({ min, max, allow_leading_zeroes: false }).withMessage(`Must be an integer between ${min} and ${max}`)
+
+  chain.push(codeValidation)
+
+  return chain
+}
+
+const getDetailsCodeFieldValidation = (detailName, propertyName, isArray = false) => {
+  return getCodeFieldValidation(
+    `details.${detailName}.${propertyName}`,
+    observationsConfiguration.details[detailName][propertyName].min,
+    observationsConfiguration.details[detailName][propertyName].max,
+    isArray,
+  )
+}
+
+const getDetailsSubFaunaValidation = subFaunaName => {
   return [
-    validation
-      .not().isEmpty().withMessage('Must have a value')
-      .isInt({ min, max, allow_leading_zeroes: false }).withMessage(`Must be an integer between ${min} and ${max}`),
+    body(`details.fauna.${subFaunaName}.checked`).optional().isBoolean().withMessage('Must be a boolean'),
+    body(`details.fauna.${subFaunaName}.number`).optional().isInt({ min: 0 }).withMessage('Must be a non-negative integer'),
+    body(`details.fauna.${subFaunaName}.deceased`).optional().isBoolean().withMessage('Must be a boolean'),
+    body(`details.fauna.${subFaunaName}.abnormal.checked`).optional().isBoolean().withMessage('Must be a boolean'),
+    body(`details.fauna.${subFaunaName}.abnormal.details`).optional().trim().escape(),
+    body(`details.fauna.${subFaunaName}.alien.checked`).optional().isBoolean().withMessage('Must be a boolean'),
+    ...getCodeFieldValidation(
+      `details.fauna.${subFaunaName}.alien.species`,
+      observationsConfiguration.details.fauna[subFaunaName].alien.min,
+      observationsConfiguration.details.fauna[subFaunaName].alien.max,
+      true,
+    ),
   ]
 }
 
@@ -66,19 +108,59 @@ const weather = [
 ]
 
 
-const algae = []
+const algae = [
+  body('details.algae.checked').optional().isBoolean().withMessage('Must be a boolean'),
+  ...getDetailsCodeFieldValidation('algae', 'extension'),
+  ...getDetailsCodeFieldValidation('algae', 'look'),
+  ...getDetailsCodeFieldValidation('algae', 'colour'),
+  body('details.algae.iridescent').optional().isBoolean().withMessage('Must be a boolean'),
+]
 
-const foams = []
+const foams = [
+  body('details.foams.checked').optional().isBoolean().withMessage('Must be a boolean'),
+  ...getDetailsCodeFieldValidation('foams', 'extension'),
+  ...getDetailsCodeFieldValidation('foams', 'look'),
+  ...getDetailsCodeFieldValidation('foams', 'height'),
+]
 
-const oils = []
+const oils = [
+  body('details.oils.checked').optional().isBoolean().withMessage('Must be a boolean'),
+  ...getDetailsCodeFieldValidation('oils', 'extension'),
+  ...getDetailsCodeFieldValidation('oils', 'type'),
+]
 
-const litters = []
+const litters = [
+  body('details.litters.checked').optional().isBoolean().withMessage('Must be a boolean'),
+  ...getDetailsCodeFieldValidation('litters', 'quantity'),
+  ...getDetailsCodeFieldValidation('litters', 'type', true),
+]
 
-const odours = []
+const odours = [
+  body('details.odours.checked').optional().isBoolean().withMessage('Must be a boolean'),
+  ...getDetailsCodeFieldValidation('odours', 'intensity'),
+  ...getDetailsCodeFieldValidation('odours', 'origin', true),
+]
 
-const outlets = []
+const outlets = [
+  body('details.outlets.checked').optional().isBoolean().withMessage('Must be a boolean'),
+  body('details.outlets.inPlace').optional().isBoolean().withMessage('Must be a boolean'),
+  ...getDetailsCodeFieldValidation('outlets', 'terminal'),
+  ...getDetailsCodeFieldValidation('outlets', 'colour'),
+  body('details.outlets.vapour').optional().isBoolean().withMessage('Must be a boolean'),
+  body('details.outlets.signage').optional().isBoolean().withMessage('Must be a boolean'),
+  body('details.outlets.signagePhoto').isEmpty().withMessage('You cannot set this property'),
+  body('details.outlets.prodActNearby').optional().isBoolean().withMessage('Must be a boolean'),
+  body('details.outlets.prodActNearbyDetails').optional().trim().escape(),
+]
 
-const fauna = []
+const fauna = [
+  body('details.fauna.checked').optional().isBoolean().withMessage('Must be a boolean'),
+  ...getDetailsSubFaunaValidation('fish'),
+  ...getDetailsSubFaunaValidation('birds'),
+  ...getDetailsSubFaunaValidation('molluscs'),
+  ...getDetailsSubFaunaValidation('crustaceans'),
+  ...getDetailsSubFaunaValidation('turtles'),
+]
 
 
 const getMeasureInstrumentValidation = measureName => [
@@ -93,7 +175,8 @@ const getMeasureInstrumentValidation = measureName => [
       min: observationsConfiguration.measures.instrument.type.min,
       max: observationsConfiguration.measures.instrument.type.max,
       allow_leading_zeroes: false,
-    }).withMessage(`Must be an integer between ${observationsConfiguration.measures.instrument.type.min} and ${observationsConfiguration.measures.instrument.type.max}`),
+    })
+    .withMessage(`Must be an integer between ${observationsConfiguration.measures.instrument.type.min} and ${observationsConfiguration.measures.instrument.type.max}`),
 
   body(`${measureName}.instrument.precision`).optional().isNumeric().withMessage('Must be a number'),
 
@@ -203,11 +286,6 @@ const bacteria = [
 module.exports = {
   position,
   weather,
-  transparency,
-  temperature,
-  ph,
-  oxygen,
-  bacteria,
   algae,
   foams,
   oils,
@@ -215,4 +293,9 @@ module.exports = {
   odours,
   outlets,
   fauna,
+  transparency,
+  temperature,
+  ph,
+  oxygen,
+  bacteria,
 }

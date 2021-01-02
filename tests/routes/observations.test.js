@@ -634,8 +634,110 @@ tap.test('/observations', async t => {
       t.end()
     })
 
-    // TODO
+    t.test('returns 422 if query has some errors', async t => {
+      const reqBody = {
+        position: { coordinates: [9.386683, 45.855060] },
+        weather: { sky: { code: 1 } },
+      }
+
+      const { status, body } = await request
+        .post(`${baseUrl}/`)
+        .query({ minimalRes: 'foo', generateCallId: 'foo' })
+        .field('position', JSON.stringify(reqBody.position))
+        .field('weather', JSON.stringify(reqBody.weather))
+
+      const expectedErrors = [
+        {
+          value: 'foo',
+          msg: 'Must be a boolean',
+          param: 'minimalRes',
+          location: 'query',
+        },
+        {
+          value: 'foo',
+          msg: 'Must be a boolean',
+          param: 'generateCallId',
+          location: 'query',
+        },
+      ]
+
+      t.strictSame(status, 422)
+      compareValidationErrorBodies(body, expectedErrors, t)
+      t.end()
+    })
+
     t.test('returns 422 if body has some errors', async t => {
+      const reqBody = {
+        measures: {
+          bacteria: {},
+        },
+      }
+
+      const { status, body } = await request
+        .post(`${baseUrl}/`)
+        .field('measures', JSON.stringify(reqBody.measures))
+
+      const expectedErrors = [
+        {
+          msg: 'Must have a value',
+          param: 'position',
+          location: 'body',
+        },
+        {
+          msg: 'Must have a value',
+          param: 'position.coordinates',
+          location: 'body',
+        },
+        {
+          msg: 'Must be an array of two elements',
+          param: 'position.coordinates',
+          location: 'body',
+        },
+        {
+          msg: 'Must have a value',
+          param: 'weather',
+          location: 'body',
+        },
+        {
+          msg: 'Must have a value',
+          param: 'weather.sky.code',
+          location: 'body',
+        },
+        {
+          msg: 'Must be an integer between 1 and 6',
+          param: 'weather.sky.code',
+          location: 'body',
+        },
+        {
+          msg: 'At least one value must be specified',
+          param: '_error',
+          nestedErrors: [
+            {
+              msg: 'Must have a value',
+              param: 'measures.bacteria.escherichiaColi',
+              location: 'body',
+            },
+            {
+              msg: 'Must be a number',
+              param: 'measures.bacteria.escherichiaColi',
+              location: 'body',
+            },
+            {
+              msg: 'Must have a value',
+              param: 'measures.bacteria.enterococci',
+              location: 'body',
+            },
+            {
+              msg: 'Must be a number',
+              param: 'measures.bacteria.enterococci',
+              location: 'body',
+            },
+          ],
+        },
+      ]
+
+      t.strictSame(status, 422)
+      compareValidationErrorBodies(body, expectedErrors, t)
       t.end()
     })
 

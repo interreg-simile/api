@@ -2,7 +2,7 @@
 'use strict'
 
 const { query, body } = require('express-validator')
-// const bodyValidations = require('./observations.bodyValidator')
+const bodyValidations = require('./observations.bodyValidator')
 const { generalConfiguration } = require('../../lib/loadConfigurations')
 const commonValidations = require('../../lib/commonValidations')
 
@@ -39,22 +39,22 @@ const create = [
   body('callId').isEmpty().withMessage('You cannot set this property'),
   body('photos').isEmpty().withMessage('You cannot set this property'),
 
-  // ...bodyValidations.position,
-  // ...bodyValidations.weather,
-  //
-  // ...bodyValidations.algae,
-  // ...bodyValidations.foams,
-  // ...bodyValidations.oils,
-  // ...bodyValidations.litters,
-  // ...bodyValidations.odours,
-  // ...bodyValidations.odours,
-  // ...bodyValidations.fauna,
-  //
-  // ...bodyValidations.transparency,
-  // ...bodyValidations.temperature,
-  // ...bodyValidations.ph,
-  // ...bodyValidations.oxygen,
-  // ...bodyValidations.bacteria,
+  ...bodyValidations.position,
+  ...bodyValidations.weather,
+
+  ...bodyValidations.algae,
+  ...bodyValidations.foams,
+  ...bodyValidations.oils,
+  ...bodyValidations.litters,
+  ...bodyValidations.odours,
+  ...bodyValidations.odours,
+  ...bodyValidations.fauna,
+
+  ...bodyValidations.transparency,
+  ...bodyValidations.temperature,
+  ...bodyValidations.ph,
+  ...bodyValidations.oxygen,
+  ...bodyValidations.bacteria,
 
   body('other').optional().trim().escape(),
 ]
