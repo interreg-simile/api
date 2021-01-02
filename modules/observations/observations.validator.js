@@ -2,7 +2,7 @@
 'use strict'
 
 const { query, body } = require('express-validator')
-const bodyValidations = require('./observations.bodyValidator')
+// const bodyValidations = require('./observations.bodyValidator')
 const { generalConfiguration } = require('../../lib/loadConfigurations')
 const commonValidations = require('../../lib/commonValidations')
 

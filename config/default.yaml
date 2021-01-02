@@ -3,7 +3,6 @@
 app:
   env: development
   version: 1
-  port: 8000
   lngs:
     - it
     - en

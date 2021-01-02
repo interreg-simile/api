@@ -22,3 +22,10 @@ function initRoutes(app, logger) {
 }
 
 module.exports = { initRoutes }
+
+// TODO setup docs route
+/*
+server.get(`/${version}/docs`, (req, res) => {
+    res.sendFile(path.join(__dirname, "..", "..", "docs", "index.html"));
+})
+ */
