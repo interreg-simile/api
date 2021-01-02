@@ -11,10 +11,9 @@ tap.test('parseAuthToken middleware', t => {
   const mockRes = {}
   const mockNext = sinon.spy()
 
-  const getMockReq = (headers = {}, config = {}) => {
+  const getMockReq = (headers = {}) => {
     return {
       headers,
-      config,
       get: (header) => headers[header],
       log: mockLogger,
     }
