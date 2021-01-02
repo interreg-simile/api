@@ -5,10 +5,8 @@ const express = require('express')
 const cors = require('cors')()
 const helmet = require('helmet')()
 const pinoExpress = require('express-pino-logger')
-const bodyParser = require('body-parser')
 
 const setLanguage = require('../middlewares/setLanguage')
-const upload = require('../middlewares/upload')
 const parseFormdata = require('../middlewares/parseFormdata')
 
 function initMiddlewares(app, logger, logLevel) {
@@ -19,12 +17,10 @@ function initMiddlewares(app, logger, logLevel) {
   app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')))
 
   app.use(setLanguage)
-  // app.use(setRequestConfig)
-  // app.use(upload)
 
-  app.use(bodyParser.json())
-  app.use(bodyParser.urlencoded({ extended: false }))
-  app.use(parseFormdata)
+  app.use(express.json())
+  app.use(express.urlencoded({ extended: true }))
+  // app.use(parseFormdata)
 
   logger.info('[setup] Middlewares chain initialized')
 }

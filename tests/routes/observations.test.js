@@ -1,5 +1,7 @@
 'use strict'
 
+const fs = require('fs').promises
+const path = require('path')
 const tap = require('tap')
 const sinon = require('sinon')
 const jwt = require('jsonwebtoken')
@@ -10,6 +12,8 @@ const { version } = require('../../lib/loadConfigurations')
 const { seed: seedObservations, data: mockObservations } = require('./__mocks__/observations.mock')
 const { seed: seedRois } = require('./__mocks__/rois.mock')
 const service = require('../../modules/observations/observations.service')
+
+const { UPLOAD_PATH } = process.env
 
 tap.test('/observations', async t => {
   await connectTestDb('simile-test-observations')
@@ -620,6 +624,16 @@ tap.test('/observations', async t => {
   })
 
   t.test('POST - /', async t => {
+    t.test('returns 415 if request is not multipart/form-data', async t => {
+      const { status, body } = await request
+        .post(`${baseUrl}/`)
+        .send({ foo: 'bar' })
+
+      t.strictSame(status, 415)
+      t.strictSame(body, { meta: { code: 415, errorMessage: 'Request must be multipart/form-data', errorType: 'UnsupportedMediaTypeException' } })
+      t.end()
+    })
+
     // TODO
     t.test('returns 422 if body has some errors', async t => {
       t.end()
@@ -635,7 +649,8 @@ tap.test('/observations', async t => {
 
       const { status, body } = await request
         .post(`${baseUrl}/`)
-        .send(reqBody)
+        .field('position', JSON.stringify(reqBody.position))
+        .field('weather', JSON.stringify(reqBody.weather))
 
       t.strictSame(status, 500)
       t.strictSame(body, { meta: { code: 500, errorMessage: 'Something wrong', errorType: 'ServerException' } })
@@ -817,7 +832,11 @@ tap.test('/observations', async t => {
 
       const { status, body } = await request
         .post(`${baseUrl}/`)
-        .send(reqBody)
+        .field('position', JSON.stringify(reqBody.position))
+        .field('weather', JSON.stringify(reqBody.weather))
+        .field('details', JSON.stringify(reqBody.details))
+        .field('measures', JSON.stringify(reqBody.measures))
+        .field('other', JSON.stringify(reqBody.other))
 
       t.strictSame(status, 201)
       t.strictSame(cleanDbData(body.data), expectedData)
@@ -840,7 +859,8 @@ tap.test('/observations', async t => {
       const { status, body } = await request
         .post(`${baseUrl}/`)
         .query({ minimalRes: true, generateCallId: true })
-        .send(reqBody)
+        .field('position', JSON.stringify(reqBody.position))
+        .field('weather', JSON.stringify(reqBody.weather))
 
       t.strictSame(status, 201)
       t.strictSame(cleanDbData(body.data), expectedData)
@@ -865,7 +885,8 @@ tap.test('/observations', async t => {
         .post(`${baseUrl}/`)
         .set('Authorization', 'Bearer foo')
         .query({ minimalRes: true })
-        .send(reqBody)
+        .field('position', JSON.stringify(reqBody.position))
+        .field('weather', JSON.stringify(reqBody.weather))
 
       t.strictSame(status, 201)
       t.strictSame(cleanDbData(body.data), expectedData)
@@ -895,7 +916,9 @@ tap.test('/observations', async t => {
 
       const { status, body } = await request
         .post(`${baseUrl}/`)
-        .send(reqBody)
+        .field('position', JSON.stringify(reqBody.position))
+        .field('weather', JSON.stringify(reqBody.weather))
+        .field('createdAt', JSON.stringify(reqBody.createdAt))
 
       t.strictSame(status, 201)
       t.strictSame(body.data.createdAt, '2020-12-01T00:00:00.000Z')
@@ -903,8 +926,127 @@ tap.test('/observations', async t => {
       t.end()
     })
 
-    // TODO
+    t.test('returns 415 if file type is not supported', async t => {
+      const reqBody = {
+        position: { coordinates: [9.145174026489258, 45.47758654665813] },
+        weather: { sky: { code: 1 } },
+      }
+
+      const { status, body } = await request
+        .post(`${baseUrl}/`)
+        .field('position', JSON.stringify(reqBody.position))
+        .field('weather', JSON.stringify(reqBody.weather))
+        .attach('photos', path.join(__dirname, '/__files__/test.txt'))
+
+      const expectedMeta = {
+        code: 415,
+        errorMessage: 'File test.txt has unsupported type text/plain',
+        errorType: 'UnsupportedMediaTypeException',
+      }
+
+      t.strictSame(status, 415)
+      t.strictSame(body, { meta: expectedMeta })
+      t.strictSame((await fs.readdir(UPLOAD_PATH)).length, 1)
+      t.end()
+    })
+
+    t.test('returns 422 if too many files', async t => {
+      const reqBody = {
+        position: { coordinates: [9.145174026489258, 45.47758654665813] },
+        weather: { sky: { code: 1 } },
+      }
+
+      const { status, body } = await request
+        .post(`${baseUrl}/`)
+        .field('position', JSON.stringify(reqBody.position))
+        .field('weather', JSON.stringify(reqBody.weather))
+        .attach('photos', path.join(__dirname, '/__files__/test.jpg'))
+        .attach('photos', path.join(__dirname, '/__files__/test.jpg'))
+        .attach('photos', path.join(__dirname, '/__files__/test.jpg'))
+        .attach('photos', path.join(__dirname, '/__files__/test.jpg'))
+
+      const expectedMeta = {
+        code: 422,
+        errorMessage: 'Too many files',
+        errorType: 'RequestValidationException',
+      }
+
+      t.strictSame(status, 422)
+      t.strictSame(body, { meta: expectedMeta })
+      t.strictSame((await fs.readdir(UPLOAD_PATH)).length, 1)
+      t.end()
+    })
+
     t.test('returns 201 with images', async t => {
+      const reqBody = {
+        position: { coordinates: [9.145174026489258, 45.47758654665813], accuracy: 1, roi: '000000000000000000000001' },
+        weather: { temperature: 1, sky: { code: 1 }, wind: 1 },
+        details: {
+          litters: { checked: true, type: [{ code: '1' }, { code: '2' }] },
+          fauna: {
+            checked: true,
+            fish: { checked: true, number: 1, alien: { checked: true, species: [{ code: '1' }] } },
+          },
+        },
+        measures: {
+          temperature: {
+            multiple: true,
+            val: [{ depth: 0, val: 1 }, { depth: 1, val: 2 }],
+            instrument: { type: { code: 1 }, precision: 1, details: 'foo' },
+          },
+        },
+        other: 'foo',
+      }
+
+      const expectedData = {
+        markedForDeletion: false,
+        position: {
+          type: 'Point',
+          coordinates: [9.145174026489258, 45.47758654665813],
+          accuracy: 1,
+          crs: { code: 1 },
+          roi: '000000000000000000000001',
+          area: 1,
+        },
+        weather: { temperature: 1, sky: { code: 1 }, wind: 1 },
+        details: {
+          litters: { checked: true, type: [{ code: 1 }, { code: 2 }] },
+          fauna: {
+            checked: true,
+            fish: { checked: true, number: 1, alien: { checked: true, species: [{ code: 1 }] } },
+          },
+        },
+        measures: {
+          temperature: {
+            multiple: true,
+            val: [{ depth: 0, val: 1 }, { depth: 1, val: 2 }],
+            instrument: { type: { code: 1 }, precision: 1, details: 'foo' },
+          },
+        },
+        other: 'foo',
+      }
+
+      const { status, body } = await request
+        .post(`${baseUrl}/`)
+        .field('position', JSON.stringify(reqBody.position))
+        .field('weather', JSON.stringify(reqBody.weather))
+        .field('details', JSON.stringify(reqBody.details))
+        .field('measures', JSON.stringify(reqBody.measures))
+        .field('other', JSON.stringify(reqBody.other))
+        .attach('photos', path.join(__dirname, '/__files__/test.jpg'))
+        .attach('photos', path.join(__dirname, '/__files__/test.jpg'))
+        .attach('signage', path.join(__dirname, '/__files__/test.jpg'))
+
+      t.strictSame(status, 201)
+      t.strictSame((await fs.readdir(UPLOAD_PATH)).length, 4)
+      t.strictSame(body.data.photos.length, 2)
+      t.strictSame(typeof body.data.details.outlets.signagePhoto, 'string')
+
+      delete body.data.photos
+      delete body.data.details.outlets
+      t.strictSame(cleanDbData(body.data), expectedData)
+
+      await removeAllUploadedFiles()
       t.end()
     })
 
@@ -913,3 +1055,13 @@ tap.test('/observations', async t => {
 
   t.end()
 })
+
+async function removeAllUploadedFiles() {
+  const files = await fs.readdir(UPLOAD_PATH)
+
+  for (const file of files) {
+    if (file !== '.gitkeep') {
+      await fs.unlink(path.join(UPLOAD_PATH, file))
+    }
+  }
+}
