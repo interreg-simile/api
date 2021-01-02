@@ -13,6 +13,7 @@
     "start": "node index.js",
     "test": "npm run lint && npm run unit",
     "unit": "tap tests/**/*.test.js",
+    "seedRois": "node scripts/seedRois.js",
     "serve:docs": "live-server --watch=./docs/ --open=./docs/temp/",
     "build:docs": "redoc-cli bundle docs/spec/openapi.yaml --output ./docs/index.html --options.hideDownloadButton"
   },
