@@ -25,6 +25,7 @@ tap.test('/observations', async t => {
   const baseUrl = `/${version}/observations`
 
   t.tearDown(async() => {
+    await removeAllUploadedFiles()
     await disconnectTestDb()
   })
 
@@ -753,9 +754,13 @@ tap.test('/observations', async t => {
         .post(`${baseUrl}/`)
         .field('position', JSON.stringify(reqBody.position))
         .field('weather', JSON.stringify(reqBody.weather))
+        .attach('photos', path.join(__dirname, '/__files__/test.jpg'))
+        .attach('photos', path.join(__dirname, '/__files__/test.jpg'))
+        .attach('signage', path.join(__dirname, '/__files__/test.jpg'))
 
       t.strictSame(status, 500)
       t.strictSame(body, { meta: { code: 500, errorMessage: 'Something wrong', errorType: 'ServerException' } })
+      t.strictSame((await fs.readdir(UPLOAD_PATH)).length, 1)
       serviceStub.restore()
       t.end()
     })

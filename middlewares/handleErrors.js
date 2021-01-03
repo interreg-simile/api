@@ -1,10 +1,29 @@
-/* eslint-disable no-unused-vars */
+/* eslint-disable no-unused-vars,no-await-in-loop */
 'use strict'
 
+const fs = require('fs').promises
+const path = require('path')
 const { errorTypes, errorMessages } = require('../lib/CustomError')
 
-// TODO remove saved files
-module.exports = (error, req, res, next) => {
+const { UPLOAD_PATH } = process.env
+
+async function removeUploadedFiles(req) {
+  try {
+    for (const fieldName of Object.keys(req.files)) {
+      for (const file of req.files[fieldName]) {
+        await fs.unlink(path.join(UPLOAD_PATH, file.filename))
+      }
+    }
+  } catch (error) {
+    req.log.error({ error }, 'Error removing uploaded files')
+  }
+}
+
+module.exports = async(error, req, res, next) => {
+  if (req.files) {
+    await removeUploadedFiles(req)
+  }
+
   const statusCode = error.code || 500
 
   const meta = {
