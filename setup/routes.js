@@ -1,5 +1,7 @@
 'use strict'
 
+const path = require('path')
+
 const { version } = require('../lib/loadConfigurations')
 const { router: authRouter } = require('../modules/auth/auth.route')
 const { router: usersRouter } = require('../modules/users/users.route')
@@ -18,14 +20,9 @@ function initRoutes(app, logger) {
   app.use(`/${version}/observations`, observationsRouter)
   app.use(`/${version}/misc`, miscRouter)
 
+  app.get(`/${version}/docs`, (req, res) => res.sendFile(path.join(__dirname, '..', 'docs', 'index.html')))
+
   logger.info('[setup] Routes initialized')
 }
 
 module.exports = { initRoutes }
-
-// TODO setup docs route
-/*
-server.get(`/${version}/docs`, (req, res) => {
-    res.sendFile(path.join(__dirname, "..", "..", "docs", "index.html"));
-})
- */
