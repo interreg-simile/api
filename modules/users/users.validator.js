@@ -22,16 +22,16 @@ const changePassword = [
     .trim()
     .not().isEmpty().withMessage('Must have a value'),
 
-  body('password')
+  body('newPassword')
     .trim()
     .not().isEmpty().withMessage('Must have a value')
     .isLength({ min: 8, max: 50 }).withMessage('Must be between 8 and 50 characters'),
 
-  body('confirmPassword')
+  body('confirmNewPassword')
     .trim()
     .not().isEmpty().withMessage('Must have a value')
     .custom((value, { req }) => {
-      if (value !== req.body.password) {
+      if (value !== req.body.newPassword) {
         throw new Error('Password confirmation does not match password')
       }
 

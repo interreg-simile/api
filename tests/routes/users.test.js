@@ -325,7 +325,7 @@ tap.test('/users', async t => {
       const { status, body } = await request
         .patch(`${baseUrl}/foo/change-password`)
         .set('Authorization', 'Bearer foo')
-        .send({ oldPassword: 'foo', password: '12345678', confirmPassword: '12345678' })
+        .send({ oldPassword: 'foo', newPassword: '12345678', confirmNewPassword: '12345678' })
 
       t.strictSame(status, 422)
       compareValidationErrorBodies(body, expectedErrors, t)
@@ -346,19 +346,19 @@ tap.test('/users', async t => {
         {
           value: '',
           msg: 'Must have a value',
-          param: 'password',
+          param: 'newPassword',
           location: 'body',
         },
         {
           value: '',
           msg: 'Must be between 8 and 50 characters',
-          param: 'password',
+          param: 'newPassword',
           location: 'body',
         },
         {
           value: '',
           msg: 'Must have a value',
-          param: 'confirmPassword',
+          param: 'confirmNewPassword',
           location: 'body',
         },
       ]
@@ -381,13 +381,13 @@ tap.test('/users', async t => {
         {
           value: 'foo',
           msg: 'Must be between 8 and 50 characters',
-          param: 'password',
+          param: 'newPassword',
           location: 'body',
         },
         {
           value: 'bar',
           msg: 'Password confirmation does not match password',
-          param: 'confirmPassword',
+          param: 'confirmNewPassword',
           location: 'body',
         },
       ]
@@ -395,7 +395,7 @@ tap.test('/users', async t => {
       const { status, body } = await request
         .patch(`${baseUrl}/${plainData[1]._id}/change-password`)
         .set('Authorization', 'Bearer foo')
-        .send({ oldPassword: 'foo', password: 'foo', confirmPassword: 'bar' })
+        .send({ oldPassword: 'foo', newPassword: 'foo', confirmNewPassword: 'bar' })
 
       t.strictSame(status, 422)
       compareValidationErrorBodies(body, expectedErrors, t)
@@ -409,7 +409,7 @@ tap.test('/users', async t => {
       const { status, body } = await request
         .patch(`${baseUrl}/000000000000000000000004/change-password`)
         .set('Authorization', 'Bearer foo')
-        .send({ oldPassword: 'foo', password: '12345678', confirmPassword: '12345678' })
+        .send({ oldPassword: 'foo', newPassword: '12345678', confirmNewPassword: '12345678' })
 
       t.strictSame(status, 404)
       t.strictSame(body, { meta: { code: 404, errorMessage: 'Resource not found', errorType: 'NotFoundException' } })
@@ -423,7 +423,7 @@ tap.test('/users', async t => {
       const { status, body } = await request
         .patch(`${baseUrl}/${plainData[1]._id}/change-password`)
         .set('Authorization', 'Bearer foo')
-        .send({ oldPassword: 'wrong-password', password: '12345678', confirmPassword: '12345678' })
+        .send({ oldPassword: 'wrong-password', newPassword: '12345678', confirmNewPassword: '12345678' })
 
       t.strictSame(status, 401)
       t.strictSame(body, { meta: { code: 401, errorMessage: 'Invalid credentials', errorType: 'NotAuthorizedException' } })
@@ -438,7 +438,7 @@ tap.test('/users', async t => {
       const { status, body } = await request
         .patch(`${baseUrl}/${plainData[1]._id}/change-password`)
         .set('Authorization', 'Bearer foo')
-        .send({ oldPassword: '12345678', password: '12345678', confirmPassword: '12345678' })
+        .send({ oldPassword: '12345678', newPassword: '12345678', confirmNewPassword: '12345678' })
 
       t.strictSame(status, 500)
       t.strictSame(body, { meta: { code: 500, errorMessage: 'Something wrong', errorType: 'ServerException' } })
@@ -454,7 +454,7 @@ tap.test('/users', async t => {
       const { status, body } = await request
         .patch(`${baseUrl}/${plainData[1]._id}/change-password`)
         .set('Authorization', 'Bearer foo')
-        .send({ oldPassword: '12345678', password: newPassword, confirmPassword: newPassword })
+        .send({ oldPassword: '12345678', newPassword, confirmNewPassword: newPassword })
 
       t.strictSame(status, 204)
       t.strictSame(body.data, undefined)

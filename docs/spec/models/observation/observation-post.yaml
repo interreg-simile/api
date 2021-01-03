@@ -10,6 +10,11 @@ properties:
       type: string
       format: binary
 
+  signage:
+    description: Photo of the outlet signage.
+    type: string
+    format: binary
+
   position:
     type: object
     description: Information about the position of the observation.
@@ -53,11 +58,6 @@ properties:
 
   details:
     $ref: ./details-post.yaml
-
-  signage:
-    description: Photo of the outlet signage.
-    type: string
-    format: binary
 
   measures:
     $ref: ./measures-post.yaml

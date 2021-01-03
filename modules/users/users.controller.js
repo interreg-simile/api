@@ -35,7 +35,7 @@ async function changeEmail(req, res, next) {
 
 async function changePassword(req, res, next) {
   const { id } = req.params
-  const { oldPassword, password: newPassword } = req.body
+  const { oldPassword, newPassword } = req.body
 
   try {
     await service.changePassword(id, oldPassword, newPassword)
