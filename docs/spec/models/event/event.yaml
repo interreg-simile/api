@@ -60,6 +60,7 @@ properties:
 
   hasDetails:
     type: boolean
+    default: true
     description: Flag that states if the event has details (poistion and date).
 
   position:

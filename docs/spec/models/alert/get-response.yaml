@@ -1,0 +1,78 @@
+type: object
+
+properties:
+
+  _id:
+    type: string
+    description: Unique identifier of the resource.
+
+  title:
+    type: object
+    description: An object containing the title of the alter in different languages.
+    required:
+      - it
+      - en
+    properties:
+      it:
+        type: string
+        description: Title of the alert in Italian.
+      en:
+        type: string
+        description: Title of the alert in English.
+
+  content:
+    type: object
+    description: Object containing the content of the alert in different languages.
+    required:
+      - it
+      - en
+    properties:
+      it:
+        type: string
+        description: Content of the alert in Italian.
+      en:
+        type: string
+        description: Content of the alert in English.
+
+  links:
+    type: array
+    description: An array of useful links
+    items:
+      type: object
+      properties:
+        nameIta:
+          type: string
+          description: Italian name of the link
+        nameEng:
+          type: string
+          description: English name of the link
+        url:
+          type: string
+          description: Link url
+      required:
+        - nameIta
+        - nameEng
+        - url
+
+  dateEnd:
+    type: string
+    description: Date from which the alert is no longer valid.
+    format: date-time
+
+  createdAt:
+    type: string
+    format: date-time
+    description: Date of creation of the resource.
+
+  updatedAt:
+    type: string
+    format: date-time
+    description: Date of the last update of the resource.
+
+required:
+  - _id
+  - title
+  - content
+  - dateEnd
+  - createdAt
+  - updatedAt

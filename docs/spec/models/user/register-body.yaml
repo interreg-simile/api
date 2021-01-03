@@ -41,6 +41,10 @@ properties:
   gender:
     type: string
     description: User's gender.
+    enum:
+      - male
+      - female
+      - other
 
 required:
   - email

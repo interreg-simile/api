@@ -12,7 +12,7 @@ servers:
 #----------------------
 info:
   title: "SIMILE Api"
-  version: "1.0.0"
+  version: "2.0.0"
   x-logo:
     url: "https://raw.githubusercontent.com/interreg-simile/api/master/docs/media/logo.png"
   description: |
@@ -34,15 +34,14 @@ info:
     The API is based on REST principles and it supports the following *HTTP verbs*.
     - **GET** to retrieve information.
     - **POST** to create a new entity.
-    - **PUT** to entirely update an existing entity (if the entity does not exist a new one is created).
-    - **DELETE** to delete an entity.
+    - **PATCH** to patially update an existing entity.
 
 
     ## Authentication
     Some routes requires an authenticated user, while some others offers authenticated users more funciontalities.
 
     This API uses the [JSON Web Token](https://jwt.io/introduction/) standard to implement users authentication. When a user logs in,
-    the system generates and returns a random JWT that has to be sent with all the subsequent requests as an
+    the system generates and returns a random JWT that should be sent with all the subsequent requests as an
     [Authorization header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization) with the following
     syntax:
 
@@ -84,7 +83,9 @@ info:
     | 204         | No Content             | The request does not need to return an entity-body.                                           |
     | 400         | Bad Request            | The request could not be understood by the server due to malformed syntax.                    |
     | 401         | Unauthorized           | The request requires user authentication.                                                     |
+    | 403         | Forbidden              | The request is forbidden.                                                                     |
     | 404         | Not Found              | The server has not found anything matching the Request-URI.                                   |
+    | 409         | Conflict               | the request could not be processed because of conflicts.                                      |
     | 415         | Unsupported Media Type | The request entity has a media type which the server or resource does not support.            |
     | 422         | Unprocessable Entity   | The request was well-formed but was unable to be followed due to semantic errors.             |
     | 500         | Internal Server Error  | The server encountered an unexpected condition which prevented it from fulfilling the request.|
@@ -119,8 +120,8 @@ info:
     name: "Edoardo Pessina"
     email: "interreg-simile@polimi.it"
   license:
-    name: "GNU GPLv3"
-    url: "https://choosealicense.com/licenses/gpl-3.0/"
+    name: "Apache License 2.0"
+    url: "https://choosealicense.com/licenses/apache-2.0/"
 
 #----------------------
 # Tags
@@ -418,8 +419,6 @@ paths:
                     type: string
                 required:
                   - email
-        '409':
-          description: Conflict, email already in use
 
   /auth/login:
 
@@ -448,8 +447,8 @@ paths:
                   userId:
                     type: string
                 required:
-                  - email
                   - token
+                  - userId
 
   /users/{id}:
 
@@ -462,6 +461,13 @@ paths:
 
         **N.B.** This route requires an **authenticated user**.
       operationId: get-user
+      parameters:
+        - name: id
+          in: path
+          description: The id of the user.
+          required: true
+          schema:
+            type: string
       responses:
         '200':
           description: OK
@@ -479,6 +485,13 @@ paths:
 
         **N.B.** This route requires an **authenticated user**.
       operationId: delete-user
+      parameters:
+        - name: id
+          in: path
+          description: The id of the user.
+          required: true
+          schema:
+            type: string
       responses:
         '204':
           description: No Content
@@ -494,6 +507,13 @@ paths:
 
         **N.B.** This route requires an **authenticated user**.
       operationId: change-email
+      parameters:
+        - name: id
+          in: path
+          description: The id of the user.
+          required: true
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -520,6 +540,13 @@ paths:
 
         **N.B.** This route requires an **authenticated user**.
       operationId: change-password
+      parameters:
+        - name: id
+          in: path
+          description: The id of the user.
+          required: true
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -540,6 +567,13 @@ paths:
 
         **N.B.** This route requires an **authenticated user**.
       operationId: change-info
+      parameters:
+        - name: id
+          in: path
+          description: The id of the user.
+          required: true
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -549,36 +583,23 @@ paths:
         '204':
           description: No Content
 
-  /alerts:
+  /alerts/:
 
     get:
       tags:
         - alert
       summary: Get All
-      description: |
-        Returns all the alerts.
-
-        **N.B.**  The field ```uid``` will be returned only if an admin user performs the request.
+      description: Returns all the alerts.
       operationId: get-alerts
       parameters:
         - name: includePast
           in: query
           description: |
-            States if the response has to include the alerts with a ```dateEnd``` property older than the current date.
+            States if the response should include the alerts with ```dateEnd``` lower than current date.
           required: false
           schema:
             type: boolean
             default: true
-        - name: includeDeleted
-          in: query
-          description: |
-            States if the response has to include the alerts with the ```markedForDeletion``` flag set to true.
-
-            Only **admin** users can set this parameter to true.
-          required: false
-          schema:
-            type: boolean
-            default: false
         - name: sort
           in: query
           description: |
@@ -601,29 +622,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Alert'
-
-    post:
-      tags:
-        - alert
-      summary: Create One
-      description: |
-        Creates a new alert.
-
-        **N.B.** This route requires an **authenticated admin**.
-      operationId: post-alerts
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: ./models/alert/alert-post.yaml
-      responses:
-        '201':
-          description: Created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Alert'
+                  $ref: ./models/alert/get-response.yaml
 
   /alerts/{id}:
 
@@ -631,15 +630,12 @@ paths:
       tags:
         - alert
       summary: Get by Id
-      description: |
-        Returns the alert with the given id.
-
-        **N.B.**  The field ```uid``` will be returned only if an admin user performs the request.
+      description: Returns the alert with the given id.
       operationId: get-alert
       parameters:
         - name: id
           in: path
-          description: The id of the alert to return.
+          description: The id of the alert.
           required: true
           schema:
             type: string
@@ -649,93 +645,25 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Alert'
+                $ref: ./models/alert/get-response.yaml
 
-    put:
-      tags:
-        - alert
-      summary: Update One
-      description: |
-        Updates an alert. If the alert does not exist, it creates a new one.
-
-        **N.B.** This route requires an **authenticated admin**.
-      operationId: put-alert
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: ./models/alert/alert-post.yaml
-      parameters:
-        - name: id
-          in: path
-          description: The id of the alert to update.
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Alert'
-        '201':
-          description: Created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Alert'
-
-    delete:
-      tags:
-        - alert
-      summary: Delete One
-      description: |
-        Deletes an alert.
-
-        **N.B.** This route requires an **authenticated admin**.
-      operationId: delete-alert
-      parameters:
-        - name: id
-          in: path
-          description: The id of the alert to delete.
-          required: true
-          schema:
-            type: string
-      responses:
-        '204':
-          description: No Content
-
-  /events:
+  /events/:
 
     get:
       tags:
         - event
       summary: Get All
-      description: |
-        Returns all the events.
-
-        **N.B.**  The field ```uid``` will be returned only if an admin user performs the request.
+      description: Returns all the events.
       operationId: get-events
       parameters:
         - name: includePast
           in: query
           description: |
-            States if the response has to include the events with a ```date``` property older than the current date.
+            States if the response should include the alerts with ```date``` lower than current date.
           required: false
           schema:
             type: boolean
             default: true
-        - name: includeDeleted
-          in: query
-          description: |
-            States if the response has to include the events with the ```markedForDeletion``` flag set to true.
-
-            Only **admin** users can set this parameter to true.
-          required: false
-          schema:
-            type: boolean
-            default: false
         - name: sort
           in: query
           description: |
@@ -757,29 +685,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Event'
-
-    post:
-      tags:
-        - event
-      summary: Create One
-      description: |
-        Creates a new event.
-
-        **N.B.** This route requires an **authenticated admin**.
-      operationId: post-events
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: ./models/event/event-post.yaml
-      responses:
-        '201':
-          description: Created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Event'
+                  $ref: ./models/event/get-response.yaml
 
   /events/{id}:
 
@@ -787,15 +693,12 @@ paths:
       tags:
         - event
       summary: Get by Id
-      description: |
-        Returns the event with the given id.
-
-        **N.B.**  The field ```uid``` will be returned only if an admin user performs the request.
+      description: Returns the event with the given id.
       operationId: get-event
       parameters:
         - name: id
           in: path
-          description: The id of the event to return.
+          description: The id of the event.
           required: true
           schema:
             type: string
@@ -805,64 +708,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Event'
+                $ref: ./models/event/get-response.yaml
 
-    put:
-      tags:
-        - event
-      summary: Update One
-      description: |
-        Updates an event. If the event does not exist, it creates a new one.
-
-        **N.B.** This route requires an **authenticated admin**.
-      operationId: put-event
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: ./models/event/event-post.yaml
-      parameters:
-        - name: id
-          in: path
-          description: The id of the event to update.
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Event'
-        '201':
-          description: Created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Event'
-
-    delete:
-      tags:
-        - event
-      summary: Delete One
-      description: |
-        Deletes an event.
-
-        **N.B.** This route requires an **authenticated admin**.
-      operationId: delete-event
-      parameters:
-        - name: id
-          in: path
-          description: The id of the event to delete.
-          required: true
-          schema:
-            type: string
-      responses:
-        '204':
-          description: No Content
-
-  /observations:
+  /observations/:
 
     get:
       tags:
@@ -871,19 +719,9 @@ paths:
       description: Returns all the observations.
       operationId: get-observations
       parameters:
-        - name: includeDeleted
-          in: query
-          description: |
-            States if the response has to include the observations with the ```markedForDeletion``` flag set to true.
-
-            Only **admin** users can set this parameter to true.
-          required: false
-          schema:
-            type: boolean
-            default: false
         - name: excludeOutOfRois
           in: query
-          description: States if the response has to exclude the observations outside of the regions of interest.
+          description: States if the response should exclude the observations outside of the regions of interest.
           required: false
           schema:
             type: boolean
@@ -900,7 +738,7 @@ paths:
         - name: minimalRes
           in: query
           description: |
-            States if the response has to contain only the essential data of the observations:
+            States if the response should contain only the essential data of the observations:
             ```json
             [
               {
@@ -908,6 +746,7 @@ paths:
                 "uid": "string",
                 "position": {
                   "coordinates": [0, 0],
+                  "crs": 1,
                   "roi": "string"
                 }
               },
@@ -921,7 +760,7 @@ paths:
         - name: mode
           in: query
           description: |
-            States if the response has to follow the [GeoJSON](https://geojson.org/) specification:
+            States if the response should follow the [GeoJSON](https://geojson.org/) specification:
             ```json
             {
               "type": "FeatureCollection",
@@ -964,7 +803,7 @@ paths:
       parameters:
         - name: callId
           in: query
-          description: States if the five digits code that links the observation to a call to the competent authority has to be generated.
+          description: States if the five digits code that links the observation to a call to the competent authority should be generated.
           required: false
           schema:
             type: boolean
@@ -972,10 +811,11 @@ paths:
         - name: minimalRes
           in: query
           description: |
-            States if the response has to contain only the essential data of the observations:
+            States if the response should contain only the essential data of the observations:
             ```json
             {
               "_id": "string",
+              "uid": "string",
               "callId": 0,
               "position": {
                 "coordinates": [0, 0],
@@ -1010,6 +850,12 @@ paths:
       description: Returns the observation with the given id.
       operationId: get-observation
       parameters:
+        - name: id
+          in: path
+          description: The id of the observation.
+          required: true
+          schema:
+            type: string
         - name: crs
           in: query
           description: |
@@ -1022,7 +868,7 @@ paths:
         - name: mode
           in: query
           description: |
-            States if the response has to follow the [GeoJSON](https://geojson.org/) specification:
+            States if the response should follow the [GeoJSON](https://geojson.org/) specification:
             ```json
             {
               "type"      : "Feature",
@@ -1048,13 +894,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/Observation'
 
-  /rois:
+  /rois/:
 
     get:
       tags:
         - roi
       summary: Get All
-      description: "Returns all the regions of interest."
+      description: Returns all the regions of interest.
       operationId: get-rois
       parameters:
         - name: lat

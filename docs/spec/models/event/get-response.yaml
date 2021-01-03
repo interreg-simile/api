@@ -1,0 +1,118 @@
+type: object
+
+properties:
+
+  _id:
+    type: string
+    description: Unique identifier of the resource.
+
+  title:
+    type: object
+    description: Oobject containing the title of the event in different languages.
+    required:
+      - it
+      - en
+    properties:
+      it:
+        type: string
+        description: Title of the event in Italian.
+      en:
+        type: string
+        description: Title of the event in English.
+
+  description:
+    type: object
+    description: Object containing the description of the event in different languages.
+    required:
+      - it
+      - en
+    properties:
+      it:
+        type: string
+        description: Description of the event in Italian.
+      en:
+        type: string
+        description: Description of the event in English.
+
+  links:
+    type: array
+    description: An array of useful links
+    items:
+      type: object
+      properties:
+        nameIta:
+          type: string
+          description: Italian name of the link
+        nameEng:
+          type: string
+          description: English name of the link
+        url:
+          type: string
+          description: Link url
+      required:
+        - nameIta
+        - nameEng
+        - url
+
+  hasDetails:
+    type: boolean
+    default: true
+    description: Flag that states if the event has details (poistion and date).
+
+  position:
+    type: object
+    description: Details about the location of the event.
+    properties:
+      type:
+        type: string
+        default: Point
+        description: Type of the geometry. Its value is always Point.
+        enum:
+          - Point
+      coordinates:
+        type: array
+        minItems: 2
+        maxItems: 2
+        description: Coordinates of the event location in format [longitude, latitude].
+        items:
+          type: number
+      address:
+        type: string
+        description: Address of the event location.
+      city:
+        type: string
+        description: City in which the event takes place.
+
+  date:
+    type: string
+    format: date-time
+    description: Date of the event.
+
+  contacts:
+    type: object
+    description: Contacts of the event. At least one is mandatory.
+    properties:
+      email:
+        type: string
+        format: email
+      phone:
+        type: string
+
+  createdAt:
+    type: string
+    format: date-time
+    description: Date of creation of the resource.
+
+  updatedAt:
+    type: string
+    format: date-time
+    description: Date of the last update of the resource.
+
+required:
+  - _id
+  - title
+  - description
+  - date
+  - contacts
+  - createdAt
+  - updatedAt
