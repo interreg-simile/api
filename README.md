@@ -4,8 +4,11 @@
 
 # SIMILE API
 
-RESTFul API developed the manage the citizen generated data of
-[interreg project SIMILE](https://progetti.interreg-italiasvizzera.eu/it/b/78/sistemainformativoperilmonitoraggiointegratodeilaghiinsubriciedeiloroe).
+[![Inline docs](http://inch-ci.org/github/dwyl/hapi-auth-jwt2.svg?branch=master)](https://api-simile.como.polimi.it/v1/docs)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![javascript style guide](https://img.shields.io/badge/code_style-standard--mia-orange.svg)](https://github.com/mia-platform/eslint-config-mia)
+
+RESTFul API developed the manage the citizen generated data of [interreg project SIMILE](https://progetti.interreg-italiasvizzera.eu/it/b/78/sistemainformativoperilmonitoraggiointegratodeilaghiinsubriciedeiloroe).
 
 The project aims to improve the actual insubric lakes monitoring system and to create a shared policy for water management
 through an advanced informative system and citizen participation. The project is funded under the Interreg Italy-Switzerland Cooperation
