@@ -13,9 +13,10 @@
     "start": "node index.js",
     "test": "npm run lint && npm run unit",
     "unit": "tap tests/**/*.test.js",
-    "seedRois": "node scripts/seedRois.js",
-    "devDocs": "live-server --watch=./docs/ --open=./docs/dev/",
-    "buildDocs": "redoc-cli bundle docs/spec/openapi.yaml --output ./docs/index.html --options.hideDownloadButton"
+    "unit:local": "tap tests/**/*.test.js -T",
+    "seed:rois": "node scripts/seedRois.js",
+    "dev:docs": "live-server --watch=./docs/ --open=./docs/dev/",
+    "build:docs": "redoc-cli bundle docs/spec/openapi.yaml --output ./docs/index.html --options.hideDownloadButton"
   },
   "dependencies": {
     "bcryptjs": "2.4.3",

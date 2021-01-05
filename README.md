@@ -89,7 +89,7 @@ The API documentation follows the
 For development purposes you can run
 
 ```shell
-npm run serve:docs
+npm run dev:docs
 ```
 
 to spin up a live server that allows you to visualize the changes in real time.
