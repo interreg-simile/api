@@ -6,6 +6,8 @@ const supertest = require('supertest')
 const { mockLogger } = require('./utils')
 const initServer = require('../setup/server')
 
+const { CI } = process.env
+
 async function createMockRequest() {
   const app = await initServer(mockLogger, 'silent')
   return supertest(app)
@@ -18,7 +20,7 @@ async function connectTestDb(dbName) {
     useUnifiedTopology: true,
   }
 
-  await mongoose.connect(`mongodb://127.0.0.1:27888/${dbName}`, options)
+  await mongoose.connect(`mongodb://127.0.0.1:${CI ? '27017' : '27888'}/${dbName}`, options)
 }
 
 async function disconnectTestDb() {
