@@ -15,10 +15,7 @@ tap.test('/docs', async t => {
 
   const { res } = await request.get(`/${version}/docs`)
 
-  t.strictSame(
-    res.text,
-    '<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8">\n  <title>Docs Mock</title>\n</head>\n<body>\n<h1>Test</h1>\n</body>\n</html>\n'
-  )
+  t.strictSame(res.text, '<!DOCTYPE html>\n')
   pathStub.restore()
   t.end()
 })

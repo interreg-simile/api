@@ -1148,9 +1148,9 @@ tap.test('/observations', async t => {
 
       t.strictSame((await fs.readdir(UPLOAD_PATH)).length, 4)
       t.strictSame(body.data.photos.length, 2)
-      t.match(body.data.photos[0], /\/uploads\/[A-Za-z0-9_-]*.jpeg/)
-      t.match(body.data.photos[1], /\/uploads\/[A-Za-z0-9_-]*.jpeg/)
-      t.match(body.data.details.outlets.signagePhoto, /\/uploads\/[A-Za-z0-9_-]*.jpeg/)
+      t.match(body.data.photos[0], /uploads\/[A-Za-z0-9_-]*.jpeg/)
+      t.match(body.data.photos[1], /uploads\/[A-Za-z0-9_-]*.jpeg/)
+      t.match(body.data.details.outlets.signagePhoto, /uploads\/[A-Za-z0-9_-]*.jpeg/)
 
       delete body.data.photos
       delete body.data.details.outlets

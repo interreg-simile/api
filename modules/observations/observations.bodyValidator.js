@@ -24,7 +24,7 @@ const getCodeFieldValidation = (fieldName, min, max, isArray = false, isOptional
   const codeValidation = body(`${fieldName}.${isArray ? '*.' : ''}code`)
 
   if (isOptional) {
-    codeValidation.if(body(fieldName).exists())
+    codeValidation.optional()
   }
 
   codeValidation

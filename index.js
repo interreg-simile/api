@@ -13,7 +13,7 @@ async function start() {
 
   await connectDb(logger)
 
-  const serverProcess = app.listen(HTTP_PORT, () => logger.info(`[setup] Server listening on port ${HTTP_PORT}`))
+  const serverProcess = app.listen(HTTP_PORT, () => logger.info(`[setup] Server ready at http://localhost:${HTTP_PORT}`))
   onClose(serverProcess)
 }
 

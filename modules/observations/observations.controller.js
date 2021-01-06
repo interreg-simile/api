@@ -86,11 +86,11 @@ async function create(req, res, next) {
   }
 
   if (_.has(req, ['files', 'photos'])) {
-    data.photos = req.files.photos.map(photo => `/uploads/${photo.filename}`)
+    data.photos = req.files.photos.map(photo => `uploads/${photo.filename}`)
   }
 
   if (_.has(req, ['files', 'signage'])) {
-    _.set(data, ['details', 'outlets', 'signagePhoto'], `/uploads/${req.files.signage[0].filename}`)
+    _.set(data, ['details', 'outlets', 'signagePhoto'], `uploads/${req.files.signage[0].filename}`)
   }
 
   try {

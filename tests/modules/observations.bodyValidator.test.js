@@ -249,64 +249,6 @@ tap.test('observations.bodyValidator', async t => {
   })
 
   t.test('algae validation', async t => {
-    t.test('without codes', async t => {
-      const req = {
-        body: {
-          details: {
-            algae: {
-              extension: {},
-              look: {},
-              colour: {},
-            },
-          },
-        },
-      }
-
-      const wantedErrors = [
-        {
-          value: undefined,
-          msg: 'Must have a value',
-          param: 'details.algae.extension.code',
-          location: 'body',
-        },
-        {
-          value: undefined,
-          msg: 'Must be an integer between 1 and 3',
-          param: 'details.algae.extension.code',
-          location: 'body',
-        },
-        {
-          value: undefined,
-          msg: 'Must have a value',
-          param: 'details.algae.look.code',
-          location: 'body',
-        },
-        {
-          value: undefined,
-          msg: 'Must be an integer between 1 and 4',
-          param: 'details.algae.look.code',
-          location: 'body',
-        },
-        {
-          value: undefined,
-          msg: 'Must have a value',
-          param: 'details.algae.colour.code',
-          location: 'body',
-        },
-        {
-          value: undefined,
-          msg: 'Must be an integer between 1 and 5',
-          param: 'details.algae.colour.code',
-          location: 'body',
-        },
-      ]
-
-      const errors = await getErrors(service.algae, req)
-
-      t.strictSame(errors, wantedErrors)
-      t.end()
-    })
-
     t.test('with errors', async t => {
       const req = {
         body: {
@@ -417,68 +359,31 @@ tap.test('observations.bodyValidator', async t => {
       t.end()
     })
 
-    t.end()
-  })
-
-  t.test('foams validation', async t => {
-    t.test('without codes', async t => {
+    t.test('has success without codes', async t => {
       const req = {
         body: {
           details: {
-            foams: {
+            algae: {
               extension: {},
               look: {},
-              height: {},
+              colour: {},
             },
           },
         },
       }
 
-      const wantedErrors = [
-        {
-          value: undefined,
-          msg: 'Must have a value',
-          param: 'details.foams.extension.code',
-          location: 'body',
-        },
-        {
-          value: undefined,
-          msg: 'Must be an integer between 1 and 3',
-          param: 'details.foams.extension.code',
-          location: 'body',
-        },
-        {
-          value: undefined,
-          msg: 'Must have a value',
-          param: 'details.foams.look.code',
-          location: 'body',
-        },
-        {
-          value: undefined,
-          msg: 'Must be an integer between 1 and 3',
-          param: 'details.foams.look.code',
-          location: 'body',
-        },
-        {
-          value: undefined,
-          msg: 'Must have a value',
-          param: 'details.foams.height.code',
-          location: 'body',
-        },
-        {
-          value: undefined,
-          msg: 'Must be an integer between 1 and 3',
-          param: 'details.foams.height.code',
-          location: 'body',
-        },
-      ]
+      const wantedErrors = []
 
-      const errors = await getErrors(service.foams, req)
+      const errors = await getErrors(service.algae, req)
 
       t.strictSame(errors, wantedErrors)
       t.end()
     })
 
+    t.end()
+  })
+
+  t.test('foams validation', async t => {
     t.test('with errors', async t => {
       const req = {
         body: {
@@ -581,55 +486,31 @@ tap.test('observations.bodyValidator', async t => {
       t.end()
     })
 
-    t.end()
-  })
-
-  t.test('oils validation', async t => {
-    t.test('without codes', async t => {
+    t.test('has success without codes', async t => {
       const req = {
         body: {
           details: {
-            oils: {
+            foams: {
               extension: {},
-              type: {},
+              look: {},
+              height: {},
             },
           },
         },
       }
 
-      const wantedErrors = [
-        {
-          value: undefined,
-          msg: 'Must have a value',
-          param: 'details.oils.extension.code',
-          location: 'body',
-        },
-        {
-          value: undefined,
-          msg: 'Must be an integer between 1 and 3',
-          param: 'details.oils.extension.code',
-          location: 'body',
-        },
-        {
-          value: undefined,
-          msg: 'Must have a value',
-          param: 'details.oils.type.code',
-          location: 'body',
-        },
-        {
-          value: undefined,
-          msg: 'Must be an integer between 1 and 2',
-          param: 'details.oils.type.code',
-          location: 'body',
-        },
-      ]
+      const wantedErrors = []
 
-      const errors = await getErrors(service.oils, req)
+      const errors = await getErrors(service.foams, req)
 
       t.strictSame(errors, wantedErrors)
       t.end()
     })
 
+    t.end()
+  })
+
+  t.test('oils validation', async t => {
     t.test('with errors', async t => {
       const req = {
         body: {
@@ -724,6 +605,26 @@ tap.test('observations.bodyValidator', async t => {
       t.end()
     })
 
+    t.test('has success without codes', async t => {
+      const req = {
+        body: {
+          details: {
+            oils: {
+              extension: {},
+              type: {},
+            },
+          },
+        },
+      }
+
+      const wantedErrors = []
+
+      const errors = await getErrors(service.oils, req)
+
+      t.strictSame(errors, wantedErrors)
+      t.end()
+    })
+
     t.end()
   })
 
@@ -745,18 +646,6 @@ tap.test('observations.bodyValidator', async t => {
           value: [],
           msg: 'Must be an array with at least one element',
           param: 'details.litters.type',
-          location: 'body',
-        },
-        {
-          value: undefined,
-          msg: 'Must have a value',
-          param: 'details.litters.quantity.code',
-          location: 'body',
-        },
-        {
-          value: undefined,
-          msg: 'Must be an integer between 1 and 3',
-          param: 'details.litters.quantity.code',
           location: 'body',
         },
       ]
@@ -884,18 +773,6 @@ tap.test('observations.bodyValidator', async t => {
           param: 'details.odours.origin',
           location: 'body',
         },
-        {
-          value: undefined,
-          msg: 'Must have a value',
-          param: 'details.odours.intensity.code',
-          location: 'body',
-        },
-        {
-          value: undefined,
-          msg: 'Must be an integer between 1 and 3',
-          param: 'details.odours.intensity.code',
-          location: 'body',
-        },
       ]
 
       const errors = await getErrors(service.odours, req)
@@ -1002,51 +879,6 @@ tap.test('observations.bodyValidator', async t => {
   })
 
   t.test('outlets validation', async t => {
-    t.test('without codes', async t => {
-      const req = {
-        body: {
-          details: {
-            outlets: {
-              terminal: {},
-              colour: {},
-            },
-          },
-        },
-      }
-
-      const wantedErrors = [
-        {
-          value: undefined,
-          msg: 'Must have a value',
-          param: 'details.outlets.terminal.code',
-          location: 'body',
-        },
-        {
-          value: undefined,
-          msg: 'Must be an integer between 1 and 2',
-          param: 'details.outlets.terminal.code',
-          location: 'body',
-        },
-        {
-          value: undefined,
-          msg: 'Must have a value',
-          param: 'details.outlets.colour.code',
-          location: 'body',
-        },
-        {
-          value: undefined,
-          msg: 'Must be an integer between 1 and 7',
-          param: 'details.outlets.colour.code',
-          location: 'body',
-        },
-      ]
-
-      const errors = await getErrors(service.outlets, req)
-
-      t.strictSame(errors, wantedErrors)
-      t.end()
-    })
-
     t.test('with errors', async t => {
       const req = {
         body: {
@@ -1172,6 +1004,26 @@ tap.test('observations.bodyValidator', async t => {
 
     t.test('has success with empty outlets field', async t => {
       const req = { body: { details: { outlets: {} } } }
+
+      const wantedErrors = []
+
+      const errors = await getErrors(service.outlets, req)
+
+      t.strictSame(errors, wantedErrors)
+      t.end()
+    })
+
+    t.test('has success without codes', async t => {
+      const req = {
+        body: {
+          details: {
+            outlets: {
+              terminal: {},
+              colour: {},
+            },
+          },
+        },
+      }
 
       const wantedErrors = []
 
