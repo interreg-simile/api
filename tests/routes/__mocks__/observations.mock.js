@@ -96,6 +96,7 @@ const data = [
     other: 'foo',
     photos: ['foo.jpg'],
     markedForDeletion: false,
+    createdAt: '2020-01-01T00:00:00.000Z',
   },
   {
     _id: '222222222222222222222222',

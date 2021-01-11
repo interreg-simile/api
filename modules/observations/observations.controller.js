@@ -19,6 +19,7 @@ async function getAll(req, res, next) {
     projection['position.coordinates'] = 1
     projection['position.crs'] = 1
     projection['position.roi'] = 1
+    projection.createdAt = 1
   } else {
     projection.markedForDeletion = 0
   }

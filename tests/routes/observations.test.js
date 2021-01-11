@@ -270,6 +270,7 @@ tap.test('/observations', async t => {
                 crs: { code: 2, description: 'WGS 84 / UTM zone 32N' },
                 roi: mockObservations[0].position.roi,
               },
+              createdAt: mockObservations[0].createdAt,
             },
           },
         ],
