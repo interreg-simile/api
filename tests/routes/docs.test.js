@@ -15,7 +15,7 @@ tap.test('/docs', async t => {
 
   const { res } = await request.get(`/${version}/docs`)
 
-  t.strictSame(res.text, '<!DOCTYPE html>\n')
+  t.match(res.text, /<!DOCTYPE html>.*/)
   pathStub.restore()
   t.end()
 })

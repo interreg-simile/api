@@ -17,6 +17,7 @@ const data = [
       },
     ],
     content: { it: 'Content...', en: 'Content...' },
+    position: { type: 'Point', coordinates: [0, 0] },
     dateEnd: moment().subtract(1, 'days').toISOString(),
     markedForDeletion: false,
     createdAt: moment('2020-01-01').toISOString(),

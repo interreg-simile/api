@@ -81,6 +81,7 @@ tap.test('/alerts', async t => {
           title: mockAlerts[0].title,
           links: mockAlerts[0].links,
           content: mockAlerts[0].content,
+          position: mockAlerts[0].position,
           dateEnd: mockAlerts[0].dateEnd,
         },
         {
@@ -132,6 +133,7 @@ tap.test('/alerts', async t => {
           title: mockAlerts[0].title,
           links: mockAlerts[0].links,
           content: mockAlerts[0].content,
+          position: mockAlerts[0].position,
           dateEnd: mockAlerts[0].dateEnd,
         },
       ]
@@ -192,6 +194,7 @@ tap.test('/alerts', async t => {
         title: mockAlerts[0].title,
         links: mockAlerts[0].links,
         content: mockAlerts[0].content,
+        position: mockAlerts[0].position,
         dateEnd: mockAlerts[0].dateEnd,
       }
 

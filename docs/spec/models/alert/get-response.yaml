@@ -34,6 +34,24 @@ properties:
         type: string
         description: Content of the alert in English.
 
+  position:
+    type: object
+    description: Details about the location of the alert.
+    properties:
+      type:
+        type: string
+        default: Point
+        description: Type of the geometry. Its value is always Point.
+        enum:
+          - Point
+      coordinates:
+        type: array
+        minItems: 2
+        maxItems: 2
+        description: Coordinates of the event location in format [longitude, latitude].
+        items:
+          type: number
+
   links:
     type: array
     description: An array of useful links

@@ -1,4 +1,6 @@
 {
   "extends": "@mia-platform/eslint-config-mia",
-  "env": {"jest": true}
+  "rules": {
+    "linebreak-style": "off"
+  }
 }
