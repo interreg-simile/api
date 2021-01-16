@@ -13,8 +13,9 @@
     "start": "node index.js",
     "test": "npm run lint && npm run unit",
     "unit": "tap tests/**/*.test.js",
-    "unit:local": "tap tests/routes/observations.test.js -T",
+    "unit:local": "tap tests/**/*.test.js -T",
     "seed:rois": "node scripts/seedRois.js",
+    "seed:demoData": "node scripts/seedDemoData.js",
     "dev:docs": "live-server --watch=./docs/ --open=./docs/dev/",
     "build:docs": "redoc-cli bundle docs/spec/openapi.yaml --output ./docs/index.html --options.hideDownloadButton"
   },
