@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Updated
 - Added position to alerts
 - Added `createdAt` to observations minimal response
+- Added script to seed demo data to db
 
 ## [2.0.0] - 2021-01-06
 ### Added
