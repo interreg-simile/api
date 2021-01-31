@@ -1,13 +1,16 @@
 /* eslint-disable newline-per-chained-call */
 'use strict'
 
+const { LoremIpsum } = require('lorem-ipsum')
 const moment = require('moment')
+
+const fakeDescription = new LoremIpsum().generateParagraphs(2)
 
 module.exports = [
   {
     uid: '5dd7bbe0701d5bdd685c1f10',
     title: { it: 'Evento passato', en: 'Past event' },
-    description: { it: 'Descrizione...', en: 'Description...' },
+    description: { it: fakeDescription, en: fakeDescription },
     links: [
       {
         nameIta: 'Link Uno',
@@ -28,23 +31,23 @@ module.exports = [
   },
   {
     uid: '5dd7bbe0701d5bdd685c1f10',
-    title: { it: 'Evento con dettagli', en: 'Event with details' },
-    description: { it: 'Descrizione...', en: 'Description...' },
+    title: { it: 'Evento a Lecco', en: 'Event in Lecco' },
+    description: { it: fakeDescription, en: fakeDescription },
     hasDetails: true,
     position: {
       type: 'Point',
-      coordinates: [8.504056, 45.912573],
-      address: 'Corso Giuseppe Garibaldi 23, Baveno (VB), Italia',
-      city: 'Baveno',
+      coordinates: [9.396266, 45.846094],
+      address: 'Via dell\'Isola 17, Lecco (LC), Italia',
+      city: 'Lecco',
     },
-    date: moment().add(5, 'days').toISOString(),
+    date: moment().add(20, 'days').toISOString(),
     contacts: { email: 'email@example.com' },
     markedForDeletion: false,
   },
   {
     uid: '5dd7bbe0701d5bdd685c1f10',
-    title: { it: 'Evento senza dettagli', en: 'Event without detailst' },
-    description: { it: 'Descrizione...', en: 'Description...' },
+    title: { it: 'Evento online', en: 'Online event' },
+    description: { it: fakeDescription, en: fakeDescription },
     links: [
       {
         nameIta: 'Link Uno',

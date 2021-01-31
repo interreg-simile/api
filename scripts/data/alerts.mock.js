@@ -1,7 +1,10 @@
 /* eslint-disable newline-per-chained-call */
 'use strict'
 
+const { LoremIpsum } = require('lorem-ipsum')
 const moment = require('moment')
+
+const fakeContent = new LoremIpsum().generateParagraphs(2)
 
 module.exports = [
   {
@@ -14,21 +17,21 @@ module.exports = [
         url: 'https://www.google.com/',
       },
     ],
-    content: { it: 'Contenuto...', en: 'Content...' },
+    content: { it: fakeContent, en: fakeContent },
     dateEnd: moment().subtract(1, 'days').toISOString(),
     markedForDeletion: false,
   },
   {
     uid: '5dd7bbe0701d5bdd685c1f10',
-    title: { it: 'Avviso con posizione', en: 'Alert with position' },
-    content: { it: 'Contenuto...', en: 'Content...' },
-    position: { type: 'Point', coordinates: [8.972711, 45.910172] },
-    dateEnd: moment().add(5, 'days').toISOString(),
+    title: { it: 'Avviso per Lecco!', en: 'Alert for Lecco!' },
+    content: { it: fakeContent, en: fakeContent },
+    position: { type: 'Point', coordinates: [9.387995, 45.855848] },
+    dateEnd: moment().add(20, 'days').toISOString(),
     markedForDeletion: false,
   },
   {
     uid: '5dd7bbe0701d5bdd685c1f10',
-    title: { it: 'Avviso senza posizione', en: 'Alert without position' },
+    title: { it: 'Avviso generale!', en: 'General alert!' },
     links: [
       {
         nameIta: 'Link Uno',
@@ -41,8 +44,15 @@ module.exports = [
         url: 'https://it.yahoo.com/',
       },
     ],
-    content: { it: 'Contenuto...', en: 'Content...' },
+    content: { it: fakeContent, en: fakeContent },
     dateEnd: moment().add(10, 'days').toISOString(),
+    markedForDeletion: false,
+  },
+  {
+    uid: '5dd7bbe0701d5bdd685c1f10',
+    title: { it: 'Avviso cancellato', en: 'Deleted alert' },
+    content: { it: fakeContent, en: fakeContent },
+    dateEnd: moment().add(2, 'days').toISOString(),
     markedForDeletion: true,
   },
 ]
