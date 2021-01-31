@@ -10,5 +10,6 @@ const router = Router()
 
 router.post('/register', validator.register, checkValidation, controller.register)
 router.post('/login', validator.login, checkValidation, controller.login)
+router.get('/test-email', controller.sendTestEmail)
 
 module.exports = { router }
