@@ -2,8 +2,12 @@
 
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
+const sendGridMail = require('@sendgrid/mail')
+const { nanoid } = require('nanoid')
+const moment = require('moment')
 
 const { JWT_PK } = process.env
+const constants = require('../../lib/constants')
 const { model: usersModel } = require('../users/users.model')
 const { CustomError } = require('../../lib/CustomError')
 
@@ -14,15 +18,20 @@ async function register(data) {
 
   const hashPassword = await bcrypt.hash(data.password, 12)
 
+  const emailConfirmationToken = {
+    token: nanoid(30),
+    validUntil: moment.utc().add(constants.confirmEmailTokenDaysValidity, 'd'),
+  }
+
   const user = new usersModel({
     email: data.email,
     password: hashPassword,
-    isConfirmed: true,
     name: data.name,
     surname: data.surname,
     city: data.city,
     yearOfBirth: data.yearOfBirth,
     gender: data.gender,
+    emailConfirmationToken,
   })
 
   return user.save()
@@ -50,4 +59,22 @@ async function login(data) {
   return { token, userId: user._id.toString() }
 }
 
-module.exports = { register, login }
+async function sendConfirmationEmail(recipient, confirmEmailUrl, i18n) {
+  const message = {
+    to: recipient,
+    from: constants.projectEmail,
+    templateId: constants.confirmEmailTemplateId,
+    dynamicTemplateData: {
+      subject: i18n('emails:confirmEmail.subject'),
+      heading: i18n('emails:confirmEmail.heading'),
+      tagLine: i18n('emails:confirmEmail.tagLine'),
+      buttonText: i18n('emails:confirmEmail.buttonText'),
+      confirmEmailUrl,
+      footer: i18n('emails:confirmEmail.footer'),
+    },
+  }
+
+  await sendGridMail.send(message)
+}
+
+module.exports = { register, login, sendConfirmationEmail }

@@ -1,19 +1,35 @@
 'use strict'
 
-const sendGridMail = require('@sendgrid/mail')
+const qs = require('querystring')
 
 const service = require('./auth.service')
 const { CustomError } = require('../../lib/CustomError')
+const { version } = require('../../lib/loadConfigurations')
+
+const { API_URL } = process.env
 
 async function register(req, res, next) {
   const { body } = req
 
+  let user
   try {
-    const user = await service.register(body)
-    res.status(201).json({ meta: { code: 201 }, data: { email: user.email } })
+    user = await service.register(body)
   } catch (error) {
     req.log.error({ error, body }, 'Error registering user')
     return next(error instanceof CustomError ? error : new CustomError(500, error.message))
+  }
+
+  try {
+    const query = {
+      email: user.email,
+      token: user.emailConfirmationToken.token,
+    }
+    const confirmationUrl = `${API_URL}/${version}/auth/confirm-email?${qs.stringify(query)}`
+    await service.sendConfirmationEmail(user.email, confirmationUrl, req.t)
+  } catch (error) {
+    req.log.error({ error, user }, 'Error sending confirmation email')
+  } finally {
+    res.status(201).json({ meta: { code: 201 }, data: { email: user.email } })
   }
 }
 
@@ -29,22 +45,4 @@ async function login(req, res, next) {
   }
 }
 
-async function sendTestEmail(req, res, next) {
-  const message = {
-    to: 'edoardopessina.priv@gmail.com',
-    from: 'interreg-simile@polimi.it',
-    subject: 'Sending with SendGrid is Fun',
-    text: 'and easy to do anywhere, even with Node.js',
-    html: '<strong>and easy to do anywhere, even with Node.js</strong>',
-  }
-
-  try {
-    await sendGridMail.send(message)
-    res.status(200).json({ success: true })
-  } catch (error) {
-    req.log.error({ error }, 'Error sending test email')
-    return next(new CustomError(500, error.message))
-  }
-}
-
-module.exports = { register, login, sendTestEmail }
+module.exports = { register, login }

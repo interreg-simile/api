@@ -1,0 +1,8 @@
+--- # Italian translation for resources related to the emails.
+
+confirmEmail:
+  subject: "Verifica la tua mail"
+  heading: "Grazie per esserti registrato!"
+  tagLine: "Verifica il tuo indirizzo email."
+  buttonText: "Verifica Email"
+  footer: "Non rispondere a questa mail. Se hai ricevuto la mail per errore, cancella questo messaggio."
