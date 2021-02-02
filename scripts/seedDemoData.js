@@ -17,6 +17,10 @@ const eventsData = require('./data/events.mock')
 const observationsModel = require('../modules/observations/observations.model');
 const observationsData = require('./data/observations.mock')
 const usersModel = require('../modules/users/users.model');
+const linksModel = require('../modules/misc/models/links.model');
+const linksData = require('./data/links.mock')
+const authorityContactsModel = require('../modules/misc/models/authorityContacts.model');
+const authorityContactsData = require('./data/authorityContacts.mock')
 const createUsersData = require('./data/users.mock');
 
 (async() => {
@@ -36,6 +40,8 @@ const createUsersData = require('./data/users.mock');
   await seedCollection(logger, currentCollections, alertsModel, alertsData)
   await seedCollection(logger, currentCollections, eventsModel, eventsData)
   await seedCollection(logger, currentCollections, observationsModel, observationsData)
+  await seedCollection(logger, currentCollections, linksModel, linksData)
+  await seedCollection(logger, currentCollections, authorityContactsModel, authorityContactsData)
 
   await disconnectDb(logger);
 })()
