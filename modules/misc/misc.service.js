@@ -1,6 +1,8 @@
 'use strict'
 
 const fetch = require('node-fetch')
+const { model: linksModel } = require('./models/links.model')
+const { model: contactsModel } = require('./models/authorityContacts.model')
 
 async function getWeather(query, logger) {
   let url = 'https://api.openweathermap.org/data/2.5/weather?'
@@ -40,4 +42,12 @@ async function getWeather(query, logger) {
   return { sky: skyCode, temperature: data.main.temp, wind: data.wind.speed }
 }
 
-module.exports = { getWeather }
+async function getAllLinks(filter, projection, options) {
+  return linksModel.find(filter, projection, { lean: true, ...options })
+}
+
+async function getAllContacts(filter, projection, options) {
+  return contactsModel.find(filter, projection, { lean: true, ...options })
+}
+
+module.exports = { getWeather, getAllLinks, getAllContacts }
