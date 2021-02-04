@@ -1,0 +1,55 @@
+type: object
+
+properties:
+
+  _id:
+    type: string
+    description: Unique identifier of the resource.
+
+  contact:
+    type: string
+    description: The contact.
+
+  type:
+    type: string
+    description: The type of contact.
+    enum: [phone, site]
+
+  area:
+    type: integer
+    description: |
+      The area in which the contact is valid.
+
+      See Roi's enumeration for possible values.
+
+  instructions:
+    type: object
+    description: Object containing instructions about the contact in different languages.
+    required:
+      - it
+      - en
+    properties:
+      it:
+        type: string
+        description: Instructions of the contact in Italian.
+      en:
+        type: string
+        description: Instructions of the contact in English.
+
+  createdAt:
+    type: string
+    format: date-time
+    description: Date of creation of the resource.
+
+  updatedAt:
+    type: string
+    format: date-time
+    description: Date of the last update of the resource.
+
+required:
+  - _id
+  - contact
+  - type
+  - area
+  - createdAt
+  - updatedAt
