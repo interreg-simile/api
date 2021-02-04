@@ -367,6 +367,18 @@ tags:
       ## Schema
       <SchemaDefinition schemaRef="#/components/schemas/Roi" />
     x-displayName: Region of interest
+  - name: link_model
+    description: |
+      Useful links displayed in SIMILE application.
+
+      <SchemaDefinition schemaRef="#/components/schemas/Link" />
+    x-displayName: Link
+  - name: contact_model
+    description: |
+      Contact of the competent authority of each area supported by SIMILE application.
+
+      <SchemaDefinition schemaRef="#/components/schemas/Contact" />
+    x-displayName: Authority Contact
 
 #----------------------
 # Tags groups
@@ -388,6 +400,8 @@ x-tagGroups:
       - alert_model
       - event_model
       - roi_model
+      - link_model
+      - contact_model
 
 #----------------------
 # Endpoints
@@ -985,6 +999,52 @@ paths:
                   - temperature
                   - wind
 
+  /misc/links:
+
+    get:
+      tags:
+        - misc
+      summary: Get Links
+      description: Returns the links to be displayed in SIMILE application ordered by `order` property.
+      operationId: get-links
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Link'
+
+  /misc/authority-contacts:
+
+    get:
+      tags:
+        - misc
+      summary: Get authority contacts
+      description: Returns the contacts of the competent authority of each area supported by SIMILE application.
+      operationId: get-contacts
+      parameters:
+        - name: area
+          in: query
+          description: |
+            The area of competence of the wanted authority.
+
+            See Roi's enumeration for possible values.
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Contact'
+
 #----------------------
 # Reusable components
 #----------------------
@@ -1001,3 +1061,7 @@ components:
       $ref: ./models/event/event.yaml
     Roi:
       $ref: ./models/roi.yaml
+    Link:
+      $ref: ./models/misc/link.yaml
+    Contact:
+      $ref: ./models/misc/authorityContact.yaml

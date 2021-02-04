@@ -1,0 +1,47 @@
+type: object
+
+properties:
+
+  _id:
+    type: string
+    description: Unique identifier of the resource.
+
+  link:
+    type: string
+    description: The link.
+
+  name:
+    type: object
+    description: Object containing the name of the link in different languages.
+    required:
+      - it
+      - en
+    properties:
+      it:
+        type: string
+        description: Name of the link in Italian.
+      en:
+        type: string
+        description: Name of the link in English.
+
+  order:
+    type: integer
+    description: The order in which the link has to be displayed in the App.
+
+  createdAt:
+    type: string
+    format: date-time
+    description: Date of creation of the resource.
+
+  updatedAt:
+    type: string
+    format: date-time
+    description: Date of the last update of the resource.
+
+required:
+  - _id
+  - link
+  - name
+  - order
+  - createdAt
+  - updatedAt
