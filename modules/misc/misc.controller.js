@@ -44,7 +44,7 @@ async function getAllContacts(req, res, next) {
   const query = { ...(area && { area }) }
 
   try {
-    const contacts = await service.getAllLinks(query, {}, {})
+    const contacts = await service.getAllContacts(query, {}, {})
     res.status(200).json({ meta: { code: 200 }, data: contacts })
   } catch (error) {
     req.log.error({ error, query }, 'Error retrieving authority contacts')

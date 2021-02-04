@@ -9,7 +9,10 @@ module.exports = [
     contact: '0000000000',
     type: 'phone',
     area: 1,
-    instructions: fakeInstructions,
+    instructions: {
+      it: fakeInstructions,
+      en: fakeInstructions,
+    },
   },
   {
     contact: '0000000000',
@@ -20,6 +23,9 @@ module.exports = [
     contact: 'www.google.it',
     type: 'site',
     area: 3,
-    instructions: fakeInstructions,
+    instructions: {
+      it: fakeInstructions,
+      en: fakeInstructions,
+    },
   },
 ]
