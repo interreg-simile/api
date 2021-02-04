@@ -1,5 +1,6 @@
 'use strict'
 
+const path = require('path')
 const express = require('express')
 const sendGridMail = require('@sendgrid/mail')
 
@@ -17,6 +18,9 @@ module.exports = async(logger, logLevel) => {
   initMiddlewares(app, logger, logLevel)
   initRoutes(app, logger)
   app.use(handleErrors)
+
+  app.set('views', path.join(__dirname, '../views'))
+  app.set('view engine', 'ejs')
 
   loadProjections(logger)
 

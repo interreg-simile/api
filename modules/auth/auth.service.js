@@ -77,4 +77,6 @@ async function sendConfirmationEmail(recipient, confirmEmailUrl, i18n) {
   await sendGridMail.send(message)
 }
 
-module.exports = { register, login, sendConfirmationEmail }
+async function confirmEmail() {}
+
+module.exports = { register, login, sendConfirmationEmail, confirmEmail }

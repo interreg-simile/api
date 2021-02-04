@@ -10,9 +10,6 @@ const router = Router()
 
 router.post('/register', validator.register, checkValidation, controller.register)
 router.post('/login', validator.login, checkValidation, controller.login)
-router.get('/confirm-email', (req, res, next) => {
-  // const { email, token } = req.query
-  res.status(201).json({ success: 'true' })
-})
+router.get('/confirm-email', validator.confirmEmail, controller.confirmEmail)
 
 module.exports = { router }

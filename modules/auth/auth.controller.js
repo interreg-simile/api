@@ -33,6 +33,14 @@ async function register(req, res, next) {
   }
 }
 
+async function confirmEmail(req, res) {
+  const { email, token } = req.query
+
+  const renderView = options => res.render('confirmEmail', options)
+
+  renderView({ success: true, errorMessage: 'Error!' })
+}
+
 async function login(req, res, next) {
   const { body } = req
 
@@ -45,4 +53,4 @@ async function login(req, res, next) {
   }
 }
 
-module.exports = { register, login }
+module.exports = { register, login, confirmEmail }

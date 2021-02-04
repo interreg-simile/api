@@ -1,7 +1,7 @@
 /* eslint-disable newline-per-chained-call */
 'use strict'
 
-const { body } = require('express-validator')
+const { body, query } = require('express-validator')
 
 const register = [
   body('email')
@@ -53,6 +53,15 @@ const register = [
     .isIn(['male', 'female', 'other']).withMessage('Must be one of \'male\', \'female\', \'other\''),
 ]
 
+const confirmEmail = [
+  query('email')
+    .not().isEmpty()
+    .isEmail()
+    .normalizeEmail(),
+
+  query('token').not().isEmpty(),
+]
+
 const login = [
   body('email')
     .not().isEmpty().withMessage('Must have a value')
@@ -64,4 +73,4 @@ const login = [
     .not().isEmpty().withMessage('Must have a value'),
 ]
 
-module.exports = { register, login }
+module.exports = { register, login, confirmEmail }
