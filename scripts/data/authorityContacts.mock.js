@@ -20,7 +20,7 @@ module.exports = [
     area: 2,
   },
   {
-    contact: 'www.google.it',
+    contact: 'https://www.google.it',
     type: 'site',
     area: 3,
     instructions: {

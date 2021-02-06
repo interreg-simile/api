@@ -2,7 +2,7 @@
 
 module.exports = [
   {
-    link: 'www.google.it',
+    link: 'https://www.google.it',
     name: {
       it: 'Nome del primo link',
       en: 'First link name',
@@ -10,7 +10,7 @@ module.exports = [
     order: 20,
   },
   {
-    link: 'www.netflix.com',
+    link: 'https://www.netflix.com',
     name: {
       it: 'Nome del secondo link',
       en: 'Second link name',
