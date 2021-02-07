@@ -433,6 +433,12 @@ paths:
                     type: string
                 required:
                   - email
+        '409':
+          description: Email already in use
+        '422':
+          description: Request validation error
+        '500':
+          description: Server error
 
   /auth/login:
 
@@ -463,6 +469,16 @@ paths:
                 required:
                   - token
                   - userId
+        '401':
+          description: Wrong password
+        '403':
+          description: Email not verified
+        '404':
+          description: User not found
+        '422':
+          description: Request validation error
+        '500':
+          description: Server error
 
   /auth/send-confirmation-email:
     post:
@@ -487,6 +503,14 @@ paths:
                     type: string
                 required:
                   - email
+        '404':
+          description: User not found
+        '409':
+          description: User already verified
+        '422':
+          description: Request validation error
+        '500':
+          description: Server error
 
   /auth/confirm-email:
     get:
@@ -542,6 +566,12 @@ paths:
                     type: string
                 required:
                   - email
+        '404':
+          description: User not found
+        '422':
+          description: Request validation error
+        '500':
+          description: Server error
 
   /users/{id}:
 
@@ -568,6 +598,14 @@ paths:
             application/json:
               schema:
                 $ref: ./models/user/get-user-response.yaml
+        '401':
+          description: User not authorized
+        '404':
+          description: User not found
+        '422':
+          description: Request validation error
+        '500':
+          description: Server error
 
     delete:
       tags:
@@ -588,6 +626,14 @@ paths:
       responses:
         '204':
           description: No Content
+        '401':
+          description: User not authorized
+        '404':
+          description: User not found
+        '422':
+          description: Request validation error
+        '500':
+          description: Server error
 
   /users/{id}/change-email:
 
@@ -621,6 +667,16 @@ paths:
       responses:
         '204':
           description: No Content
+        '401':
+          description: User not authorized
+        '404':
+          description: User not found
+        '409':
+          description: Email already in use
+        '422':
+          description: Request validation error
+        '500':
+          description: Server error
 
   /users/{id}/change-password:
 
@@ -648,6 +704,14 @@ paths:
       responses:
         '204':
           description: No Content
+        '401':
+          description: User not authorized
+        '404':
+          description: User not found
+        '422':
+          description: Request validation error
+        '500':
+          description: Server error
 
   /users/{id}/change-info:
 
@@ -675,6 +739,14 @@ paths:
       responses:
         '204':
           description: No Content
+        '401':
+          description: User not authorized
+        '404':
+          description: User not found
+        '422':
+          description: Request validation error
+        '500':
+          description: Server error
 
   /alerts/:
 
@@ -716,6 +788,10 @@ paths:
                 type: array
                 items:
                   $ref: ./models/alert/get-response.yaml
+        '422':
+          description: Request validation error
+        '500':
+          description: Server error
 
   /alerts/{id}:
 
@@ -739,6 +815,10 @@ paths:
             application/json:
               schema:
                 $ref: ./models/alert/get-response.yaml
+        '422':
+          description: Request validation error
+        '500':
+          description: Server error
 
   /events/:
 
@@ -779,6 +859,10 @@ paths:
                 type: array
                 items:
                   $ref: ./models/event/get-response.yaml
+        '422':
+          description: Request validation error
+        '500':
+          description: Server error
 
   /events/{id}:
 
@@ -802,6 +886,10 @@ paths:
             application/json:
               schema:
                 $ref: ./models/event/get-response.yaml
+        '422':
+          description: Request validation error
+        '500':
+          description: Server error
 
   /observations/:
 
@@ -887,6 +975,10 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Observation'
+        '422':
+          description: Request validation error
+        '500':
+          description: Server error
 
     post:
       tags:
@@ -934,6 +1026,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Observation'
+        '422':
+          description: Request validation error
+        '404':
+          description: Observation not found
+        '500':
+          description: Server error
 
   /observations/{id}:
 
@@ -987,6 +1085,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Observation'
+        '415':
+          description: Request format error or file type not supported
+        '422':
+          description: Request validation error
+        '500':
+          description: Server error
 
   /rois/:
 
@@ -1031,6 +1135,10 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Roi'
+        '422':
+          description: Request validation error
+        '500':
+          description: Server error
 
   /misc/weather:
 
@@ -1077,6 +1185,10 @@ paths:
                   - sky
                   - temperature
                   - wind
+        '422':
+          description: Request validation error
+        '500':
+          description: Server error
 
   /misc/links:
 
@@ -1095,6 +1207,8 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Link'
+        '500':
+          description: Server error
 
   /misc/authority-contacts:
 
@@ -1123,6 +1237,10 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Contact'
+        '422':
+          description: Request validation error
+        '500':
+          description: Server error
 
 #----------------------
 # Reusable components
