@@ -5,6 +5,7 @@ const sinon = require('sinon')
 const jwt = require('jsonwebtoken')
 const sendGridMail = require('@sendgrid/mail')
 const moment = require('moment')
+const nanoid = require('nanoid')
 
 const constants = require('../../lib/constants')
 const { createMockRequest, connectTestDb, disconnectTestDb } = require('../setup')
@@ -504,6 +505,8 @@ tap.test('auth', async t => {
 
       t.strictSame(status, 500)
       t.strictSame(body, { meta: { code: 500, errorMessage: 'Something wrong', errorType: 'ServerException' } })
+      t.ok(serviceStub.calledOnceWith({ email: plainData[2].email }, {}, {}))
+
       serviceStub.restore()
       t.end()
     })
@@ -735,6 +738,185 @@ tap.test('auth', async t => {
       t.strictSame(updatedUser['isConfirmed'], true)
       t.notOk(updatedUser['emailConfirmationToken'])
 
+      t.end()
+    })
+
+    t.end()
+  })
+
+  t.test('POST - /reset-password', async t => {
+    const plainPasswordMock = 'foo'
+    const hashPasswordMock = 'hashedFoo'
+
+    const baseUrl = `/${version}/auth/reset-password`
+
+    t.test('returns 422 if body is empty', async t => {
+      const reqBody = {}
+
+      const { status, body } = await request
+        .post(baseUrl)
+        .send(reqBody)
+
+      const expectedErrors = [
+        {
+          msg: 'Must have a value',
+          param: 'email',
+          location: 'body',
+        },
+        {
+          msg: 'Must be an email',
+          param: 'email',
+          location: 'body',
+        },
+      ]
+
+      t.strictSame(status, 422)
+      compareValidationErrorBodies(body, expectedErrors, t)
+      t.end()
+    })
+
+    t.test('returns 422 if body contains errors', async t => {
+      const reqBody = { email: 'foo' }
+
+      const { status, body } = await request
+        .post(baseUrl)
+        .send(reqBody)
+
+      const expectedErrors = [
+        {
+          value: 'foo',
+          msg: 'Must be an email',
+          param: 'email',
+          location: 'body',
+        },
+      ]
+
+      t.strictSame(status, 422)
+      compareValidationErrorBodies(body, expectedErrors, t)
+      t.end()
+    })
+
+    t.test('returns 404 if user not found', async t => {
+      const reqBody = { email: 'foo@bar.com' }
+
+      const { status, body } = await request
+        .post(baseUrl)
+        .send(reqBody)
+
+      t.strictSame(status, 404)
+      t.strictSame(body, { meta: { code: 404, errorMessage: 'Resource not found', errorType: 'NotFoundException' } })
+      t.end()
+    })
+
+    t.test('returns 500 if getOneByQuery fails', async t => {
+      const serviceStub = sinon.stub(userService, 'getOneByQuery').throws(new Error('Something wrong'))
+
+      const reqBody = { email: plainData[0].email }
+
+      const { status, body } = await request
+        .post(baseUrl)
+        .send(reqBody)
+
+      t.strictSame(status, 500)
+      t.strictSame(body, { meta: { code: 500, errorMessage: 'Something wrong', errorType: 'ServerException' } })
+      t.ok(serviceStub.calledOnceWith({ email: plainData[0].email }, {}, {}))
+
+      serviceStub.restore()
+      t.end()
+    })
+
+    t.test('returns 500 if updatePassword fails', async t => {
+      const nanoidStub = sinon.stub(nanoid, 'nanoid').returns(plainPasswordMock)
+      const hashPasswordStub = sinon.stub(authService, 'hashPassword').returns(hashPasswordMock)
+      const updatePasswordStub = sinon.stub(authService, 'updatePassword').throws(new Error('Something wrong'))
+
+      const reqBody = { email: plainData[0].email }
+
+      const { status, body } = await request
+        .post(baseUrl)
+        .send(reqBody)
+
+      t.strictSame(status, 500)
+      t.strictSame(body, { meta: { code: 500, errorMessage: 'Something wrong', errorType: 'ServerException' } })
+
+      t.ok(hashPasswordStub.calledOnceWith(plainPasswordMock))
+      t.ok(updatePasswordStub.calledOnce)
+      t.strictSame(updatePasswordStub.args[0][0].toString(), plainData[0]._id)
+      t.strictSame(updatePasswordStub.args[0][1], hashPasswordMock)
+
+      nanoidStub.restore()
+      hashPasswordStub.restore()
+      updatePasswordStub.restore()
+      t.end()
+    })
+
+    t.test('returns 500 if sendRestPasswordEmail fails', async t => {
+      const nanoidStub = sinon.stub(nanoid, 'nanoid').returns(plainPasswordMock)
+      const hashPasswordStub = sinon.stub(authService, 'hashPassword').returns(hashPasswordMock)
+      const updatePasswordStub = sinon.stub(authService, 'updatePassword').returns(true)
+      const sendRestPasswordEmailStub = sinon.stub(authService, 'sendRestPasswordEmail').throws(new Error('Something wrong'))
+
+      const reqBody = { email: plainData[0].email }
+
+      const { status, body } = await request
+        .post(baseUrl)
+        .send(reqBody)
+
+      t.strictSame(status, 500)
+      t.strictSame(body, { meta: { code: 500, errorMessage: 'Something wrong', errorType: 'ServerException' } })
+
+      t.ok(hashPasswordStub.calledOnceWith(plainPasswordMock))
+      t.ok(updatePasswordStub.calledOnce)
+      t.strictSame(updatePasswordStub.args[0][0].toString(), plainData[0]._id)
+      t.strictSame(updatePasswordStub.args[0][1], hashPasswordMock)
+      t.ok(sendRestPasswordEmailStub.calledOnce)
+      t.strictSame(sendRestPasswordEmailStub.args[0][0], plainData[0].email)
+      t.strictSame(sendRestPasswordEmailStub.args[0][1], plainPasswordMock)
+      t.type(sendRestPasswordEmailStub.args[0][2], 'function')
+
+      nanoidStub.restore()
+      hashPasswordStub.restore()
+      updatePasswordStub.restore()
+      sendRestPasswordEmailStub.restore()
+      t.end()
+    })
+
+    t.test('returns 200', async t => {
+      const nanoidStub = sinon.stub(nanoid, 'nanoid').returns(plainPasswordMock)
+      const hashPasswordStub = sinon.stub(authService, 'hashPassword').returns(hashPasswordMock)
+      const sendgridStub = sinon.stub(sendGridMail, 'send').resolves(true)
+
+      const reqBody = { email: plainData[0].email }
+
+      const { status, body } = await request
+        .post(baseUrl)
+        .send(reqBody)
+
+      t.strictSame(status, 200)
+      t.strictSame(body.data, { email: reqBody.email })
+
+      t.ok(hashPasswordStub.calledOnceWith(plainPasswordMock))
+      t.ok(sendgridStub.calledOnceWith({
+        to: reqBody.email,
+        from: constants.projectEmail,
+        templateId: constants.resetPasswordEmailTemplateId,
+        dynamicTemplateData: {
+          subject: 'Reset your password',
+          firstText: 'You have requested to reset your password.',
+          secondText: 'Your new password is:',
+          newPassword: plainPasswordMock,
+          thirdText: 'We advise you to change the password as soon as possible.',
+          footer: 'Do not respond to this email. If you have received this email by mistake, please delete the message.',
+        },
+      }))
+
+      const user = await usersModel.findOne({ email: reqBody.email }, {}, { lean: true })
+      t.ok(user)
+      t.strictSame(user['password'], hashPasswordMock)
+
+      nanoidStub.restore()
+      hashPasswordStub.restore()
+      sendgridStub.restore()
       t.end()
     })
 

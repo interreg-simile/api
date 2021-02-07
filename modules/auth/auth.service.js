@@ -16,11 +16,9 @@ async function register(data) {
     throw new CustomError(409, 'Email already in use', 'ConflictException')
   }
 
-  const hashPassword = await bcrypt.hash(data.password, 12)
-
   const user = new usersModel({
     email: data.email,
-    password: hashPassword,
+    password: await hashPassword(data.password),
     name: data.name,
     surname: data.surname,
     city: data.city,
@@ -72,6 +70,24 @@ async function sendConfirmationEmail(recipient, confirmEmailUrl, i18n) {
   await sendGridMail.send(message)
 }
 
+async function sendRestPasswordEmail(recipient, newPassword, i18n) {
+  const message = {
+    to: recipient,
+    from: constants.projectEmail,
+    templateId: constants.resetPasswordEmailTemplateId,
+    dynamicTemplateData: {
+      subject: i18n('emails:resetPassword.subject'),
+      firstText: i18n('emails:resetPassword.firstText'),
+      secondText: i18n('emails:resetPassword.secondText'),
+      newPassword,
+      thirdText: i18n('emails:resetPassword.thirdText'),
+      footer: i18n('emails:resetPassword.footer'),
+    },
+  }
+
+  await sendGridMail.send(message)
+}
+
 function isUserTokenValid(userToken, token) {
   if (!userToken) {
     return false
@@ -102,6 +118,18 @@ async function confirmEmail(userId) {
   return user.save()
 }
 
+async function updatePassword(userId, newPassword) {
+  const user = await usersModel.findOne({ _id: userId })
+
+  user.password = newPassword
+
+  return user.save()
+}
+
+async function hashPassword(plainPassword) {
+  return bcrypt.hash(plainPassword, 12)
+}
+
 function generateConfirmationToken() {
   return {
     token: nanoid(30),
@@ -113,8 +141,11 @@ module.exports = {
   register,
   login,
   sendConfirmationEmail,
+  sendRestPasswordEmail,
   isUserTokenValid,
   confirmEmail,
   updateConfirmationToken,
   generateConfirmationToken,
+  updatePassword,
+  hashPassword,
 }

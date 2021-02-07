@@ -11,3 +11,10 @@ confirmEmail:
     findUserError: "Utente non trovato!"
     tokenError: "Il token non è valido o è scaduto!"
     success: "Email confermata con successo!"
+
+resetPassword:
+  subject: "Resetta la password"
+  firstText: "Hai richiesto di resettare la tua password."
+  secondText: "La tua nuova password è:"
+  thirdText: "Ti consigliamo di cambiare la password il prima possibile."
+  footer: "Non rispondere a questa mail. Se hai ricevuto la mail per errore, cancella questo messaggio."

@@ -2,6 +2,7 @@
 
 const qs = require('querystring')
 const { validationResult } = require('express-validator')
+const nanoid = require('nanoid')
 
 const authService = require('./auth.service')
 const usersService = require('../users/users.service')
@@ -119,4 +120,34 @@ async function login(req, res, next) {
   }
 }
 
-module.exports = { register, login, sendConfirmationEmail, confirmEmail }
+async function resetPassword(req, res, next) {
+  const { email } = req.body
+
+  let user
+  try {
+    user = await usersService.getOneByQuery({ email }, {}, {})
+  } catch (error) {
+    req.log.error({ error, email }, 'Error finding user')
+    return next(error instanceof CustomError ? error : new CustomError(500, error.message))
+  }
+
+  let newPassword
+  try {
+    newPassword = nanoid.nanoid(10)
+    const hashedPassword = await authService.hashPassword(newPassword)
+    await authService.updatePassword(user._id, hashedPassword)
+  } catch (error) {
+    req.log.error({ error, email }, 'Error updating password')
+    return next(new CustomError(500, error.message))
+  }
+
+  try {
+    await authService.sendRestPasswordEmail(email, newPassword, req.t)
+    res.status(200).json({ meta: { code: 200 }, data: { email } })
+  } catch (error) {
+    req.log.error({ error }, 'Error sending reset password email')
+    return next(new CustomError(500, error.message))
+  }
+}
+
+module.exports = { register, login, sendConfirmationEmail, confirmEmail, resetPassword }

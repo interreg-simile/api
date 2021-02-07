@@ -80,4 +80,11 @@ const login = [
     .not().isEmpty().withMessage('Must have a value'),
 ]
 
-module.exports = { register, login, sendConfirmationEmail, confirmEmail }
+const resetPassword = [
+  body('email')
+    .not().isEmpty().withMessage('Must have a value')
+    .isEmail().withMessage('Must be an email')
+    .normalizeEmail(),
+]
+
+module.exports = { register, login, sendConfirmationEmail, confirmEmail, resetPassword }
