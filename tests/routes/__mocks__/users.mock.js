@@ -29,6 +29,10 @@ const plainData = [
     city: 'Lecco',
     yearOfBirth: 1990,
     gender: 'female',
+    emailConfirmationToken: {
+      token: 'token',
+      validUntil: moment.utc().add(1, 'd'),
+    },
   },
   {
     _id: '000000000000000000000003',

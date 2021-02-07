@@ -464,6 +464,85 @@ paths:
                   - token
                   - userId
 
+  /auth/send-confirmation-email:
+    post:
+      tags:
+        - auth
+      summary: Send confirmation email
+      description: Send a user confirmation email.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ./models/user/send-confirmation-email-body.yaml
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  email:
+                    type: string
+                required:
+                  - email
+
+  /auth/confirm-email:
+    get:
+      tags:
+        - auth
+      summary: Confirmation email
+      description: |
+        Confirm a user's email.
+
+        This route renders a view displaying the operation outcome.
+      parameters:
+        - name: email
+          in: query
+          description: User's email.
+          required: true
+          schema:
+            type: string
+        - name: token
+          in: query
+          description: Email confirmation token.
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/html:
+              schema:
+                type: string
+                format: binary
+
+  /auth/reset-password:
+    post:
+      tags:
+        - auth
+      summary: Reset password
+      description: Reset the user's password.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ./models/user/send-confirmation-email-body.yaml
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  email:
+                    type: string
+                required:
+                  - email
+
   /users/{id}:
 
     get:

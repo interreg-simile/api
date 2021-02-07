@@ -30,8 +30,20 @@ properties:
     type: string
     description: User's gender.
 
+  createdAt:
+    type: string
+    format: date-time
+    description: Date of creation of the resource.
+
+  updatedAt:
+    type: string
+    format: date-time
+    description: Date of the last update of the resource.
+
 required:
   - _id
   - email
   - name
   - surname
+  - createdAt
+  - updatedAt
