@@ -53,6 +53,13 @@ const register = [
     .isIn(['male', 'female', 'other']).withMessage('Must be one of \'male\', \'female\', \'other\''),
 ]
 
+const sendConfirmationEmail = [
+  body('email')
+    .not().isEmpty().withMessage('Must have a value')
+    .isEmail().withMessage('Must be an email')
+    .normalizeEmail(),
+]
+
 const confirmEmail = [
   query('email')
     .not().isEmpty()
@@ -73,4 +80,4 @@ const login = [
     .not().isEmpty().withMessage('Must have a value'),
 ]
 
-module.exports = { register, login, confirmEmail }
+module.exports = { register, login, sendConfirmationEmail, confirmEmail }

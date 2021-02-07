@@ -18,11 +18,6 @@ async function register(data) {
 
   const hashPassword = await bcrypt.hash(data.password, 12)
 
-  const emailConfirmationToken = {
-    token: nanoid(30),
-    validUntil: moment.utc().add(constants.confirmEmailTokenDaysValidity, 'd'),
-  }
-
   const user = new usersModel({
     email: data.email,
     password: hashPassword,
@@ -31,7 +26,7 @@ async function register(data) {
     city: data.city,
     yearOfBirth: data.yearOfBirth,
     gender: data.gender,
-    emailConfirmationToken,
+    emailConfirmationToken: data.emailConfirmationToken,
   })
 
   return user.save()
@@ -77,6 +72,49 @@ async function sendConfirmationEmail(recipient, confirmEmailUrl, i18n) {
   await sendGridMail.send(message)
 }
 
-async function confirmEmail() {}
+function isUserTokenValid(userToken, token) {
+  if (!userToken) {
+    return false
+  }
 
-module.exports = { register, login, sendConfirmationEmail, confirmEmail }
+  if (userToken.token !== token) {
+    return false
+  }
+
+  const userTokenValidity = moment(userToken.validUntil)
+  return moment.utc().isSameOrBefore(userTokenValidity)
+}
+
+async function updateConfirmationToken(userId, newToken) {
+  const user = await usersModel.findOne({ _id: userId })
+
+  user.emailConfirmationToken = newToken
+
+  return user.save()
+}
+
+async function confirmEmail(userId) {
+  const user = await usersModel.findOne({ _id: userId })
+
+  user.isConfirmed = true
+  user.emailConfirmationToken = undefined
+
+  return user.save()
+}
+
+function generateConfirmationToken() {
+  return {
+    token: nanoid(30),
+    validUntil: moment.utc().add(constants.confirmEmailTokenDaysValidity, 'd'),
+  }
+}
+
+module.exports = {
+  register,
+  login,
+  sendConfirmationEmail,
+  isUserTokenValid,
+  confirmEmail,
+  updateConfirmationToken,
+  generateConfirmationToken,
+}

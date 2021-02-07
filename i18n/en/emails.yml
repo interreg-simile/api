@@ -6,3 +6,8 @@ confirmEmail:
   tagLine: "Please, verify your email address."
   buttonText: "Verify Email Now"
   footer: "Do not respond to this email. If you have received this email by mistake, please delete the message."
+  page:
+    genericError: "Oops! Something went wrong."
+    findUserError: "User not found!"
+    tokenError: "Token is invalid or expired!"
+    success: "Email successfully confirmed!"
