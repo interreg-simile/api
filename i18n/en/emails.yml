@@ -1,0 +1,20 @@
+--- # English translation for resources related to the emails.
+
+confirmEmail:
+  subject: "Verify your email"
+  heading: "Thanks for signing up!"
+  tagLine: "Please, verify your email address."
+  buttonText: "Verify Email Now"
+  footer: "Do not respond to this email. If you have received this email by mistake, please delete the message."
+  page:
+    genericError: "Oops! Something went wrong."
+    findUserError: "User not found!"
+    tokenError: "Token is invalid or expired!"
+    success: "Email successfully confirmed!"
+
+resetPassword:
+  subject: "Reset your password"
+  firstText: "You have requested to reset your password."
+  secondText: "Your new password is:"
+  thirdText: "We advise you to change the password as soon as possible."
+  footer: "Do not respond to this email. If you have received this email by mistake, please delete the message."

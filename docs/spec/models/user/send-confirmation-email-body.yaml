@@ -1,0 +1,10 @@
+type: object
+
+properties:
+
+  email:
+    type: string
+    description: User's email.
+
+required:
+  - email

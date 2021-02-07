@@ -3,19 +3,26 @@
 const tap = require('tap')
 const sinon = require('sinon')
 const jwt = require('jsonwebtoken')
+const sendGridMail = require('@sendgrid/mail')
+const moment = require('moment')
+const nanoid = require('nanoid')
 
+const constants = require('../../lib/constants')
 const { createMockRequest, connectTestDb, disconnectTestDb } = require('../setup')
 const { compareValidationErrorBodies } = require('../utils')
 const { version } = require('../../lib/loadConfigurations')
 const { plainPassword, plainData, seed: seedUsers } = require('./__mocks__/users.mock')
 const { model: usersModel } = require('../../modules/users/users.model')
-const service = require('../../modules/auth/auth.service')
+const authService = require('../../modules/auth/auth.service')
+const userService = require('../../modules/users/users.service')
 
 tap.test('auth', async t => {
   await connectTestDb('simile-test-auth')
   await seedUsers()
 
   const request = await createMockRequest()
+
+  const fakeToken = { token: 'foo', validUntil: '2021-01-01T00:00:00.000Z' }
 
   t.tearDown(async() => {
     await disconnectTestDb()
@@ -162,8 +169,8 @@ tap.test('auth', async t => {
       t.end()
     })
 
-    t.test('returns 500 if db operation fails', async t => {
-      const serviceStub = sinon.stub(service, 'register').throws(new Error('Something wrong'))
+    t.test('returns 500 if db user saving fails', async t => {
+      const serviceStub = sinon.stub(authService, 'register').throws(new Error('Something wrong'))
 
       const reqBody = {
         email: 'user@example.com',
@@ -184,6 +191,9 @@ tap.test('auth', async t => {
     })
 
     t.test('returns 201', async t => {
+      const generateConfirmationTokenStub = sinon.stub(authService, 'generateConfirmationToken').returns(fakeToken)
+      const sendgridStub = sinon.stub(sendGridMail, 'send').resolves(true)
+
       const reqBody = {
         email: 'test@test.com',
         password: '12345678',
@@ -202,8 +212,75 @@ tap.test('auth', async t => {
       t.strictSame(status, 201)
       t.strictSame(body.data, { email: reqBody.email })
 
-      const existsUser = await usersModel.exists({ email: reqBody.email })
-      t.ok(existsUser)
+      t.ok(generateConfirmationTokenStub.calledOnce)
+      t.ok(sendgridStub.calledOnceWith({
+        to: reqBody.email,
+        from: constants.projectEmail,
+        templateId: constants.confirmEmailTemplateId,
+        dynamicTemplateData: {
+          subject: 'Verify your email',
+          heading: 'Thanks for signing up!',
+          tagLine: 'Please, verify your email address.',
+          buttonText: 'Verify Email Now',
+          confirmEmailUrl: 'undefined/v1/auth/confirm-email?email=test%40test.com&token=foo',
+          footer: 'Do not respond to this email. If you have received this email by mistake, please delete the message.',
+        },
+      }))
+
+      const newUser = await usersModel.findOne({ email: reqBody.email }, {}, { lean: true })
+      t.ok(newUser)
+      t.strictSame(newUser['emailConfirmationToken']['token'], fakeToken.token)
+      t.strictSame(new Date(newUser['emailConfirmationToken']['validUntil']).toISOString(), fakeToken.validUntil)
+
+      generateConfirmationTokenStub.restore()
+      sendgridStub.restore()
+      t.end()
+    })
+
+    t.test('returns 201 if sendConfirmationEmail fails', async t => {
+      const generateConfirmationTokenStub = sinon.stub(authService, 'generateConfirmationToken').returns(fakeToken)
+      const sendgridStub = sinon.stub(sendGridMail, 'send').throws('Error')
+
+      const reqBody = {
+        email: 'test2@test.com',
+        password: '12345678',
+        confirmPassword: '12345678',
+        name: 'test',
+        surname: 'test',
+        city: 'test',
+        yearOfBirth: 2000,
+        gender: 'other',
+      }
+
+      const { status, body } = await request
+        .post(baseUrl)
+        .send(reqBody)
+
+      t.strictSame(status, 201)
+      t.strictSame(body.data, { email: reqBody.email })
+
+      t.ok(generateConfirmationTokenStub.calledOnce)
+      t.ok(sendgridStub.calledOnceWith({
+        to: reqBody.email,
+        from: constants.projectEmail,
+        templateId: constants.confirmEmailTemplateId,
+        dynamicTemplateData: {
+          subject: 'Verify your email',
+          heading: 'Thanks for signing up!',
+          tagLine: 'Please, verify your email address.',
+          buttonText: 'Verify Email Now',
+          confirmEmailUrl: 'undefined/v1/auth/confirm-email?email=test2%40test.com&token=foo',
+          footer: 'Do not respond to this email. If you have received this email by mistake, please delete the message.',
+        },
+      }))
+
+      const newUser = await usersModel.findOne({ email: reqBody.email }, {}, { lean: true })
+      t.ok(newUser)
+      t.strictSame(newUser['emailConfirmationToken']['token'], fakeToken.token)
+      t.strictSame(new Date(newUser['emailConfirmationToken']['validUntil']).toISOString(), fakeToken.validUntil)
+
+      generateConfirmationTokenStub.restore()
+      sendgridStub.restore()
       t.end()
     })
 
@@ -316,7 +393,7 @@ tap.test('auth', async t => {
     })
 
     t.test('returns 500 if db operation fails', async t => {
-      const serviceStub = sinon.stub(service, 'login').throws(new Error('Something wrong'))
+      const serviceStub = sinon.stub(authService, 'login').throws(new Error('Something wrong'))
 
       const reqBody = {
         email: plainData[2].email,
@@ -350,6 +427,496 @@ tap.test('auth', async t => {
       t.ok(jwtStub.calledOnce)
       t.ok(jwtStub.calledWith({ userId: plainData[1]._id, email: plainData[1].email }, undefined))
       jwtStub.restore()
+      t.end()
+    })
+
+    t.end()
+  })
+
+  t.test('POST - /send-confirmation-email', async t => {
+    const baseUrl = `/${version}/auth/send-confirmation-email`
+
+    t.test('returns 422 if body is empty', async t => {
+      const reqBody = {}
+
+      const { status, body } = await request
+        .post(baseUrl)
+        .send(reqBody)
+
+      const expectedErrors = [
+        {
+          msg: 'Must have a value',
+          param: 'email',
+          location: 'body',
+        },
+        {
+          msg: 'Must be an email',
+          param: 'email',
+          location: 'body',
+        },
+      ]
+
+      t.strictSame(status, 422)
+      compareValidationErrorBodies(body, expectedErrors, t)
+      t.end()
+    })
+
+    t.test('returns 422 if body contains errors', async t => {
+      const reqBody = { email: 'foo' }
+
+      const { status, body } = await request
+        .post(baseUrl)
+        .send(reqBody)
+
+      const expectedErrors = [
+        {
+          value: 'foo',
+          msg: 'Must be an email',
+          param: 'email',
+          location: 'body',
+        },
+      ]
+
+      t.strictSame(status, 422)
+      compareValidationErrorBodies(body, expectedErrors, t)
+      t.end()
+    })
+
+    t.test('returns 404 if user not found', async t => {
+      const reqBody = { email: 'foo@bar.com' }
+
+      const { status, body } = await request
+        .post(baseUrl)
+        .send(reqBody)
+
+      t.strictSame(status, 404)
+      t.strictSame(body, { meta: { code: 404, errorMessage: 'Resource not found', errorType: 'NotFoundException' } })
+      t.end()
+    })
+
+    t.test('returns 500 if getOneByQuery fails', async t => {
+      const serviceStub = sinon.stub(userService, 'getOneByQuery').throws(new Error('Something wrong'))
+
+      const reqBody = { email: plainData[2].email }
+
+      const { status, body } = await request
+        .post(baseUrl)
+        .send(reqBody)
+
+      t.strictSame(status, 500)
+      t.strictSame(body, { meta: { code: 500, errorMessage: 'Something wrong', errorType: 'ServerException' } })
+      t.ok(serviceStub.calledOnceWith({ email: plainData[2].email }, {}, {}))
+
+      serviceStub.restore()
+      t.end()
+    })
+
+    t.test('returns 409 if user is already confirmed', async t => {
+      const reqBody = { email: plainData[0].email }
+
+      const { status, body } = await request
+        .post(baseUrl)
+        .send(reqBody)
+
+      t.strictSame(status, 409)
+      t.strictSame(body, { meta: { code: 409, errorMessage: 'User already confirmed', errorType: 'ConflictException' } })
+      t.end()
+    })
+
+    t.test('returns 500 if updateConfirmationToken fails', async t => {
+      const serviceStub = sinon.stub(authService, 'updateConfirmationToken').throws(new Error('Something wrong'))
+
+      const reqBody = { email: plainData[2].email }
+
+      const { status, body } = await request
+        .post(baseUrl)
+        .send(reqBody)
+
+      t.strictSame(status, 500)
+      t.strictSame(body, { meta: { code: 500, errorMessage: 'Something wrong', errorType: 'ServerException' } })
+      serviceStub.restore()
+      t.end()
+    })
+
+    t.test('returns 500 if sendConfirmationEmail fails', async t => {
+      const serviceStub = sinon.stub(authService, 'sendConfirmationEmail').throws(new Error('Something wrong'))
+
+      const reqBody = { email: plainData[2].email }
+
+      const { status, body } = await request
+        .post(baseUrl)
+        .send(reqBody)
+
+      t.strictSame(status, 500)
+      t.strictSame(body, { meta: { code: 500, errorMessage: 'Something wrong', errorType: 'ServerException' } })
+      serviceStub.restore()
+      t.end()
+    })
+
+    t.test('returns 200', async t => {
+      const generateConfirmationTokenStub = sinon.stub(authService, 'generateConfirmationToken').returns(fakeToken)
+      const sendgridStub = sinon.stub(sendGridMail, 'send').resolves(true)
+
+      const reqBody = { email: plainData[2].email }
+
+      const { status, body } = await request
+        .post(baseUrl)
+        .send(reqBody)
+
+      t.strictSame(status, 200)
+      t.strictSame(body.data, { email: reqBody.email })
+
+      t.ok(generateConfirmationTokenStub.calledOnce)
+      t.ok(sendgridStub.calledOnceWith({
+        to: reqBody.email,
+        from: constants.projectEmail,
+        templateId: constants.confirmEmailTemplateId,
+        dynamicTemplateData: {
+          subject: 'Verify your email',
+          heading: 'Thanks for signing up!',
+          tagLine: 'Please, verify your email address.',
+          buttonText: 'Verify Email Now',
+          confirmEmailUrl: 'undefined/v1/auth/confirm-email?email=not-verified%40example.com&token=foo',
+          footer: 'Do not respond to this email. If you have received this email by mistake, please delete the message.',
+        },
+      }))
+
+      const user = await usersModel.findOne({ email: reqBody.email }, {}, { lean: true })
+      t.ok(user)
+      t.strictSame(user['emailConfirmationToken']['token'], fakeToken.token)
+      t.strictSame(new Date(user['emailConfirmationToken']['validUntil']).toISOString(), fakeToken.validUntil)
+
+      generateConfirmationTokenStub.restore()
+      sendgridStub.restore()
+      t.end()
+    })
+
+    t.end()
+  })
+
+  t.test('GET - /confirm-email', async t => {
+    const baseUrl = `/${version}/auth/confirm-email`
+
+    t.test('sends an error if query email is missing', async t => {
+      const query = { token: 'foo' }
+
+      const { status, text } = await request
+        .get(baseUrl)
+        .query(query)
+
+      t.strictSame(status, 200)
+      t.ok(text.includes('Oops! Something went wrong.'))
+      t.end()
+    })
+
+    t.test('sends an error if query email is wrong format', async t => {
+      const query = { email: 'foo', token: 'foo' }
+
+      const { status, text } = await request
+        .get(baseUrl)
+        .query(query)
+
+      t.strictSame(status, 200)
+      t.ok(text.includes('Oops! Something went wrong.'))
+      t.end()
+    })
+
+    t.test('sends an error if query token is missing', async t => {
+      const query = { email: 'test@test.com' }
+
+      const { status, text } = await request
+        .get(baseUrl)
+        .query(query)
+
+      t.strictSame(status, 200)
+      t.ok(text.includes('Oops! Something went wrong.'))
+      t.end()
+    })
+
+    t.test('sends an error if getOneByQuery fails', async t => {
+      const serviceStub = sinon.stub(userService, 'getOneByQuery').throws(new Error('Something wrong'))
+
+      const query = { email: 'test@test.com', token: 'foo' }
+
+      const { status, text } = await request
+        .get(baseUrl)
+        .query(query)
+
+      t.strictSame(status, 200)
+      t.ok(text.includes('User not found!'))
+      t.ok(serviceStub.calledOnceWith({ email: query.email }, {}, {}))
+
+      serviceStub.restore()
+      t.end()
+    })
+
+    t.test('sends an error if user does not have the token', async t => {
+      const serviceStub = sinon.stub(userService, 'getOneByQuery').returns({ name: 'foo' })
+
+      const query = { email: 'test@test.com', token: 'foo' }
+
+      const { status, text } = await request
+        .get(baseUrl)
+        .query(query)
+
+      t.strictSame(status, 200)
+      t.ok(text.includes('Token is invalid or expired!'))
+      t.ok(serviceStub.calledOnceWith({ email: query.email }, {}, {}))
+
+      serviceStub.restore()
+      t.end()
+    })
+
+    t.test('sends an error if tokens mismatch', async t => {
+      const serviceStub = sinon
+        .stub(userService, 'getOneByQuery')
+        .returns({ emailConfirmationToken: { token: 'bar', validUntil: 'date' } })
+
+      const query = { email: 'test@test.com', token: 'foo' }
+
+      const { status, text } = await request
+        .get(baseUrl)
+        .query(query)
+
+      t.strictSame(status, 200)
+      t.ok(text.includes('Token is invalid or expired!'))
+      t.ok(serviceStub.calledOnceWith({ email: query.email }, {}, {}))
+
+      serviceStub.restore()
+      t.end()
+    })
+
+    t.test('sends an error if token is no longer valid', async t => {
+      const serviceStub = sinon
+        .stub(userService, 'getOneByQuery')
+        .returns({ emailConfirmationToken: { token: 'foo', validUntil: moment.utc().subtract(1, 'd') } })
+
+      const query = { email: 'test@test.com', token: 'foo' }
+
+      const { status, text } = await request
+        .get(baseUrl)
+        .query(query)
+
+      t.strictSame(status, 200)
+      t.ok(text.includes('Token is invalid or expired!'))
+      t.ok(serviceStub.calledOnceWith({ email: query.email }, {}, {}))
+
+      serviceStub.restore()
+      t.end()
+    })
+
+    t.test('sends an error if confirmEmail fails', async t => {
+      const serviceStub = sinon.stub(authService, 'confirmEmail').throws(new Error('Something wrong'))
+
+      const query = { email: plainData[3].email, token: plainData[3].emailConfirmationToken.token }
+
+      const { status, text } = await request
+        .get(baseUrl)
+        .query(query)
+
+      t.strictSame(status, 200)
+      t.ok(text.includes('Oops! Something went wrong.'))
+      t.ok(serviceStub.calledOnce)
+      t.strictSame(serviceStub.args[0].toString(), plainData[3]._id)
+
+      serviceStub.restore()
+      t.end()
+    })
+
+    t.test('has success', async t => {
+      const query = { email: plainData[3].email, token: plainData[3].emailConfirmationToken.token }
+
+      const { status, text } = await request
+        .get(baseUrl)
+        .query(query)
+
+      t.strictSame(status, 200)
+      t.ok(text.includes('Email successfully confirmed!'))
+
+      const updatedUser = await usersModel.findOne({ email: plainData[3].email }, {}, { lean: true })
+      t.ok(updatedUser)
+      t.strictSame(updatedUser['isConfirmed'], true)
+      t.notOk(updatedUser['emailConfirmationToken'])
+
+      t.end()
+    })
+
+    t.end()
+  })
+
+  t.test('POST - /reset-password', async t => {
+    const plainPasswordMock = 'foo'
+    const hashPasswordMock = 'hashedFoo'
+
+    const baseUrl = `/${version}/auth/reset-password`
+
+    t.test('returns 422 if body is empty', async t => {
+      const reqBody = {}
+
+      const { status, body } = await request
+        .post(baseUrl)
+        .send(reqBody)
+
+      const expectedErrors = [
+        {
+          msg: 'Must have a value',
+          param: 'email',
+          location: 'body',
+        },
+        {
+          msg: 'Must be an email',
+          param: 'email',
+          location: 'body',
+        },
+      ]
+
+      t.strictSame(status, 422)
+      compareValidationErrorBodies(body, expectedErrors, t)
+      t.end()
+    })
+
+    t.test('returns 422 if body contains errors', async t => {
+      const reqBody = { email: 'foo' }
+
+      const { status, body } = await request
+        .post(baseUrl)
+        .send(reqBody)
+
+      const expectedErrors = [
+        {
+          value: 'foo',
+          msg: 'Must be an email',
+          param: 'email',
+          location: 'body',
+        },
+      ]
+
+      t.strictSame(status, 422)
+      compareValidationErrorBodies(body, expectedErrors, t)
+      t.end()
+    })
+
+    t.test('returns 404 if user not found', async t => {
+      const reqBody = { email: 'foo@bar.com' }
+
+      const { status, body } = await request
+        .post(baseUrl)
+        .send(reqBody)
+
+      t.strictSame(status, 404)
+      t.strictSame(body, { meta: { code: 404, errorMessage: 'Resource not found', errorType: 'NotFoundException' } })
+      t.end()
+    })
+
+    t.test('returns 500 if getOneByQuery fails', async t => {
+      const serviceStub = sinon.stub(userService, 'getOneByQuery').throws(new Error('Something wrong'))
+
+      const reqBody = { email: plainData[0].email }
+
+      const { status, body } = await request
+        .post(baseUrl)
+        .send(reqBody)
+
+      t.strictSame(status, 500)
+      t.strictSame(body, { meta: { code: 500, errorMessage: 'Something wrong', errorType: 'ServerException' } })
+      t.ok(serviceStub.calledOnceWith({ email: plainData[0].email }, {}, {}))
+
+      serviceStub.restore()
+      t.end()
+    })
+
+    t.test('returns 500 if updatePassword fails', async t => {
+      const nanoidStub = sinon.stub(nanoid, 'nanoid').returns(plainPasswordMock)
+      const hashPasswordStub = sinon.stub(authService, 'hashPassword').returns(hashPasswordMock)
+      const updatePasswordStub = sinon.stub(authService, 'updatePassword').throws(new Error('Something wrong'))
+
+      const reqBody = { email: plainData[0].email }
+
+      const { status, body } = await request
+        .post(baseUrl)
+        .send(reqBody)
+
+      t.strictSame(status, 500)
+      t.strictSame(body, { meta: { code: 500, errorMessage: 'Something wrong', errorType: 'ServerException' } })
+
+      t.ok(hashPasswordStub.calledOnceWith(plainPasswordMock))
+      t.ok(updatePasswordStub.calledOnce)
+      t.strictSame(updatePasswordStub.args[0][0].toString(), plainData[0]._id)
+      t.strictSame(updatePasswordStub.args[0][1], hashPasswordMock)
+
+      nanoidStub.restore()
+      hashPasswordStub.restore()
+      updatePasswordStub.restore()
+      t.end()
+    })
+
+    t.test('returns 500 if sendRestPasswordEmail fails', async t => {
+      const nanoidStub = sinon.stub(nanoid, 'nanoid').returns(plainPasswordMock)
+      const hashPasswordStub = sinon.stub(authService, 'hashPassword').returns(hashPasswordMock)
+      const updatePasswordStub = sinon.stub(authService, 'updatePassword').returns(true)
+      const sendRestPasswordEmailStub = sinon.stub(authService, 'sendRestPasswordEmail').throws(new Error('Something wrong'))
+
+      const reqBody = { email: plainData[0].email }
+
+      const { status, body } = await request
+        .post(baseUrl)
+        .send(reqBody)
+
+      t.strictSame(status, 500)
+      t.strictSame(body, { meta: { code: 500, errorMessage: 'Something wrong', errorType: 'ServerException' } })
+
+      t.ok(hashPasswordStub.calledOnceWith(plainPasswordMock))
+      t.ok(updatePasswordStub.calledOnce)
+      t.strictSame(updatePasswordStub.args[0][0].toString(), plainData[0]._id)
+      t.strictSame(updatePasswordStub.args[0][1], hashPasswordMock)
+      t.ok(sendRestPasswordEmailStub.calledOnce)
+      t.strictSame(sendRestPasswordEmailStub.args[0][0], plainData[0].email)
+      t.strictSame(sendRestPasswordEmailStub.args[0][1], plainPasswordMock)
+      t.type(sendRestPasswordEmailStub.args[0][2], 'function')
+
+      nanoidStub.restore()
+      hashPasswordStub.restore()
+      updatePasswordStub.restore()
+      sendRestPasswordEmailStub.restore()
+      t.end()
+    })
+
+    t.test('returns 200', async t => {
+      const nanoidStub = sinon.stub(nanoid, 'nanoid').returns(plainPasswordMock)
+      const hashPasswordStub = sinon.stub(authService, 'hashPassword').returns(hashPasswordMock)
+      const sendgridStub = sinon.stub(sendGridMail, 'send').resolves(true)
+
+      const reqBody = { email: plainData[0].email }
+
+      const { status, body } = await request
+        .post(baseUrl)
+        .send(reqBody)
+
+      t.strictSame(status, 200)
+      t.strictSame(body.data, { email: reqBody.email })
+
+      t.ok(hashPasswordStub.calledOnceWith(plainPasswordMock))
+      t.ok(sendgridStub.calledOnceWith({
+        to: reqBody.email,
+        from: constants.projectEmail,
+        templateId: constants.resetPasswordEmailTemplateId,
+        dynamicTemplateData: {
+          subject: 'Reset your password',
+          firstText: 'You have requested to reset your password.',
+          secondText: 'Your new password is:',
+          newPassword: plainPasswordMock,
+          thirdText: 'We advise you to change the password as soon as possible.',
+          footer: 'Do not respond to this email. If you have received this email by mistake, please delete the message.',
+        },
+      }))
+
+      const user = await usersModel.findOne({ email: reqBody.email }, {}, { lean: true })
+      t.ok(user)
+      t.strictSame(user['password'], hashPasswordMock)
+
+      nanoidStub.restore()
+      hashPasswordStub.restore()
+      sendgridStub.restore()
       t.end()
     })
 

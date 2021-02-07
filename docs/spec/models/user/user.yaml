@@ -40,6 +40,31 @@ properties:
     type: string
     description: User's gender.
 
+  emailConfirmationToken:
+    description: Data used for email confirmation.
+    type: object
+    properties:
+      token:
+        type: string
+        description: Email confirmation token
+      validUntil:
+        type: string
+        format: date-time
+        description: Token validity
+    required:
+      - token
+      - validUntil
+
+  createdAt:
+    type: string
+    format: date-time
+    description: Date of creation of the resource.
+
+  updatedAt:
+    type: string
+    format: date-time
+    description: Date of the last update of the resource.
+
 required:
   - _id
   - email
@@ -47,3 +72,5 @@ required:
   - isConfirmed
   - name
   - surname
+  - createdAt
+  - updatedAt

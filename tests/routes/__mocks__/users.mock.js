@@ -2,6 +2,7 @@
 'use strict'
 
 const bcrypt = require('bcryptjs')
+const moment = require('moment')
 const { model: usersModel } = require('../../../modules/users/users.model')
 
 const plainPassword = '12345678'
@@ -28,6 +29,10 @@ const plainData = [
     city: 'Lecco',
     yearOfBirth: 1990,
     gender: 'female',
+    emailConfirmationToken: {
+      token: 'token',
+      validUntil: moment.utc().add(1, 'd'),
+    },
   },
   {
     _id: '000000000000000000000003',
@@ -39,6 +44,25 @@ const plainData = [
     city: 'Milano',
     yearOfBirth: 1995,
     gender: 'other',
+    emailConfirmationToken: {
+      token: 'token',
+      validUntil: '2000-01-01T00:00:00.000Z',
+    },
+  },
+  {
+    _id: '000000000000000000000004',
+    email: 'not-verified2@example.com',
+    password: plainPassword,
+    isConfirmed: 'false',
+    name: 'Giorgio',
+    surname: 'Verdi',
+    city: 'Milano',
+    yearOfBirth: 1995,
+    gender: 'other',
+    emailConfirmationToken: {
+      token: 'token',
+      validUntil: moment.utc().add(1, 'd'),
+    },
   },
 ]
 
@@ -49,6 +73,7 @@ async function createData() {
     { ...plainData[0], password: hashPassword },
     { ...plainData[1], password: hashPassword },
     { ...plainData[2], password: hashPassword },
+    { ...plainData[3], password: hashPassword },
   ]
 }
 

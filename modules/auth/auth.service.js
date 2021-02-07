@@ -2,8 +2,12 @@
 
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
+const sendGridMail = require('@sendgrid/mail')
+const { nanoid } = require('nanoid')
+const moment = require('moment')
 
 const { JWT_PK } = process.env
+const constants = require('../../lib/constants')
 const { model: usersModel } = require('../users/users.model')
 const { CustomError } = require('../../lib/CustomError')
 
@@ -12,17 +16,15 @@ async function register(data) {
     throw new CustomError(409, 'Email already in use', 'ConflictException')
   }
 
-  const hashPassword = await bcrypt.hash(data.password, 12)
-
   const user = new usersModel({
     email: data.email,
-    password: hashPassword,
-    isConfirmed: true,
+    password: await hashPassword(data.password),
     name: data.name,
     surname: data.surname,
     city: data.city,
     yearOfBirth: data.yearOfBirth,
     gender: data.gender,
+    emailConfirmationToken: data.emailConfirmationToken,
   })
 
   return user.save()
@@ -50,4 +52,100 @@ async function login(data) {
   return { token, userId: user._id.toString() }
 }
 
-module.exports = { register, login }
+async function sendConfirmationEmail(recipient, confirmEmailUrl, i18n) {
+  const message = {
+    to: recipient,
+    from: constants.projectEmail,
+    templateId: constants.confirmEmailTemplateId,
+    dynamicTemplateData: {
+      subject: i18n('emails:confirmEmail.subject'),
+      heading: i18n('emails:confirmEmail.heading'),
+      tagLine: i18n('emails:confirmEmail.tagLine'),
+      buttonText: i18n('emails:confirmEmail.buttonText'),
+      confirmEmailUrl,
+      footer: i18n('emails:confirmEmail.footer'),
+    },
+  }
+
+  await sendGridMail.send(message)
+}
+
+async function sendRestPasswordEmail(recipient, newPassword, i18n) {
+  const message = {
+    to: recipient,
+    from: constants.projectEmail,
+    templateId: constants.resetPasswordEmailTemplateId,
+    dynamicTemplateData: {
+      subject: i18n('emails:resetPassword.subject'),
+      firstText: i18n('emails:resetPassword.firstText'),
+      secondText: i18n('emails:resetPassword.secondText'),
+      newPassword,
+      thirdText: i18n('emails:resetPassword.thirdText'),
+      footer: i18n('emails:resetPassword.footer'),
+    },
+  }
+
+  await sendGridMail.send(message)
+}
+
+function isUserTokenValid(userToken, token) {
+  if (!userToken) {
+    return false
+  }
+
+  if (userToken.token !== token) {
+    return false
+  }
+
+  const userTokenValidity = moment(userToken.validUntil)
+  return moment.utc().isSameOrBefore(userTokenValidity)
+}
+
+async function updateConfirmationToken(userId, newToken) {
+  const user = await usersModel.findOne({ _id: userId })
+
+  user.emailConfirmationToken = newToken
+
+  return user.save()
+}
+
+async function confirmEmail(userId) {
+  const user = await usersModel.findOne({ _id: userId })
+
+  user.isConfirmed = true
+  user.emailConfirmationToken = undefined
+
+  return user.save()
+}
+
+async function updatePassword(userId, newPassword) {
+  const user = await usersModel.findOne({ _id: userId })
+
+  user.password = newPassword
+
+  return user.save()
+}
+
+async function hashPassword(plainPassword) {
+  return bcrypt.hash(plainPassword, 12)
+}
+
+function generateConfirmationToken() {
+  return {
+    token: nanoid(30),
+    validUntil: moment.utc().add(constants.confirmEmailTokenDaysValidity, 'd'),
+  }
+}
+
+module.exports = {
+  register,
+  login,
+  sendConfirmationEmail,
+  sendRestPasswordEmail,
+  isUserTokenValid,
+  confirmEmail,
+  updateConfirmationToken,
+  generateConfirmationToken,
+  updatePassword,
+  hashPassword,
+}

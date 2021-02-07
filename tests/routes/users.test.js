@@ -71,10 +71,10 @@ tap.test('/users', async t => {
     })
 
     t.test('returns 404 if user is not found', async t => {
-      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: '000000000000000000000004' })
+      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: '000000000000000000000010' })
 
       const { status, body } = await request
-        .get(`${baseUrl}/000000000000000000000004`)
+        .get(`${baseUrl}/000000000000000000000010`)
         .set('Authorization', 'Bearer foo')
 
       t.strictSame(status, 404)
@@ -222,10 +222,10 @@ tap.test('/users', async t => {
     })
 
     t.test('returns 404 if user is not found', async t => {
-      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: '000000000000000000000004' })
+      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: '000000000000000000000010' })
 
       const { status, body } = await request
-        .patch(`${baseUrl}/000000000000000000000004/change-email`)
+        .patch(`${baseUrl}/000000000000000000000010/change-email`)
         .set('Authorization', 'Bearer foo')
         .send({ email: 'test@test.com' })
 
@@ -404,10 +404,10 @@ tap.test('/users', async t => {
     })
 
     t.test('returns 404 if user is not found', async t => {
-      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: '000000000000000000000004' })
+      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: '000000000000000000000010' })
 
       const { status, body } = await request
-        .patch(`${baseUrl}/000000000000000000000004/change-password`)
+        .patch(`${baseUrl}/000000000000000000000010/change-password`)
         .set('Authorization', 'Bearer foo')
         .send({ oldPassword: 'foo', newPassword: '12345678', confirmNewPassword: '12345678' })
 
@@ -556,10 +556,10 @@ tap.test('/users', async t => {
     })
 
     t.test('returns 404 if user is not found', async t => {
-      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: '000000000000000000000004' })
+      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: '000000000000000000000010' })
 
       const { status, body } = await request
-        .patch(`${baseUrl}/000000000000000000000004/change-info`)
+        .patch(`${baseUrl}/000000000000000000000010/change-info`)
         .set('Authorization', 'Bearer foo')
         .send({})
 
@@ -685,10 +685,10 @@ tap.test('/users', async t => {
     })
 
     t.test('returns 404 if user is not found', async t => {
-      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: '000000000000000000000004' })
+      const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: '000000000000000000000010' })
 
       const { status, body } = await request
-        .delete(`${baseUrl}/000000000000000000000004`)
+        .delete(`${baseUrl}/000000000000000000000010`)
         .set('Authorization', 'Bearer foo')
 
       t.strictSame(status, 404)

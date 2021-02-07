@@ -15,6 +15,16 @@ async function getById(id, filter, projection, options) {
   return user
 }
 
+async function getOneByQuery(filter, projection, options) {
+  const user = await usersModel.findOne(filter, projection, { lean: true, ...options })
+
+  if (!user) {
+    throw new CustomError(404)
+  }
+
+  return user
+}
+
 async function changeEmail(id, newEmail) {
   const user = await usersModel.findOne({ _id: id })
 
@@ -72,4 +82,4 @@ async function deleteById(id) {
   return usersModel.deleteOne({ _id: id })
 }
 
-module.exports = { getById, changeEmail, changePassword, changeInfo, deleteById }
+module.exports = { getById, getOneByQuery, changeEmail, changePassword, changeInfo, deleteById }

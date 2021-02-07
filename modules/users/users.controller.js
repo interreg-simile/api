@@ -9,6 +9,7 @@ async function getById(req, res, next) {
   const projection = {
     password: 0,
     isConfirmed: 0,
+    emailConfirmationToken: 0,
   }
 
   try {
