@@ -1002,6 +1002,7 @@ paths:
             {
               "_id": "string",
               "uid": "string",
+              "date": "2000-01-01T00:00:00.000Z",
               "callId": 0,
               "position": {
                 "coordinates": [0, 0],

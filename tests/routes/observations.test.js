@@ -963,6 +963,8 @@ tap.test('/observations', async t => {
     })
 
     t.test('returns 201 with query', async t => {
+      const mockDate = '2000-01-01T00:00:00.000Z'
+      const momentStub = sinon.stub(moment, 'utc').returns(moment(mockDate))
       const mathStub = sinon.stub(Math, 'random').returns(0.1)
 
       const reqBody = {
@@ -971,6 +973,7 @@ tap.test('/observations', async t => {
       }
 
       const expectedData = {
+        date: mockDate,
         callId: 19000,
         position: { coordinates: [9.386683, 45.855060] },
       }
@@ -983,11 +986,15 @@ tap.test('/observations', async t => {
 
       t.strictSame(status, 201)
       t.strictSame(cleanDbData(body.data), expectedData)
+
+      momentStub.restore()
       mathStub.restore()
       t.end()
     })
 
     t.test('returns 201 with user', async t => {
+      const mockDate = '2000-01-01T00:00:00.000Z'
+      const momentStub = sinon.stub(moment, 'utc').returns(moment(mockDate))
       const jwtStub = sinon.stub(jwt, 'verify').returns({ userId: '000000000000000000000001' })
 
       const reqBody = {
@@ -996,6 +1003,7 @@ tap.test('/observations', async t => {
       }
 
       const expectedData = {
+        date: mockDate,
         uid: '000000000000000000000001',
         position: { coordinates: [9.386683, 45.855060] },
       }
@@ -1009,6 +1017,8 @@ tap.test('/observations', async t => {
 
       t.strictSame(status, 201)
       t.strictSame(cleanDbData(body.data), expectedData)
+
+      momentStub.restore()
       jwtStub.restore()
       t.end()
     })

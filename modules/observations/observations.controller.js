@@ -101,6 +101,7 @@ async function create(req, res, next) {
     if (minimalRes === 'true') {
       minimalResponse = {
         _id: newObservation._id,
+        date: newObservation.date,
         ...(newObservation.uid && { uid: newObservation.uid }),
         callId: newObservation.callId,
         position: {

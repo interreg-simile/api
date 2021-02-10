@@ -6,7 +6,7 @@ const moment = require('moment')
 module.exports = [
   {
     uid: '5dd7bbe0701d5bdd685c2a46',
-    date: moment.utc().toISOString(),
+    date: moment().subtract(1, 'days').toISOString(),
     callId: 1234,
     position: {
       type: 'Point',
