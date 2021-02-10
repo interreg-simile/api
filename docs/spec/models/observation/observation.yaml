@@ -10,6 +10,11 @@ properties:
     type: string
     description: Id of the user who has inserted the observation.
 
+  date:
+    type: string
+    format: date-time
+    description: Date in which the observation data have been taken.
+
   callId:
     type: number
     description: Five digits code that links the observation to a call to the competent authority.
@@ -115,6 +120,7 @@ properties:
 
 required:
   - _id
+  - date
   - position
   - weather
   - markedForDeletion

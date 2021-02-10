@@ -7,6 +7,7 @@ const data = [
   {
     _id: '111111111111111111111111',
     uid: '5dd7bbe0701d5bdd685c1f10',
+    date: '2020-01-01T00:00:00.000Z',
     callId: 1234,
     position: {
       type: 'Point',
@@ -101,6 +102,7 @@ const data = [
   {
     _id: '222222222222222222222222',
     uid: '5dd7bbe0701d5bdd685c1f10',
+    date: '2020-01-01T00:00:00.000Z',
     position: {
       type: 'Point',
       coordinates: [9.386683, 45.855060],
@@ -112,6 +114,7 @@ const data = [
   {
     _id: '333333333333333333333333',
     uid: '5dd7bbe0701d5bdd685c1f10',
+    date: '2020-01-01T00:00:00.000Z',
     position: {
       type: 'Point',
       coordinates: [9.386683, 45.855060],

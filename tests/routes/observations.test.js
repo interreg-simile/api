@@ -5,6 +5,7 @@ const path = require('path')
 const tap = require('tap')
 const sinon = require('sinon')
 const jwt = require('jsonwebtoken')
+const moment = require('moment')
 
 const { createMockRequest, connectTestDb, disconnectTestDb } = require('../setup')
 const { sortById, cleanDbData, compareValidationErrorBodies } = require('../utils')
@@ -129,6 +130,7 @@ tap.test('/observations', async t => {
       const expectedData = [
         {
           uid: mockObservations[0].uid,
+          date: mockObservations[0].date,
           callId: mockObservations[0].callId,
           position: { ...mockObservations[0].position, crs: { code: 1, description: 'WGS 84' } },
           weather: { ...mockObservations[0].weather, sky: { code: 1, description: 'Clear sky' } },
@@ -238,6 +240,7 @@ tap.test('/observations', async t => {
         },
         {
           uid: mockObservations[1].uid,
+          date: mockObservations[1].date,
           position: { ...mockObservations[1].position, crs: { code: 1, description: 'WGS 84' } },
           weather: { ...mockObservations[1].weather, sky: { code: 1, description: 'Clear sky' } },
           photos: [],
@@ -266,11 +269,11 @@ tap.test('/observations', async t => {
             properties: {
               _id: mockObservations[0]._id,
               uid: mockObservations[0].uid,
+              date: mockObservations[0].date,
               position: {
                 crs: { code: 2, description: 'WGS 84 / UTM zone 32N' },
                 roi: mockObservations[0].position.roi,
               },
-              createdAt: mockObservations[0].createdAt,
             },
           },
         ],
@@ -370,6 +373,7 @@ tap.test('/observations', async t => {
     t.test('returns 200 with no query', async t => {
       const expectedData = {
         uid: mockObservations[0].uid,
+        date: mockObservations[0].date,
         callId: mockObservations[0].callId,
         position: { ...mockObservations[0].position, crs: { code: 1, description: 'WGS 84' } },
         weather: { ...mockObservations[0].weather, sky: { code: 1, description: 'Clear sky' } },
@@ -496,6 +500,7 @@ tap.test('/observations', async t => {
         },
         properties: {
           uid: mockObservations[0].uid,
+          date: mockObservations[0].date,
           callId: mockObservations[0].callId,
           position: {
             type: 'Point',
@@ -767,6 +772,9 @@ tap.test('/observations', async t => {
     })
 
     t.test('returns 201 with no query', async t => {
+      const mockDate = '2000-01-01T00:00:00.000Z'
+      const momentStub = sinon.stub(moment, 'utc').returns(moment(mockDate))
+
       const reqBody = {
         position: { coordinates: [9.145174026489258, 45.47758654665813], accuracy: 1, roi: '000000000000000000000001' },
         weather: { temperature: 1, sky: { code: 1 }, wind: 1 },
@@ -849,6 +857,7 @@ tap.test('/observations', async t => {
       }
 
       const expectedData = {
+        date: mockDate,
         photos: [],
         markedForDeletion: false,
         position: {
@@ -948,6 +957,8 @@ tap.test('/observations', async t => {
 
       t.strictSame(status, 201)
       t.strictSame(cleanDbData(body.data), expectedData)
+
+      momentStub.restore()
       t.end()
     })
 
@@ -1010,6 +1021,7 @@ tap.test('/observations', async t => {
       }
 
       const expectedData = {
+        date: reqBody.createdAt,
         photos: [],
         markedForDeletion: false,
         position: {
@@ -1086,6 +1098,9 @@ tap.test('/observations', async t => {
     })
 
     t.test('returns 201 with images', async t => {
+      const mockDate = '2000-01-01T00:00:00.000Z'
+      const momentStub = sinon.stub(moment, 'utc').returns(moment(mockDate))
+
       const reqBody = {
         position: { coordinates: [9.145174026489258, 45.47758654665813], accuracy: 1, roi: '000000000000000000000001' },
         weather: { temperature: 1, sky: { code: 1 }, wind: 1 },
@@ -1108,6 +1123,7 @@ tap.test('/observations', async t => {
 
       const expectedData = {
         markedForDeletion: false,
+        date: mockDate,
         position: {
           type: 'Point',
           coordinates: [9.145174026489258, 45.47758654665813],
@@ -1157,6 +1173,7 @@ tap.test('/observations', async t => {
       delete body.data.details.outlets
       t.strictSame(cleanDbData(body.data), expectedData)
 
+      momentStub.restore()
       await removeAllUploadedFiles()
       t.end()
     })

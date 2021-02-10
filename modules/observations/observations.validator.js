@@ -36,6 +36,7 @@ const create = [
   query('generateCallId').optional().isBoolean().withMessage('Must be a boolean'),
 
   body('uid').isEmpty().withMessage('You cannot set this property'),
+  body('date').isEmpty().withMessage('You cannot set this property'),
   body('callId').isEmpty().withMessage('You cannot set this property'),
   body('photos').isEmpty().withMessage('You cannot set this property'),
 

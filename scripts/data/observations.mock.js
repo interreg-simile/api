@@ -6,6 +6,7 @@ const moment = require('moment')
 module.exports = [
   {
     uid: '5dd7bbe0701d5bdd685c2a46',
+    date: moment.utc().toISOString(),
     callId: 1234,
     position: {
       type: 'Point',
@@ -96,6 +97,7 @@ module.exports = [
   },
   {
     uid: '5dd7bbe0701d5bdd685c2a46',
+    date: moment().subtract(2, 'months').toISOString(),
     position: {
       type: 'Point',
       coordinates: [8.572928, 45.932513],
@@ -110,6 +112,7 @@ module.exports = [
   },
   {
     uid: '5dd7bbe0701d5bdd685c2a46',
+    date: moment().subtract(11, 'months').toISOString(),
     position: {
       type: 'Point',
       coordinates: [8.970187, 45.922071],
@@ -124,6 +127,7 @@ module.exports = [
   },
   {
     uid: '5dd7bbe0701d5bdd685c2a47',
+    date: moment.utc().toISOString(),
     callId: 1234,
     position: {
       type: 'Point',
@@ -154,6 +158,7 @@ module.exports = [
   },
   {
     uid: '5dd7bbe0701d5bdd685c2a47',
+    date: moment().subtract(3, 'months').toISOString(),
     position: {
       type: 'Point',
       coordinates: [9.183979, 45.967102],

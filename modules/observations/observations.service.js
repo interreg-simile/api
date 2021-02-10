@@ -1,6 +1,8 @@
 'use strict'
 
 const _ = require('lodash')
+const moment = require('moment')
+
 const { model: observationsModel } = require('./observations.model')
 const { CustomError } = require('../../lib/CustomError')
 const { projectPoint } = require('../../lib/spatialOperations')
@@ -33,6 +35,7 @@ async function create(data) {
 
   const observation = new observationsModel({
     ...(data.uid && { uid: data.uid }),
+    date: data.createdAt || moment.utc().toISOString(),
     callId: data.callId,
     position: { ...data.position, type: 'Point', crs: { code: 1 } },
     weather: data.weather,
@@ -40,11 +43,8 @@ async function create(data) {
     measures: data.measures,
     other: data.other,
     photos: data.photos,
+    ...(data.createdAt && { createdAt: data.createdAt }),
   })
-
-  if (data.createdAt) {
-    observation.createdAt = data.createdAt
-  }
 
   return observation.save()
 }

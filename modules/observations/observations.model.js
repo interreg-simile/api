@@ -25,6 +25,7 @@ const weather = new mongoose.Schema({
 
 const schema = new mongoose.Schema({
   uid: { type: mongoose.Schema.Types.ObjectId, ref: Users, required: false },
+  date: { type: Date, required: true },
   callId: { type: Number, required: false },
   position: { type: position, required: true },
   weather: { type: weather, required: true },
