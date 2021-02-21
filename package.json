@@ -1,6 +1,6 @@
 {
   "name": "simile-api",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "A RESTFul API that powers project SIMILE applications.",
   "author": "Edoardo Pessina <edoardopessina.priv@gmail.com>",
   "license": "SEE LICENSE IN LICENSE",
