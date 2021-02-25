@@ -5,7 +5,7 @@
 # SIMILE API
 
 [![Coverage Status](https://coveralls.io/repos/github/interreg-simile/api/badge.svg?branch=master)](https://coveralls.io/github/interreg-simile/api?branch=master)
-[![Inline docs](http://inch-ci.org/github/dwyl/hapi-auth-jwt2.svg?branch=master)](https://api-simile.como.polimi.it/v1/docs)
+[![Inline docs](https://img.shields.io/badge/DOCS-OpenAPI%203-green)](https://api-simile.como.polimi.it/v1/docs)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![javascript style guide](https://img.shields.io/badge/code_style-standard--mia-orange.svg)](https://github.com/mia-platform/eslint-config-mia)
 
