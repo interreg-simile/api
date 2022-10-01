@@ -3,7 +3,7 @@
 rois:
   country: { 1: "Italy", 2: "Switzerland" }
   area: { 1: "Lombardy Region", 2: "Piedmont Region", 3: "Canton of Ticino" }
-  lake: { 1: "Lake Maggiore", 2: "Lake Como", 3: "Lake Lugano" }
+  lake: { 1: "Lake Maggiore", 2: "Lake Como", 3: "Lake Lugano", 4: "Lake Varese" }
 
 observations:
 
