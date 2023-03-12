@@ -1,0 +1,7 @@
+*Thanks for signing up!*
+
+Please, verify your email address.
+
+Verify Email Now {{confirmEmailUrl}}
+
+Please, do not respond to this email. If you have received this email by mistake, please delete the message.
