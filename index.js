@@ -32,4 +32,4 @@ function onClose(serverProcess) {
   }
 }
 
-start().catch(error => logger.error(error, '[setup] Error starting the server'))
+start().catch(error => logger.error({ err: error }, '[setup] Error starting the server'))

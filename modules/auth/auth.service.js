@@ -9,7 +9,7 @@ const { JWT_PK } = process.env
 const constants = require('../../lib/constants')
 const { model: usersModel } = require('../users/users.model')
 const { CustomError } = require('../../lib/CustomError')
-const { mailTransporter, confirmationEmailTemplates, resetPasswordTemplates } = require('../../lib/mail')
+const { getTransporter, getConfirmationEmailTemplates, getResetPasswordTemplates } = require('../../lib/mail')
 
 async function register(data) {
   if (await usersModel.exists({ email: data.email })) {
@@ -61,12 +61,12 @@ async function sendConfirmationEmail(recipient, confirmEmailUrl, i18n) {
     footer: i18n('emails:confirmEmail.footer'),
   }
 
-  await mailTransporter.sendMail({
+  await getTransporter().sendMail({
     from: constants.projectEmail,
     to: recipient,
     subject: i18n('emails:confirmEmail.subject'),
-    text: confirmationEmailTemplates.text(data),
-    html: confirmationEmailTemplates.html(data),
+    text: getConfirmationEmailTemplates().text(data),
+    html: getConfirmationEmailTemplates().html(data),
   })
 }
 
@@ -79,12 +79,12 @@ async function sendRestPasswordEmail(recipient, newPassword, i18n) {
     footer: i18n('emails:resetPassword.footer'),
   }
 
-  await mailTransporter.sendMail({
+  await getTransporter().sendMail({
     from: constants.projectEmail,
     to: recipient,
     subject: i18n('emails:resetPassword.subject'),
-    text: resetPasswordTemplates.text(data),
-    html: resetPasswordTemplates.html(data),
+    text: getResetPasswordTemplates().text(data),
+    html: getResetPasswordTemplates().html(data),
   })
 }
 
