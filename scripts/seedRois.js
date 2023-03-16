@@ -35,6 +35,6 @@ const { model, collectionName } = require('../modules/rois/rois.model');
 
     await disconnectDb(logger);
   } catch (error) {
-    logger.error({ error }, 'Errors seeding rois data');
+    logger.error({ err: error }, 'Errors seeding rois data');
   }
 })()

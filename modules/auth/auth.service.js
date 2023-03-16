@@ -2,7 +2,6 @@
 
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
-const sendGridMail = require('@sendgrid/mail')
 const { nanoid } = require('nanoid')
 const moment = require('moment')
 
@@ -10,6 +9,7 @@ const { JWT_PK } = process.env
 const constants = require('../../lib/constants')
 const { model: usersModel } = require('../users/users.model')
 const { CustomError } = require('../../lib/CustomError')
+const mail = require('../../lib/mail')
 
 async function register(data) {
   if (await usersModel.exists({ email: data.email })) {
@@ -53,39 +53,41 @@ async function login(data) {
 }
 
 async function sendConfirmationEmail(recipient, confirmEmailUrl, i18n) {
-  const message = {
-    to: recipient,
-    from: constants.projectEmail,
-    templateId: constants.confirmEmailTemplateId,
-    dynamicTemplateData: {
-      subject: i18n('emails:confirmEmail.subject'),
-      heading: i18n('emails:confirmEmail.heading'),
-      tagLine: i18n('emails:confirmEmail.tagLine'),
-      buttonText: i18n('emails:confirmEmail.buttonText'),
-      confirmEmailUrl,
-      footer: i18n('emails:confirmEmail.footer'),
-    },
+  const data = {
+    heading: i18n('emails:confirmEmail.heading'),
+    tagLine: i18n('emails:confirmEmail.tagLine'),
+    buttonText: i18n('emails:confirmEmail.buttonText'),
+    confirmEmailUrl,
+    footer: i18n('emails:confirmEmail.footer'),
   }
 
-  await sendGridMail.send(message)
+  const transporter = mail.getTransporter()
+
+  await transporter.sendMail({
+    from: constants.projectEmail,
+    to: recipient,
+    subject: i18n('emails:confirmEmail.subject'),
+    text: mail.getConfirmationEmailTemplates().text(data),
+    html: mail.getConfirmationEmailTemplates().html(data),
+  })
 }
 
 async function sendRestPasswordEmail(recipient, newPassword, i18n) {
-  const message = {
-    to: recipient,
-    from: constants.projectEmail,
-    templateId: constants.resetPasswordEmailTemplateId,
-    dynamicTemplateData: {
-      subject: i18n('emails:resetPassword.subject'),
-      firstText: i18n('emails:resetPassword.firstText'),
-      secondText: i18n('emails:resetPassword.secondText'),
-      newPassword,
-      thirdText: i18n('emails:resetPassword.thirdText'),
-      footer: i18n('emails:resetPassword.footer'),
-    },
+  const data = {
+    firstText: i18n('emails:resetPassword.firstText'),
+    secondText: i18n('emails:resetPassword.secondText'),
+    newPassword,
+    thirdText: i18n('emails:resetPassword.thirdText'),
+    footer: i18n('emails:resetPassword.footer'),
   }
 
-  await sendGridMail.send(message)
+  await mail.getTransporter().sendMail({
+    from: constants.projectEmail,
+    to: recipient,
+    subject: i18n('emails:resetPassword.subject'),
+    text: mail.getResetPasswordTemplates().text(data),
+    html: mail.getResetPasswordTemplates().html(data),
+  })
 }
 
 function isUserTokenValid(userToken, token) {

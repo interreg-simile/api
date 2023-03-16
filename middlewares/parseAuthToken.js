@@ -44,7 +44,7 @@ function getUserIdFromToken(token, logger) {
   try {
     decodedToken = jwt.verify(token, JWT_PK)
   } catch (error) {
-    logger.error(error, 'Error decoding JWT token')
+    logger.error({ err: error }, 'Error decoding JWT token')
     throw new CustomError(500, 'Error decoding JWT token')
   }
 

@@ -1,0 +1,9 @@
+{{firstText}}
+
+{{secondText}}
+
+*{{newPassword}}*
+
+{{thirdText}}
+
+{{footer}}

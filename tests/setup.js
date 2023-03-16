@@ -20,7 +20,7 @@ async function connectTestDb(dbName) {
     useUnifiedTopology: true,
   }
 
-  const mongoUri = MONGO_CI || 'mongodb://127.0.0.1:27017'
+  const mongoUri = MONGO_CI || 'mongodb://127.0.0.1:27888'
   await mongoose.connect(`${mongoUri}/${dbName}`, options)
 }
 

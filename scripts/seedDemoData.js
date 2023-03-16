@@ -59,6 +59,6 @@ async function seedCollection(logger, collections, collectionModel, data) {
     await model.create(data);
     logger.info(`Seeded collection ${collectionName}`);
   } catch (error) {
-    logger.error({ error }, `Error seeding collection ${collectionName}`);
+    logger.error({ err: error }, `Error seeding collection ${collectionName}`);
   }
 }
