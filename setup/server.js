@@ -8,7 +8,7 @@ const { initRoutes } = require('./routes')
 const handleErrors = require('../middlewares/handleErrors')
 const { loadProjections } = require('../lib/spatialOperations')
 const initInternationalization = require('../lib/i18n')
-const { initTransporter, loadEmailTemplates } = require('../lib/mail')
+const { loadEmailTemplates } = require('../lib/mail')
 
 module.exports = async(logger, logLevel) => {
   const app = express()
@@ -22,7 +22,6 @@ module.exports = async(logger, logLevel) => {
 
   loadProjections(logger)
 
-  await initTransporter(logger)
   loadEmailTemplates()
 
   await initInternationalization(logger)

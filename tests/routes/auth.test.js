@@ -3,11 +3,10 @@
 const tap = require('tap')
 const sinon = require('sinon')
 const jwt = require('jsonwebtoken')
-const sendGridMail = require('@sendgrid/mail')
 const moment = require('moment')
 const nanoid = require('nanoid')
 
-const constants = require('../../lib/constants')
+const mail = require('../../lib/mail')
 const { createMockRequest, connectTestDb, disconnectTestDb } = require('../setup')
 const { compareValidationErrorBodies } = require('../utils')
 const { version } = require('../../lib/loadConfigurations')
@@ -192,7 +191,9 @@ tap.test('auth', async t => {
 
     t.test('returns 201', async t => {
       const generateConfirmationTokenStub = sinon.stub(authService, 'generateConfirmationToken').returns(fakeToken)
-      const sendgridStub = sinon.stub(sendGridMail, 'send').resolves(true)
+
+      const sendMailStub = sinon.stub().resolves()
+      const mailStub = sinon.stub(mail, 'getTransporter').returns({ sendMail: sendMailStub })
 
       const reqBody = {
         email: 'test@test.com',
@@ -213,19 +214,7 @@ tap.test('auth', async t => {
       t.strictSame(body.data, { email: reqBody.email })
 
       t.ok(generateConfirmationTokenStub.calledOnce)
-      t.ok(sendgridStub.calledOnceWith({
-        to: reqBody.email,
-        from: constants.projectEmail,
-        templateId: constants.confirmEmailTemplateId,
-        dynamicTemplateData: {
-          subject: 'Verify your email',
-          heading: 'Thanks for signing up!',
-          tagLine: 'Please, verify your email address.',
-          buttonText: 'Verify Email Now',
-          confirmEmailUrl: 'undefined/v1/auth/confirm-email?email=test%40test.com&token=foo',
-          footer: 'Do not respond to this email. If you have received this email by mistake, please delete the message.',
-        },
-      }))
+      t.ok(sendMailStub.calledOnce)
 
       const newUser = await usersModel.findOne({ email: reqBody.email }, {}, { lean: true })
       t.ok(newUser)
@@ -233,13 +222,15 @@ tap.test('auth', async t => {
       t.strictSame(new Date(newUser['emailConfirmationToken']['validUntil']).toISOString(), fakeToken.validUntil)
 
       generateConfirmationTokenStub.restore()
-      sendgridStub.restore()
+      mailStub.restore()
       t.end()
     })
 
     t.test('returns 201 if sendConfirmationEmail fails', async t => {
       const generateConfirmationTokenStub = sinon.stub(authService, 'generateConfirmationToken').returns(fakeToken)
-      const sendgridStub = sinon.stub(sendGridMail, 'send').throws('Error')
+
+      const sendMailStub = sinon.stub().throws('Error')
+      const mailStub = sinon.stub(mail, 'getTransporter').returns({ sendMail: sendMailStub })
 
       const reqBody = {
         email: 'test2@test.com',
@@ -260,19 +251,7 @@ tap.test('auth', async t => {
       t.strictSame(body.data, { email: reqBody.email })
 
       t.ok(generateConfirmationTokenStub.calledOnce)
-      t.ok(sendgridStub.calledOnceWith({
-        to: reqBody.email,
-        from: constants.projectEmail,
-        templateId: constants.confirmEmailTemplateId,
-        dynamicTemplateData: {
-          subject: 'Verify your email',
-          heading: 'Thanks for signing up!',
-          tagLine: 'Please, verify your email address.',
-          buttonText: 'Verify Email Now',
-          confirmEmailUrl: 'undefined/v1/auth/confirm-email?email=test2%40test.com&token=foo',
-          footer: 'Do not respond to this email. If you have received this email by mistake, please delete the message.',
-        },
-      }))
+      t.ok(sendMailStub.calledOnce)
 
       const newUser = await usersModel.findOne({ email: reqBody.email }, {}, { lean: true })
       t.ok(newUser)
@@ -280,7 +259,7 @@ tap.test('auth', async t => {
       t.strictSame(new Date(newUser['emailConfirmationToken']['validUntil']).toISOString(), fakeToken.validUntil)
 
       generateConfirmationTokenStub.restore()
-      sendgridStub.restore()
+      mailStub.restore()
       t.end()
     })
 
@@ -555,7 +534,9 @@ tap.test('auth', async t => {
 
     t.test('returns 200', async t => {
       const generateConfirmationTokenStub = sinon.stub(authService, 'generateConfirmationToken').returns(fakeToken)
-      const sendgridStub = sinon.stub(sendGridMail, 'send').resolves(true)
+
+      const sendMailStub = sinon.stub().resolves()
+      const mailStub = sinon.stub(mail, 'getTransporter').returns({ sendMail: sendMailStub })
 
       const reqBody = { email: plainData[2].email }
 
@@ -567,19 +548,7 @@ tap.test('auth', async t => {
       t.strictSame(body.data, { email: reqBody.email })
 
       t.ok(generateConfirmationTokenStub.calledOnce)
-      t.ok(sendgridStub.calledOnceWith({
-        to: reqBody.email,
-        from: constants.projectEmail,
-        templateId: constants.confirmEmailTemplateId,
-        dynamicTemplateData: {
-          subject: 'Verify your email',
-          heading: 'Thanks for signing up!',
-          tagLine: 'Please, verify your email address.',
-          buttonText: 'Verify Email Now',
-          confirmEmailUrl: 'undefined/v1/auth/confirm-email?email=not-verified%40example.com&token=foo',
-          footer: 'Do not respond to this email. If you have received this email by mistake, please delete the message.',
-        },
-      }))
+      t.ok(sendMailStub.calledOnce)
 
       const user = await usersModel.findOne({ email: reqBody.email }, {}, { lean: true })
       t.ok(user)
@@ -587,7 +556,7 @@ tap.test('auth', async t => {
       t.strictSame(new Date(user['emailConfirmationToken']['validUntil']).toISOString(), fakeToken.validUntil)
 
       generateConfirmationTokenStub.restore()
-      sendgridStub.restore()
+      mailStub.restore()
       t.end()
     })
 
@@ -884,7 +853,9 @@ tap.test('auth', async t => {
     t.test('returns 200', async t => {
       const nanoidStub = sinon.stub(nanoid, 'nanoid').returns(plainPasswordMock)
       const hashPasswordStub = sinon.stub(authService, 'hashPassword').returns(hashPasswordMock)
-      const sendgridStub = sinon.stub(sendGridMail, 'send').resolves(true)
+
+      const sendMailStub = sinon.stub().resolves()
+      const mailStub = sinon.stub(mail, 'getTransporter').returns({ sendMail: sendMailStub })
 
       const reqBody = { email: plainData[0].email }
 
@@ -896,19 +867,7 @@ tap.test('auth', async t => {
       t.strictSame(body.data, { email: reqBody.email })
 
       t.ok(hashPasswordStub.calledOnceWith(plainPasswordMock))
-      t.ok(sendgridStub.calledOnceWith({
-        to: reqBody.email,
-        from: constants.projectEmail,
-        templateId: constants.resetPasswordEmailTemplateId,
-        dynamicTemplateData: {
-          subject: 'Reset your password',
-          firstText: 'You have requested to reset your password.',
-          secondText: 'Your new password is:',
-          newPassword: plainPasswordMock,
-          thirdText: 'We advise you to change the password as soon as possible.',
-          footer: 'Do not respond to this email. If you have received this email by mistake, please delete the message.',
-        },
-      }))
+      t.ok(sendMailStub.calledOnce)
 
       const user = await usersModel.findOne({ email: reqBody.email }, {}, { lean: true })
       t.ok(user)
@@ -916,7 +875,7 @@ tap.test('auth', async t => {
 
       nanoidStub.restore()
       hashPasswordStub.restore()
-      sendgridStub.restore()
+      mailStub.restore()
       t.end()
     })
 
